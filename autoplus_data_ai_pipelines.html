@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: transparent; color: #1a1a2e; padding: 14px; font-size: 12px; }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap; }
+.tab {
+  padding: 6px 12px; border-radius: 20px; cursor: pointer;
+  font-size: 11px; font-weight: 700; border: 1.5px solid transparent;
+  transition: all 0.2s; background: #f0f0f0; color: #666;
+}
+.tab.active { color: white; }
+.tab[data-t="0"].active { background: #1a73e8; border-color: #1a73e8; }
+.tab[data-t="1"].active { background: #f57c00; border-color: #f57c00; }
+.tab[data-t="2"].active { background: #2e7d32; border-color: #2e7d32; }
+.tab[data-t="3"].active { background: #7b1fa2; border-color: #7b1fa2; }
+.tab[data-t="4"].active { background: #c62828; border-color: #c62828; }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* PIPELINE COMMON */
+.pipeline { display: flex; flex-direction: column; gap: 6px; }
+
+.step-row { display: flex; align-items: stretch; gap: 0; }
+
+.step-box {
+  border-radius: 10px; padding: 10px 12px; flex: 1;
+  border: 1.5px solid; position: relative;
+}
+.step-box .step-num {
+  font-size: 9px; font-weight: 800; opacity: 0.6; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 1px;
+}
+.step-box .step-title { font-size: 12px; font-weight: 800; margin-bottom: 4px; }
+.step-box .step-body { font-size: 10px; line-height: 1.6; color: #555; }
+.step-box .step-body code {
+  background: rgba(0,0,0,0.06); border-radius: 4px;
+  padding: 1px 5px; font-family: monospace; font-size: 10px; color: #1a1a2e;
+}
+.step-box ul { padding-left: 14px; }
+.step-box ul li { margin-bottom: 2px; }
+
+.arrow-down { text-align: center; font-size: 16px; color: #bbb; line-height: 1; margin: 1px 0; }
+
+/* tool badge */
+.tool { display: inline-block; background: #1a1a2e; color: white; font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin: 2px 2px 0 0; }
+.tool.blue { background: #1a73e8; }
+.tool.orange { background: #f57c00; }
+.tool.green { background: #2e7d32; }
+.tool.purple { background: #7b1fa2; }
+.tool.red { background: #c62828; }
+.tool.gray { background: #607d8b; }
+
+/* color themes per pipeline */
+.p0 .step-box { border-color: #1a73e8; background: #f0f4ff; }
+.p0 .step-num { color: #1a73e8; }
+.p0 .step-title { color: #1a73e8; }
+
+.p1 .step-box { border-color: #f57c00; background: #fff8f0; }
+.p1 .step-num { color: #f57c00; }
+.p1 .step-title { color: #f57c00; }
+
+.p2 .step-box { border-color: #2e7d32; background: #f0faf0; }
+.p2 .step-num { color: #2e7d32; }
+.p2 .step-title { color: #2e7d32; }
+
+.p3 .step-box { border-color: #7b1fa2; background: #faf0ff; }
+.p3 .step-num { color: #7b1fa2; }
+.p3 .step-title { color: #7b1fa2; }
+
+.p4 .step-box { border-color: #c62828; background: #fff0f0; }
+.p4 .step-num { color: #c62828; }
+.p4 .step-title { color: #c62828; }
+
+/* two-column layout */
+.two-col { display: flex; gap: 10px; }
+.two-col > div { flex: 1; }
+
+.section-label {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; color: #aaa; margin: 10px 0 6px;
+}
+
+.note {
+  border-radius: 8px; padding: 8px 12px; font-size: 10px;
+  line-height: 1.6; margin-top: 10px; border-left: 3px solid;
+}
+.note.blue { background: #e8f0fe; border-color: #1a73e8; color: #1a3a6e; }
+.note.orange { background: #fff3e0; border-color: #f57c00; color: #7a3a00; }
+.note.purple { background: #f3e5f5; border-color: #7b1fa2; color: #4a0d6a; }
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <div class="tab active" data-t="0" onclick="show(0)">📥 Ingestion</div>
+  <div class="tab" data-t="1" onclick="show(1)">⚙️ Processing</div>
+  <div class="tab" data-t="2" onclick="show(2)">🤖 ML Training</div>
+  <div class="tab" data-t="3" onclick="show(3)">🧠 Agent IA</div>
+  <div class="tab" data-t="4" onclick="show(4)">🚀 Déploiement</div>
+</div>
+
+<!-- PIPELINE 0: INGESTION -->
+<div class="panel active p0" id="p0">
+<div class="pipeline">
+
+  <div class="step-box">
+    <div class="step-num">Étape 01 — Sources</div>
+    <div class="step-title">Collecte des données brutes</div>
+    <div class="step-body">
+      Toutes les actions utilisateur génèrent des événements capturés en temps réel.
+      <br><br>
+      <div class="two-col">
+        <div>
+          <strong>📱 App Mobile</strong><br>
+          <ul>
+            <li>Inscription utilisateur</li>
+            <li>Ajout plaque voiture</li>
+            <li>Recherche garage</li>
+            <li>Prise de RDV</li>
+            <li>Avis posté</li>
+            <li>Message agent IA</li>
+          </ul>
+        </div>
+        <div>
+          <strong>🔧 Portail Garage</strong><br>
+          <ul>
+            <li>Création vitrine</li>
+            <li>Confirmation RDV</li>
+            <li>Saisie intervention</li>
+            <li>Ajout photos</li>
+            <li>Mise à jour horaires</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 02 — API Layer</div>
+    <div class="step-title">REST API — Point d'entrée unique</div>
+    <div class="step-body">
+      Toutes les requêtes passent par une API centrale qui valide, authentifie et route les données.
+      <br><br>
+      <code>POST /api/v1/interventions</code> → enregistre une réparation<br>
+      <code>POST /api/v1/events</code> → enregistre un événement comportemental<br>
+      <code>GET /api/v1/garages?lat=33.5&lng=-7.6</code> → recherche géo<br>
+      <br>
+      <span class="tool blue">Node.js</span>
+      <span class="tool blue">Express</span>
+      <span class="tool gray">JWT Auth</span>
+      <span class="tool gray">Zod validation</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="two-col">
+    <div>
+      <div class="step-box">
+        <div class="step-num">Étape 03a — Structured Data</div>
+        <div class="step-title">Base relationnelle</div>
+        <div class="step-body">
+          Données métier structurées — persistance principale.<br><br>
+          Tables clés :<br>
+          <code>vehicles(plate, brand, model, year)</code><br>
+          <code>interventions(id, vehicle_id, garage_id, type, cost, date)</code><br>
+          <code>garages(id, name, lat, lng, specialties)</code><br>
+          <code>users(id, phone, created_at)</code><br><br>
+          <span class="tool blue">PostgreSQL</span>
+          <span class="tool gray">PostGIS (géo)</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="step-box">
+        <div class="step-num">Étape 03b — Event Stream</div>
+        <div class="step-title">Flux comportemental</div>
+        <div class="step-body">
+          Événements temps réel pour le ML et analytics.<br><br>
+          Format événement :<br>
+          <code>{user_id, action, entity, timestamp, meta}</code><br><br>
+          Exemples :<br>
+          <code>SEARCH_GARAGE → {query, lat, lng}</code><br>
+          <code>VIEW_GARAGE → {garage_id, duration}</code><br>
+          <code>BOOK_RDV → {garage_id, service}</code><br><br>
+          <span class="tool orange">Kafka (scale)</span>
+          <span class="tool gray">Redis (MVP)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 04 — Data Lake</div>
+    <div class="step-title">Stockage brut — Source of Truth</div>
+    <div class="step-body">
+      Toutes les données brutes stockées en JSON partitionné par date. Jamais effacées. C'est ta mine d'or pour le ML futur.
+      <br><br>
+      Structure : <code>s3://autoplus-lake/events/year=2026/month=06/day=24/</code><br><br>
+      <span class="tool green">MinIO (auto-hébergé)</span>
+      <span class="tool gray">Parquet format</span>
+      <span class="tool gray">Partitioning date</span>
+    </div>
+  </div>
+
+  <div class="note blue">💡 <strong>MVP vs Scale :</strong> En phase MVP, Redis remplace Kafka et un simple dossier S3 remplace MinIO. L'architecture reste la même, les outils changent avec la taille.</div>
+</div>
+</div>
+
+<!-- PIPELINE 1: PROCESSING -->
+<div class="panel p1" id="p1">
+<div class="pipeline">
+
+  <div class="step-box">
+    <div class="step-num">Étape 01 — Raw Data</div>
+    <div class="step-title">Données brutes depuis le Data Lake</div>
+    <div class="step-body">
+      Lecture des données brutes collectées — interventions, profils voitures, avis, événements comportementaux.
+      <br><br>
+      <span class="tool orange">Apache Spark</span>
+      <span class="tool gray">PySpark</span>
+      <span class="tool gray">Pandas (MVP)</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 02 — Cleaning</div>
+    <div class="step-title">Nettoyage & Validation</div>
+    <div class="step-body">
+      Problèmes réels à gérer dans les données marocaines :<br><br>
+      <ul>
+        <li><strong>Plaques mal saisies</strong> → normalisation regex : <code>A-12345-1</code></li>
+        <li><strong>Coûts aberrants</strong> → détection outliers (vidange à 50 DH ou 50 000 DH = erreur)</li>
+        <li><strong>Dates incorrectes</strong> → intervention avant fabrication voiture = impossible</li>
+        <li><strong>Doublons</strong> → même intervention même jour même garage = dédupliqué</li>
+        <li><strong>Texte darija</strong> → normalisation Unicode, suppression caractères spéciaux</li>
+      </ul>
+      <br>
+      <span class="tool orange">Great Expectations</span>
+      <span class="tool gray">Pydantic</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 03 — Feature Engineering</div>
+    <div class="step-title">Construction des features ML</div>
+    <div class="step-body">
+      Transformation des données brutes en features utilisables par les modèles.<br><br>
+      <div class="two-col">
+        <div>
+          <strong>Features Véhicule</strong>
+          <ul>
+            <li><code>age_voiture</code> = 2026 - année</li>
+            <li><code>nb_interventions</code></li>
+            <li><code>cout_total_entretien</code></li>
+            <li><code>derniere_intervention_jours</code></li>
+            <li><code>ratio_entretien_age</code></li>
+            <li><code>types_reparations[]</code></li>
+          </ul>
+        </div>
+        <div>
+          <strong>Features Garage</strong>
+          <ul>
+            <li><code>rating_pondere</code></li>
+            <li><code>nb_avis_verifies</code></li>
+            <li><code>taux_confirmation_rdv</code></li>
+            <li><code>prix_moyen_service</code></li>
+            <li><code>specialites_encoded[]</code></li>
+            <li><code>distance_user</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 04 — Feature Store</div>
+    <div class="step-title">Stockage centralisé des features</div>
+    <div class="step-body">
+      Les features calculées sont stockées et versionnées — réutilisables par tous les modèles sans recalcul.
+      <br><br>
+      <code>vehicle_features_v2.parquet</code> → mise à jour quotidienne<br>
+      <code>garage_features_v1.parquet</code> → mise à jour toutes les heures<br>
+      <code>user_features_v1.parquet</code> → mise à jour en temps réel<br><br>
+      <span class="tool orange">Feast (MVP: simple Parquet)</span>
+      <span class="tool gray">DVC (versionning)</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 05 — Scheduling</div>
+    <div class="step-title">Orchestration des jobs</div>
+    <div class="step-body">
+      Les pipelines de processing s'exécutent automatiquement selon un calendrier.
+      <br><br>
+      <code>0 2 * * *</code> → Nettoyage daily à 2h du matin<br>
+      <code>0 */4 * * *</code> → Feature engineering toutes les 4h<br>
+      <code>0 3 * * 1</code> → Ré-entraînement modèles chaque lundi<br><br>
+      <span class="tool orange">Apache Airflow</span>
+      <span class="tool gray">Cron (MVP)</span>
+    </div>
+  </div>
+
+  <div class="note orange">💡 <strong>Conseil PFA :</strong> Le Feature Engineering est souvent le sujet le plus riche pour un mémoire — tu peux publier la liste des features véhicule comme contribution académique originale sur les données marocaines.</div>
+</div>
+</div>
+
+<!-- PIPELINE 2: ML TRAINING -->
+<div class="panel p2" id="p2">
+<div class="pipeline">
+
+  <div class="section-label">Modèle A — Estimation valeur véhicule</div>
+
+  <div class="step-box">
+    <div class="step-num">A1 — Data Split</div>
+    <div class="step-title">Séparation Train / Validation / Test</div>
+    <div class="step-body">
+      <code>Train : 70%</code> — apprentissage du modèle<br>
+      <code>Validation : 15%</code> — tuning des hyperparamètres<br>
+      <code>Test : 15%</code> — évaluation finale (touché une seule fois)<br><br>
+      Attention : split temporel obligatoire — les données de 2025 entraînent, 2026 teste. Pas de data leakage.
+    </div>
+  </div>
+  <div class="arrow-down">↓</div>
+  <div class="step-box">
+    <div class="step-num">A2 — Entraînement</div>
+    <div class="step-title">XGBoost → Neural Network</div>
+    <div class="step-body">
+      <strong>Phase 1 (peu de données) :</strong> XGBoost ou Random Forest<br>
+      → Interprétable, robuste, peu de données nécessaires<br><br>
+      <strong>Phase 2 (+10k véhicules) :</strong> Neural Network<br>
+      → Plus précis, capture les interactions complexes<br><br>
+      Target : <code>valeur_marche_dh</code><br>
+      Métrique : <code>MAE (erreur absolue moyenne en DH)</code><br><br>
+      <span class="tool green">XGBoost</span>
+      <span class="tool green">scikit-learn</span>
+      <span class="tool green">PyTorch (phase 2)</span>
+    </div>
+  </div>
+  <div class="arrow-down">↓</div>
+
+  <div class="section-label">Modèle B — Recommandation de garages</div>
+
+  <div class="step-box">
+    <div class="step-num">B1 — Approche hybride</div>
+    <div class="step-title">Content-Based + Collaborative Filtering</div>
+    <div class="step-body">
+      <strong>Content-based :</strong> match entre le problème déclaré et la spécialité du garage<br>
+      <code>score = similarity(probleme_user, specialites_garage)</code><br><br>
+      <strong>Collaborative :</strong> les users avec profil similaire ont choisi quels garages ?<br>
+      <code>score += cf_score(user_id, garage_id)</code><br><br>
+      <strong>Final score :</strong><br>
+      <code>rank = α×content + β×cf + γ×distance + δ×rating</code><br><br>
+      <span class="tool green">scikit-surprise</span>
+      <span class="tool green">sentence-transformers</span>
+    </div>
+  </div>
+  <div class="arrow-down">↓</div>
+
+  <div class="section-label">Modèle C — Détection faux avis</div>
+
+  <div class="step-box">
+    <div class="step-num">C1 — Anomaly Detection</div>
+    <div class="step-title">Isolation Forest + NLP</div>
+    <div class="step-body">
+      <strong>Signaux comportementaux :</strong>
+      <ul>
+        <li>Compte créé il y a moins de 24h + avis 5★ posté</li>
+        <li>Même IP → multiple comptes → avis même garage</li>
+        <li>Aucun RDV enregistré mais avis posté</li>
+      </ul>
+      <br>
+      <strong>Signaux NLP :</strong>
+      <ul>
+        <li>Texte trop générique (template-like)</li>
+        <li>Sentiment incohérent avec la note</li>
+      </ul>
+      <br>
+      <span class="tool green">Isolation Forest</span>
+      <span class="tool green">CAMeL-Tools (Arabic NLP)</span>
+    </div>
+  </div>
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape finale — MLflow</div>
+    <div class="step-title">Tracking & Model Registry</div>
+    <div class="step-body">
+      Chaque expérience est loggée : paramètres, métriques, artefacts.<br><br>
+      <code>mlflow.log_param("n_estimators", 200)</code><br>
+      <code>mlflow.log_metric("mae", 4200)</code><br>
+      <code>mlflow.sklearn.log_model(model, "vehicle_pricing_v3")</code><br><br>
+      Le meilleur modèle passe en <strong>"Production"</strong>, l'ancien en <strong>"Archived"</strong>.<br><br>
+      <span class="tool green">MLflow</span>
+      <span class="tool gray">Optuna (hyperparameter tuning)</span>
+    </div>
+  </div>
+
+  <div class="note purple">💡 <strong>Avantage data :</strong> Plus tu as d'historiques voiture, plus ton modèle de pricing est précis. C'est l'effet réseau data — impossible à copier rapidement par un concurrent.</div>
+</div>
+</div>
+
+<!-- PIPELINE 3: AGENT IA -->
+<div class="panel p3" id="p3">
+<div class="pipeline">
+
+  <div class="step-box">
+    <div class="step-num">Étape 01 — Input utilisateur</div>
+    <div class="step-title">Message brut en darija / français / arabe</div>
+    <div class="step-body">
+      L'utilisateur écrit librement. Exemples réels attendus :<br><br>
+      <code>"كيتشي بيه طموبيلتي كتشعل و تطفا"</code><br>
+      <code>"ma voiture fait un bruit bizarre au démarrage"</code><br>
+      <code>"l frein machi mzyan"</code> (mix darija/français)<br><br>
+      Le système doit gérer les 3 langues et les mélanges.
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 02 — Détection & Normalisation</div>
+    <div class="step-title">Language Detection + Preprocessing</div>
+    <div class="step-body">
+      <strong>Détection de langue :</strong> darija / arabe standard / français / mix<br>
+      <code>langdetect</code> ou modèle custom sur corpus marocain<br><br>
+      <strong>Normalisation darija :</strong>
+      <ul>
+        <li>Unification orthographe : <code>طموبيل / طوموبيل / tonobile</code> → voiture</li>
+        <li>Suppression caractères parasites</li>
+        <li>Expansion abréviations communes</li>
+      </ul>
+      <br>
+      <span class="tool purple">CAMeL-Tools</span>
+      <span class="tool purple">langdetect</span>
+      <span class="tool gray">regex</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 03 — Intent Classification</div>
+    <div class="step-title">Que veut l'utilisateur ?</div>
+    <div class="step-body">
+      Classification du message en intent avant d'appeler le LLM — plus rapide et moins coûteux.<br><br>
+      <code>PANNE_MOTEUR</code> → "voiture ne démarre pas"<br>
+      <code>PANNE_FREINS</code> → "freins font du bruit"<br>
+      <code>ENTRETIEN</code> → "quand faire la vidange ?"<br>
+      <code>RECHERCHE_GARAGE</code> → "garage près de moi"<br>
+      <code>PRIX</code> → "combien coûte changer les pneus ?"<br>
+      <code>AUTRE</code> → tout le reste → LLM généraliste<br><br>
+      <span class="tool purple">Fine-tuned BERT multilingual</span>
+      <span class="tool gray">Fallback: GPT-4 classification</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 04 — RAG Retrieval</div>
+    <div class="step-title">Récupération du contexte pertinent</div>
+    <div class="step-body">
+      Avant d'appeler le LLM, on récupère les documents pertinents depuis ta base de connaissance AutoPlus.<br><br>
+      <strong>Knowledge Base contient :</strong>
+      <ul>
+        <li>Base de pannes communes par marque/modèle</li>
+        <li>Historique interventions similaires sur la plateforme</li>
+        <li>Fiches garages spécialisés dans ce type de panne</li>
+        <li>Prix moyens des réparations au Maroc</li>
+      </ul>
+      <br>
+      <code>query_embedding = embed(user_message)</code><br>
+      <code>docs = vector_db.search(query_embedding, top_k=5)</code><br><br>
+      <span class="tool purple">pgvector (PostgreSQL)</span>
+      <span class="tool purple">sentence-transformers</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 05 — LLM Generation</div>
+    <div class="step-title">Génération de la réponse</div>
+    <div class="step-body">
+      Le prompt envoyé au LLM est structuré :<br><br>
+      <code>System: Tu es l'assistant AutoPlus. Tu aides les automobilistes marocains. Réponds en darija ou français selon l'utilisateur. Sois concis.</code><br><br>
+      <code>Context: [docs RAG récupérés]</code><br><br>
+      <code>User history: [dernières interventions voiture]</code><br><br>
+      <code>Question: [message normalisé]</code><br><br>
+      <span class="tool purple">GPT-4o (MVP)</span>
+      <span class="tool purple">Mistral (open-source)</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 06 — Structured Output</div>
+    <div class="step-title">Réponse formatée + actions</div>
+    <div class="step-body">
+      La réponse du LLM est parsée en JSON structuré avant d'être affichée.<br><br>
+      <code>{
+  "diagnostic": "Problème électronique probable",
+  "urgence": "moyen",
+  "conseil": "Ne pas rouler plus de 20 km",
+  "garages": [garage_id_1, garage_id_2],
+  "prix_estime": "500-800 DH"
+}</code><br><br>
+      <span class="tool purple">Pydantic</span>
+      <span class="tool gray">JSON Schema validation</span>
+    </div>
+  </div>
+
+  <div class="note purple">💡 <strong>Innovation académique :</strong> Un dataset darija annoté sur les pannes automobiles marocaines n'existe pas encore. Le construire dans AutoPlus est une contribution de recherche réelle — publiable en conférence NLP.</div>
+</div>
+</div>
+
+<!-- PIPELINE 4: DEPLOYMENT -->
+<div class="panel p4" id="p4">
+<div class="pipeline">
+
+  <div class="step-box">
+    <div class="step-num">Étape 01 — Containerisation</div>
+    <div class="step-title">Docker — Chaque service dans son conteneur</div>
+    <div class="step-body">
+      Chaque composant est isolé et déployable indépendamment.<br><br>
+      <code>autoplus-api</code> → Node.js REST API<br>
+      <code>autoplus-ml-service</code> → FastAPI + modèles ML<br>
+      <code>autoplus-agent</code> → Pipeline NLP darija<br>
+      <code>autoplus-db</code> → PostgreSQL + pgvector<br>
+      <code>autoplus-worker</code> → Jobs Airflow<br><br>
+      <span class="tool red">Docker</span>
+      <span class="tool red">Docker Compose (dev)</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 02 — CI/CD</div>
+    <div class="step-title">Intégration & Déploiement continus</div>
+    <div class="step-body">
+      À chaque push sur <code>main</code> :<br><br>
+      <code>1. Tests unitaires</code> → pytest, jest<br>
+      <code>2. Tests d'intégration</code> → API endpoints<br>
+      <code>3. Build Docker image</code><br>
+      <code>4. Push vers registry</code><br>
+      <code>5. Déploiement automatique</code> si tous les tests passent<br><br>
+      <span class="tool red">GitHub Actions</span>
+      <span class="tool gray">pytest</span>
+      <span class="tool gray">Jest</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 03 — Model Serving</div>
+    <div class="step-title">Mise en production des modèles ML</div>
+    <div class="step-body">
+      Les modèles ML sont exposés comme des microservices REST.<br><br>
+      <code>POST /predict/vehicle-value</code> → estimation valeur<br>
+      <code>POST /predict/garage-rank</code> → classement garages<br>
+      <code>POST /predict/review-fraud</code> → détection faux avis<br><br>
+      <strong>A/B Testing :</strong> 10% trafic → nouveau modèle, 90% → modèle stable. Si métriques OK → 100%.<br><br>
+      <span class="tool red">FastAPI</span>
+      <span class="tool red">MLflow Serving</span>
+      <span class="tool gray">Locust (load testing)</span>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <div class="step-box">
+    <div class="step-num">Étape 04 — Monitoring</div>
+    <div class="step-title">Surveillance en production</div>
+    <div class="step-body">
+      <div class="two-col">
+        <div>
+          <strong>Monitoring App</strong>
+          <ul>
+            <li>Latence API &lt; 200ms</li>
+            <li>Erreurs 5xx &lt; 0.1%</li>
+            <li>Uptime &gt; 99.9%</li>
+          </ul>
+        </div>
+        <div>
+          <strong>Monitoring ML</strong>
+          <ul>
+            <li>Data drift détection</li>
+            <li>MAE pricing stable</li>
+            <li>Agent satisfaction rate</li>
+          </ul>
+        </div>
+      </div>
+      <br>
+      <span class="tool red">Prometheus</span>
+      <span class="tool red">Grafana</span>
+      <span class="tool gray">Evidently AI (ML drift)</span>
+    </div>
+  </div>
+
+  <div class="note orange">💡 <strong>Stack MVP simplifié :</strong> Pour commencer, Railway ou Render remplacent toute cette infrastructure. Tu déploies en 10 minutes, tu migres vers cette stack quand tu as des utilisateurs réels.</div>
+</div>
+</div>
+
+<script>
+function show(idx) {
+  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+}
+</script>
+
+</body>
+</html>

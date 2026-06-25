@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: transparent; padding: 16px; color: #1a1a2e; }
+
+.title { font-size: 17px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
+.subtitle { font-size: 11px; color: #888; margin-bottom: 20px; }
+
+.phase {
+  border-radius: 12px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+}
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.phase-icon { font-size: 18px; }
+.phase-meta { flex: 1; }
+.phase-title { font-size: 13px; font-weight: 800; }
+.phase-period { font-size: 10px; opacity: 0.8; margin-top: 1px; }
+.phase-toggle { font-size: 12px; opacity: 0.7; transition: transform 0.3s; }
+.phase.open .phase-toggle { transform: rotate(180deg); }
+
+.phase-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  padding: 0 14px;
+  background: rgba(255,255,255,0.6);
+}
+.phase.open .phase-body { max-height: 600px; padding: 0 14px 12px; }
+
+.task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.task-row:last-child { border-bottom: none; }
+
+.task-check {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 2px solid currentColor;
+  flex-shrink: 0;
+  margin-top: 1px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  transition: background 0.2s;
+}
+.task-check.done { background: currentColor; }
+.task-check.done::after { content: '✓'; color: white; font-weight: 800; }
+
+.task-content { flex: 1; }
+.task-label { font-size: 12px; font-weight: 600; color: #1a1a2e; }
+.task-desc { font-size: 10px; color: #777; margin-top: 2px; line-height: 1.4; }
+
+.badge { display: inline-block; font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 8px; margin-left: 5px; text-transform: uppercase; vertical-align: middle; }
+
+/* Phase colors */
+.p1 { border-color: #1a73e8; background: #f0f4ff; }
+.p1 .phase-header { background: #1a73e8; color: white; }
+.p1 .task-check { color: #1a73e8; }
+
+.p2 { border-color: #f57c00; background: #fff8f0; }
+.p2 .phase-header { background: #f57c00; color: white; }
+.p2 .task-check { color: #f57c00; }
+
+.p3 { border-color: #2e7d32; background: #f0faf0; }
+.p3 .phase-header { background: #2e7d32; color: white; }
+.p3 .task-check { color: #2e7d32; }
+
+.p4 { border-color: #7b1fa2; background: #faf0ff; }
+.p4 .phase-header { background: #7b1fa2; color: white; }
+.p4 .task-check { color: #7b1fa2; }
+
+.p5 { border-color: #c62828; background: #fff0f0; }
+.p5 .phase-header { background: #c62828; color: white; }
+.p5 .task-check { color: #c62828; }
+
+.progress-summary {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.ps-item {
+  flex: 1;
+  min-width: 80px;
+  border-radius: 8px;
+  padding: 8px 10px;
+  text-align: center;
+}
+.ps-num { font-size: 18px; font-weight: 900; }
+.ps-label { font-size: 9px; color: #888; margin-top: 2px; }
+
+.badge-urgent { background: #fde8e8; color: #c62828; }
+.badge-ai { background: #f3e5f5; color: #7b1fa2; }
+.badge-terrain { background: #e8f5e9; color: #2e7d32; }
+.badge-tech { background: #e8f0fe; color: #1a73e8; }
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Roadmap de lancement AutoPlus Maroc</h2>
+<div class="title">🗺️ Roadmap — AutoPlus Maroc</div>
+<div class="subtitle">Plan de lancement · Juin → Décembre 2026</div>
+
+<div class="progress-summary">
+  <div class="ps-item" style="background:#e8f0fe;">
+    <div class="ps-num" style="color:#1a73e8;">Juin</div>
+    <div class="ps-label">Préparation</div>
+  </div>
+  <div class="ps-item" style="background:#fff8f0;">
+    <div class="ps-num" style="color:#f57c00;">Juil</div>
+    <div class="ps-label">Terrain Casa</div>
+  </div>
+  <div class="ps-item" style="background:#f0faf0;">
+    <div class="ps-num" style="color:#2e7d32;">Août</div>
+    <div class="ps-label">MVP Build</div>
+  </div>
+  <div class="ps-item" style="background:#faf0ff;">
+    <div class="ps-num" style="color:#7b1fa2;">Sep-Oct</div>
+    <div class="ps-label">Beta & Itération</div>
+  </div>
+  <div class="ps-item" style="background:#fff0f0;">
+    <div class="ps-num" style="color:#c62828;">Nov-Déc</div>
+    <div class="ps-label">Lancement & Pitch</div>
+  </div>
+</div>
+
+<!-- PHASE 1 -->
+<div class="phase p1 open" id="ph0">
+  <div class="phase-header" onclick="toggle(0)">
+    <div class="phase-icon">📋</div>
+    <div class="phase-meta">
+      <div class="phase-title">Phase 1 — Préparation</div>
+      <div class="phase-period">Maintenant → fin juin 2026</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Finaliser le user flow & la vidéo pitch <span class="badge badge-ai">✓ Fait</span></div>
+        <div class="task-desc">User flow illustré + vidéo de présentation produits</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Préparer le script de prospection terrain <span class="badge badge-urgent">urgent</span></div>
+        <div class="task-desc">5 questions à poser aux garages lors de la visite à Casa</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Créer une liste de 20 garages à visiter à Casa</div>
+        <div class="task-desc">Sidi Maarouf, Ain Sebaa, Hay Hassani — adresses + contacts</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Faire un mockup Figma des écrans principaux</div>
+        <div class="task-desc">Écran accueil, recherche garage, profil voiture, agent IA</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Identifier un co-fondateur technique ou dev freelance</div>
+        <div class="task-desc">React Native pour le mobile, Node.js backend</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2 -->
+<div class="phase p2" id="ph1">
+  <div class="phase-header" onclick="toggle(1)">
+    <div class="phase-icon">🏙️</div>
+    <div class="phase-meta">
+      <div class="phase-title">Phase 2 — Terrain Casablanca</div>
+      <div class="phase-period">Fin juin → juillet 2026</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Visiter 20 garages à Casa <span class="badge badge-terrain">terrain</span></div>
+        <div class="task-desc">Poser les questions, noter les réactions, valider les hypothèses</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Convaincre 5 garages pilotes de rejoindre la beta</div>
+        <div class="task-desc">Gratuit pour eux — en échange de feedback et données réelles</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Interviewer 20 automobilistes</div>
+        <div class="task-desc">Valider la douleur : comment trouvent-ils leur mécanicien aujourd'hui ?</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Prendre photos & créer vitrines pilotes</div>
+        <div class="task-desc">Tu crées toi-même les 5 premières vitrines — 20 min par garage</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3 -->
+<div class="phase p3" id="ph2">
+  <div class="phase-header" onclick="toggle(2)">
+    <div class="phase-icon">⚙️</div>
+    <div class="phase-meta">
+      <div class="phase-title">Phase 3 — Construction MVP</div>
+      <div class="phase-period">Août 2026</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Développer l'app mobile V1 <span class="badge badge-tech">tech</span></div>
+        <div class="task-desc">Vitrine garages + profil voiture + prise de RDV — React Native</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Intégrer l'agent IA <span class="badge badge-ai">IA</span></div>
+        <div class="task-desc">API GPT-4 ou Gemini + prompt en darija/français</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Système historique voiture par plaque</div>
+        <div class="task-desc">Base de données voiture liée à la plaque d'immatriculation</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Tests internes + corrections</div>
+        <div class="task-desc">Tests avec les 5 garages pilotes avant ouverture</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 4 -->
+<div class="phase p4" id="ph3">
+  <div class="phase-header" onclick="toggle(3)">
+    <div class="phase-icon">🧪</div>
+    <div class="phase-meta">
+      <div class="phase-title">Phase 4 — Beta & Itération</div>
+      <div class="phase-period">Septembre → Octobre 2026</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Beta fermée — 50 utilisateurs</div>
+        <div class="task-desc">Invitations manuelles, suivi hebdomadaire de l'usage</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Atteindre 20 garages sur la plateforme</div>
+        <div class="task-desc">Extension à Ain Sebaa et Hay Hassani</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Itérer sur les retours utilisateurs</div>
+        <div class="task-desc">2 sprints de corrections selon les feedbacks terrain</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Postuler à 212 Founders / Maroc Numeric Fund</div>
+        <div class="task-desc">Préparer le dossier candidature avec les métriques beta</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5 -->
+<div class="phase p5" id="ph4">
+  <div class="phase-header" onclick="toggle(4)">
+    <div class="phase-icon">🚀</div>
+    <div class="phase-meta">
+      <div class="phase-title">Phase 5 — Lancement & Pitch</div>
+      <div class="phase-period">Novembre → Décembre 2026</div>
+    </div>
+    <div class="phase-toggle">▼</div>
+  </div>
+  <div class="phase-body">
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Lancement public Casablanca</div>
+        <div class="task-desc">App Store + Play Store + campagne réseaux sociaux</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Objectif : 100 garages + 500 utilisateurs actifs</div>
+        <div class="task-desc">Métriques minimales pour être crédible devant un investisseur</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Lancer la monétisation garages</div>
+        <div class="task-desc">Abonnement premium 200-400 DH/mois — badge vérifié</div>
+      </div>
+    </div>
+    <div class="task-row">
+      <div class="task-check" onclick="check(this)"></div>
+      <div class="task-content">
+        <div class="task-label">Premier pitch investisseurs</div>
+        <div class="task-desc">212 Founders, Maroc Numeric Fund, business angels locaux</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggle(idx) {
+  const ph = document.getElementById('ph' + idx);
+  ph.classList.toggle('open');
+}
+function check(el) {
+  el.classList.toggle('done');
+}
+</script>
+
+</body>
+</html>
