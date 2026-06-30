@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planning Stage — AUTO+ Maroc</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f4f6fb; color: #1a1a2e; }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white; padding: 32px 40px;
+    border-bottom: 4px solid #f57c00;
+  }
+  .header-top { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+  .logo { font-size: 28px; font-weight: 900; color: #f57c00; }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header p  { font-size: 13px; color: #aaa; margin-top: 4px; }
+  .header-meta {
+    display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap;
+  }
+  .meta-item { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 10px 16px; }
+  .meta-item .val { font-size: 18px; font-weight: 800; color: #f57c00; }
+  .meta-item .lbl { font-size: 10px; color: #aaa; margin-top: 2px; }
+
+  /* ── PHASE TABS ── */
+  .phase-nav {
+    display: flex; gap: 0; background: #fff;
+    border-bottom: 2px solid #e0e0e0;
+    overflow-x: auto; padding: 0 40px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .phase-tab {
+    padding: 14px 20px; font-size: 12px; font-weight: 700;
+    cursor: pointer; border-bottom: 3px solid transparent;
+    white-space: nowrap; transition: all 0.2s; color: #888;
+  }
+  .phase-tab:hover { color: #1a1a2e; }
+  .phase-tab.active { color: var(--c); border-bottom-color: var(--c); }
+
+  /* ── CONTENT ── */
+  .content { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  /* ── PHASE SECTION ── */
+  .phase-section { display: none; }
+  .phase-section.active { display: block; }
+
+  .phase-header-block {
+    border-radius: 12px; padding: 20px 24px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px;
+    color: white;
+  }
+  .phase-icon { font-size: 32px; }
+  .phase-title { font-size: 18px; font-weight: 800; }
+  .phase-sub { font-size: 12px; opacity: 0.8; margin-top: 3px; }
+  .phase-stats { margin-left: auto; text-align: right; }
+  .phase-stats .s-num { font-size: 22px; font-weight: 900; }
+  .phase-stats .s-lbl { font-size: 10px; opacity: 0.8; }
+
+  /* ── WEEK CARD ── */
+  .week-card {
+    background: white; border-radius: 12px; margin-bottom: 16px;
+    border: 1.5px solid #e8eaf0; overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .week-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .week-header:hover { background: #fafafa; }
+  .week-num {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900; color: white; flex-shrink: 0;
+  }
+  .week-meta { flex: 1; }
+  .week-title { font-size: 13px; font-weight: 800; color: #1a1a2e; }
+  .week-period { font-size: 11px; color: #888; margin-top: 2px; }
+  .week-theme {
+    font-size: 10px; font-weight: 700; padding: 3px 10px;
+    border-radius: 20px; background: #f0f0f0; color: #555;
+  }
+  .week-toggle { font-size: 12px; color: #aaa; transition: transform 0.3s; }
+  .week-card.open .week-toggle { transform: rotate(180deg); }
+
+  .week-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .week-card.open .week-body { max-height: 2000px; }
+  .week-body-inner { padding: 0 20px 20px; }
+
+  /* ── GRID ── */
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 14px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+
+  /* ── SECTION BLOCK ── */
+  .block {
+    border-radius: 10px; padding: 14px 16px;
+    border: 1.5px solid;
+  }
+  .block-title {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .block ul { padding-left: 16px; }
+  .block ul li { font-size: 11px; line-height: 1.8; color: #444; }
+  .block p { font-size: 11px; line-height: 1.7; color: #444; }
+
+  .block.tech { border-color: #1a73e8; background: #f0f4ff; }
+  .block.tech .block-title { color: #1a73e8; }
+
+  .block.terrain { border-color: #2e7d32; background: #f0faf0; }
+  .block.terrain .block-title { color: #2e7d32; }
+
+  .block.delivrable { border-color: #f57c00; background: #fff8f0; }
+  .block.delivrable .block-title { color: #f57c00; }
+
+  .block.academique { border-color: #7b1fa2; background: #faf0ff; }
+  .block.academique .block-title { color: #7b1fa2; }
+
+  /* ── TECH BADGES ── */
+  .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .badge {
+    font-size: 9px; font-weight: 700; padding: 3px 8px;
+    border-radius: 6px; display: inline-block;
+  }
+  .badge.blue   { background: #e8f0fe; color: #1a73e8; }
+  .badge.orange { background: #fff3e0; color: #e65100; }
+  .badge.green  { background: #e8f5e9; color: #2e7d32; }
+  .badge.purple { background: #f3e5f5; color: #7b1fa2; }
+  .badge.dark   { background: #1a1a2e; color: white; }
+  .badge.red    { background: #fde8e8; color: #c62828; }
+  .badge.gray   { background: #eceff1; color: #546e7a; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid #f0f0f0; margin: 12px 0; }
+
+  /* ── PHASE COLORS ── */
+  .c-juillet  { --c: #1a73e8; }
+  .c-aout     { --c: #f57c00; }
+  .c-septoct  { --c: #2e7d32; }
+  .c-novdec   { --c: #7b1fa2; }
+
+  .bg-juillet  { background: linear-gradient(135deg, #1a73e8, #0d47a1); }
+  .bg-aout     { background: linear-gradient(135deg, #f57c00, #bf360c); }
+  .bg-septoct  { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
+  .bg-novdec   { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
+
+  .num-juillet  { background: #1a73e8; }
+  .num-aout     { background: #f57c00; }
+  .num-septoct  { background: #2e7d32; }
+  .num-novdec   { background: #7b1fa2; }
+
+  /* ── TIMELINE OVERVIEW ── */
+  .timeline {
+    display: flex; gap: 0; background: white;
+    border-radius: 12px; overflow: hidden;
+    border: 1.5px solid #e8eaf0; margin-bottom: 28px;
+  }
+  .tl-item { flex: 1; padding: 14px 12px; text-align: center; border-right: 1px solid #f0f0f0; }
+  .tl-item:last-child { border-right: none; }
+  .tl-month { font-size: 13px; font-weight: 800; }
+  .tl-focus { font-size: 10px; color: #666; margin-top: 3px; }
+  .tl-weeks { font-size: 9px; color: #aaa; margin-top: 4px; }
+
+  /* ── CDC SECTION ── */
+  .cdc-block {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white; border-radius: 12px; padding: 24px;
+    margin-bottom: 28px;
+  }
+  .cdc-block h3 { font-size: 16px; color: #f57c00; margin-bottom: 16px; }
+  .cdc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .cdc-item { background: rgba(255,255,255,0.07); border-radius: 8px; padding: 12px 14px; }
+  .cdc-item .num { font-size: 20px; font-weight: 900; color: #f57c00; }
+  .cdc-item .title { font-size: 12px; font-weight: 700; margin-top: 4px; }
+  .cdc-item .desc { font-size: 10px; color: #aaa; margin-top: 4px; line-height: 1.5; }
+
+  /* ── RAPPORT TEMPLATE ── */
+  .rapport-template {
+    background: #fafafa; border: 1.5px dashed #7b1fa2;
+    border-radius: 10px; padding: 16px 20px; margin-top: 14px;
+    font-family: 'Courier New', monospace; font-size: 10px;
+    line-height: 1.8; color: #333;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    .cdc-grid { grid-template-columns: 1fr; }
+    .header { padding: 20px; }
+    .content { padding: 16px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo">AUTO+</div>
+    <div>
+      <h1>Planning de Stage — Élève Ingénieur 4ème Année Big Data / IA</h1>
+      <p>Plateforme Intelligente des Services Automobile au Maroc · Juillet → Décembre 2026</p>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="meta-item"><div class="val">26</div><div class="lbl">Semaines</div></div>
+    <div class="meta-item"><div class="val">3</div><div class="lbl">Modèles ML</div></div>
+    <div class="meta-item"><div class="val">5</div><div class="lbl">Pipelines Data/IA</div></div>
+    <div class="meta-item"><div class="val">Fin août</div><div class="lbl">Beta + ML terminés</div></div>
+    <div class="meta-item"><div class="val">Déc 2026</div><div class="lbl">Rapport final remis</div></div>
+  </div>
+</div>
+
+<!-- ══ PHASE NAV ══ -->
+<div class="phase-nav">
+  <div class="phase-tab c-juillet active" style="--c:#1a73e8" onclick="showPhase('juillet')">📋 Cahier des Charges</div>
+  <div class="phase-tab c-juillet" style="--c:#1a73e8" onclick="showPhase('juillet')">🏗️ Juillet — Terrain + MVP</div>
+  <div class="phase-tab c-aout" style="--c:#f57c00" onclick="showPhase('aout')">🤖 Août — Beta + ML</div>
+  <div class="phase-tab c-septoct" style="--c:#2e7d32" onclick="showPhase('septoct')">⚙️ Sept–Oct — Itération</div>
+  <div class="phase-tab c-novdec" style="--c:#7b1fa2" onclick="showPhase('novdec')">🚀 Nov–Déc — Lancement + Pitch</div>
+</div>
+
+<div class="content">
+
+  <!-- ══ TIMELINE OVERVIEW ══ -->
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-month" style="color:#1a73e8">Juillet</div>
+      <div class="tl-focus">Terrain + MVP</div>
+      <div class="tl-weeks">S1 → S4</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-month" style="color:#f57c00">Août</div>
+      <div class="tl-focus">Beta + 3 Modèles ML ✓</div>
+      <div class="tl-weeks">S5 → S9</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-month" style="color:#2e7d32">Septembre</div>
+      <div class="tl-focus">Itération + Candidatures</div>
+      <div class="tl-weeks">S10 → S13</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-month" style="color:#2e7d32">Octobre</div>
+      <div class="tl-focus">Préparation Lancement</div>
+      <div class="tl-weeks">S14 → S17</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-month" style="color:#7b1fa2">Novembre</div>
+      <div class="tl-focus">Lancement Public</div>
+      <div class="tl-weeks">S18 → S21</div>
+    </div>
+    <div class="tl-item" style="border-right:none">
+      <div class="tl-month" style="color:#7b1fa2">Décembre</div>
+      <div class="tl-focus">Pitch + Rapport Final</div>
+      <div class="tl-weeks">S22 → S26</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PHASE : CAHIER DES CHARGES + JUILLET
+  ══════════════════════════════════════════ -->
+  <div class="phase-section active" id="phase-juillet">
+
+    <!-- CDC -->
+    <div class="cdc-block">
+      <h3>📄 Cahier des Charges — À rédiger la Semaine 1 (obligatoire)</h3>
+      <div class="cdc-grid">
+        <div class="cdc-item"><div class="num">01</div><div class="title">Présentation de la startup</div><div class="desc">Auto+ Maroc, contexte 2026, équipe fondatrice, secteur automobile marocain</div></div>
+        <div class="cdc-item"><div class="num">02</div><div class="title">Contexte & Problématique</div><div class="desc">18 000 besoins/jour, 95% non digitalisés, 60-70% informel, opportunité unique</div></div>
+        <div class="cdc-item"><div class="num">03</div><div class="title">Objectifs du stage</div><div class="desc">Pipeline data complet, 3 modèles ML, agent IA darija/français, déploiement production</div></div>
+        <div class="cdc-item"><div class="num">04</div><div class="title">Périmètre fonctionnel</div><div class="desc">Ce qui est inclus (data, ML, IA, DevOps) et ce qui est exclu (marketing, commercial)</div></div>
+        <div class="cdc-item"><div class="num">05</div><div class="title">Architecture technique</div><div class="desc">Schéma 8 couches : Users → Entry Points → MVP Core → Engine → Data → AI → Logistics → Integrations</div></div>
+        <div class="cdc-item"><div class="num">06</div><div class="title">Technologies retenues</div><div class="desc">React Native, Node.js, PostgreSQL+PostGIS, Redis→Kafka, XGBoost, PyTorch, BERT, GPT-4o, Docker, MLflow</div></div>
+        <div class="cdc-item"><div class="num">07</div><div class="title">Planning prévisionnel</div><div class="desc">Tableau semaine par semaine Juillet→Décembre avec jalons clés</div></div>
+        <div class="cdc-item"><div class="num">08</div><div class="title">KPIs de réussite</div><div class="desc">MAE modèle pricing, F1-score intent classification, latence API < 200ms, 50 beta users</div></div>
+        <div class="cdc-item"><div class="num">09</div><div class="title">Risques & mitigation</div><div class="desc">Données insuffisantes, API GPT coût, garages qui abandonnent, délais techniques</div></div>
+        <div class="cdc-item"><div class="num">10</div><div class="title">Signatures</div><div class="desc">Stagiaire + Maître de stage + cachet entreprise</div></div>
+      </div>
+    </div>
+
+    <!-- PHASE HEADER -->
+    <div class="phase-header-block bg-juillet">
+      <div class="phase-icon">🏗️</div>
+      <div>
+        <div class="phase-title">JUILLET 2026 — Terrain + MVP Complet</div>
+        <div class="phase-sub">Setup technique · Terrain Casablanca · App fonctionnelle · Agent IA V1</div>
+      </div>
+      <div class="phase-stats">
+        <div class="s-num">4 semaines</div>
+        <div class="s-lbl">30 juin → 27 juillet</div>
+      </div>
+    </div>
+
+    <!-- S1 -->
+    <div class="week-card open" id="wk1">
+      <div class="week-header" onclick="toggleWeek('wk1')">
+        <div class="week-num num-juillet">S1</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 1 — Setup complet + Cahier des Charges</div>
+          <div class="week-period">30 juin – 6 juillet 2026</div>
+        </div>
+        <div class="week-theme">📋 Initialisation</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-3">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Installer et configurer Docker, PostgreSQL, Python 3.11, Node.js, React Native</li>
+                <li>Créer le repo GitHub avec structure de dossiers : <code>/api</code>, <code>/mobile</code>, <code>/ml</code>, <code>/data</code>, <code>/docs</code></li>
+                <li>Vérifier que tous les outils fonctionnent ensemble (test end-to-end minimal)</li>
+                <li>Créer le premier Jupyter Notebook d'exploration des données fictives</li>
+              </ul>
+              <div class="badges">
+                <span class="badge blue">Docker</span>
+                <span class="badge blue">PostgreSQL</span>
+                <span class="badge dark">Python 3.11</span>
+                <span class="badge dark">Node.js</span>
+                <span class="badge orange">React Native</span>
+                <span class="badge gray">Jupyter</span>
+                <span class="badge gray">Git</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain</div>
+              <ul>
+                <li>Prendre connaissance du marché terrain (visite libre Casablanca)</li>
+                <li>Préparer la liste de 20 garages à visiter (Sidi Maarouf, Ain Sebaa, Hay Hassani) avec adresses et WhatsApp</li>
+                <li>Préparer le script d'entretien : 5 questions garages + 5 questions automobilistes</li>
+                <li>Prendre des photos de zones de garages pour le contexte visuel</li>
+              </ul>
+            </div>
+            <div class="block academique">
+              <div class="block-title">📚 Académique</div>
+              <ul>
+                <li><strong>Rédiger le Cahier des Charges complet</strong> (10 sections)</li>
+                <li>Faire valider et signer par le maître de stage</li>
+                <li>Rédiger le Rapport d'Avancement N°1</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin de semaine</div>
+            <ul>
+              <li>Environnement de développement 100% fonctionnel sur toutes les machines</li>
+              <li>Repo GitHub initialisé avec la structure complète du projet</li>
+              <li>Cahier des Charges signé et validé par l'encadrant</li>
+              <li>Liste de 20 garages prête avec contacts</li>
+              <li>Rapport d'avancement N°1 remis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2 -->
+    <div class="week-card" id="wk2">
+      <div class="week-header" onclick="toggleWeek('wk2')">
+        <div class="week-num num-juillet">S2</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 2 — BDD + API + Pipeline Ingestion + Terrain</div>
+          <div class="week-period">7 – 13 juillet 2026</div>
+        </div>
+        <div class="week-theme">🗃️ Data + API</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-3">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Concevoir et créer le schéma BDD PostgreSQL + PostGIS : tables <code>vehicles</code>, <code>garages</code>, <code>users</code>, <code>interventions</code>, <code>events</code>, <code>reviews</code></li>
+                <li>Insérer des données fictives de test (10 garages, 50 véhicules) avec Faker</li>
+                <li>Développer 5 endpoints API REST : <code>POST /garages</code>, <code>GET /garages?lat=&lng=</code>, <code>POST /users/register</code>, <code>POST /users/login</code>, <code>GET /garages/:id</code></li>
+                <li>Implémenter le système d'events : chaque action → JSON loggé dans Redis → stocké en Parquet (Data Lake)</li>
+                <li>Créer la structure du Data Lake : <code>events/year=2026/month=07/day=07/</code></li>
+              </ul>
+              <div class="badges">
+                <span class="badge blue">PostgreSQL</span>
+                <span class="badge blue">PostGIS</span>
+                <span class="badge dark">Node.js</span>
+                <span class="badge dark">Express</span>
+                <span class="badge gray">Zod</span>
+                <span class="badge gray">JWT</span>
+                <span class="badge orange">Redis</span>
+                <span class="badge green">Pandas</span>
+                <span class="badge green">PyArrow</span>
+                <span class="badge gray">Parquet</span>
+                <span class="badge purple">Faker</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain</div>
+              <ul>
+                <li>Visiter les <strong>10 premiers garages</strong> (Sidi Maarouf en priorité)</li>
+                <li>Poser les 5 questions du script, noter les réactions face à l'idée de l'app</li>
+                <li>Photographier chaque garage : vitrine, atelier, équipe</li>
+                <li>Collecter : spécialités, horaires, prix moyens (vidange, freins, climatisation…)</li>
+              </ul>
+            </div>
+            <div class="block academique">
+              <div class="block-title">📚 Académique</div>
+              <ul>
+                <li>Rapport d'avancement N°2</li>
+                <li>Inclure : schéma BDD commenté, choix de PostGIS justifié, diagramme flux de données (ingestion)</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin de semaine</div>
+            <ul>
+              <li>BDD PostgreSQL+PostGIS opérationnelle avec données de test</li>
+              <li>5 endpoints API testables via Postman (documentation Swagger basique)</li>
+              <li>Data Lake local avec premiers events JSON en Parquet</li>
+              <li>10 garages visités — fiches terrain complètes (réactions, données, photos)</li>
+              <li>Rapport N°2 remis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div class="week-card" id="wk3">
+      <div class="week-header" onclick="toggleWeek('wk3')">
+        <div class="week-num num-juillet">S3</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 3 — App Mobile + 5 Pilotes + 20 Automobilistes</div>
+          <div class="week-period">14 – 20 juillet 2026</div>
+        </div>
+        <div class="week-theme">📱 App + Pilotes</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-3">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>App mobile React Native : écran accueil + carte garages Google Maps API</li>
+                <li>Écran profil garage : photos, spécialités, note, bouton "Prendre RDV"</li>
+                <li>Authentification OTP par SMS (inscription + connexion)</li>
+                <li>Module prise de RDV côté client : sélection créneau + description panne + envoi demande</li>
+                <li>Dashboard mécanicien (web) : voir les demandes RDV, accepter/refuser</li>
+                <li>Notifications push : RDV confirmé (client) + nouvelle demande (mécanicien)</li>
+              </ul>
+              <div class="badges">
+                <span class="badge orange">React Native</span>
+                <span class="badge blue">Google Maps API</span>
+                <span class="badge dark">Node.js</span>
+                <span class="badge gray">Push Notifications</span>
+                <span class="badge gray">OTP SMS</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain</div>
+              <ul>
+                <li>Visiter les <strong>10 garages restants</strong> (Ain Sebaa + Hay Hassani)</li>
+                <li>Identifier et convaincre <strong>5 garages pilotes</strong> (gratuit en échange de feedback)</li>
+                <li>Interviewer <strong>20 automobilistes</strong> : "Comment trouvez-vous votre mécanicien aujourd'hui ?"</li>
+                <li>Créer manuellement les 5 premières vitrines dans l'app (photos + infos réelles)</li>
+              </ul>
+            </div>
+            <div class="block academique">
+              <div class="block-title">📚 Académique</div>
+              <ul>
+                <li>Rapport d'avancement N°3</li>
+                <li>Inclure : synthèse des 20 entretiens automobilistes (verbatims), architecture React Native expliquée</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin de semaine</div>
+            <ul>
+              <li>App mobile affiche les 5 vrais garages pilotes sur la carte</li>
+              <li>Flux RDV complet fonctionnel : client envoie → mécanicien confirme → client reçoit notification</li>
+              <li>20 garages visités total, 5 pilotes engagés par écrit</li>
+              <li>Rapport synthèse de 20 interviews automobilistes</li>
+              <li>Rapport N°3 remis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4 -->
+    <div class="week-card" id="wk4">
+      <div class="week-header" onclick="toggleWeek('wk4')">
+        <div class="week-num num-juillet">S4</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 4 — Agent IA V1 + Déploiement + CI/CD</div>
+          <div class="week-period">21 – 27 juillet 2026</div>
+        </div>
+        <div class="week-theme">🤖 Agent IA + Deploy</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-3">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li><strong>Agent IA V1</strong> : intégration API GPT-4o avec system prompt darija/français</li>
+                <li>RAG basique : pgvector pour recherche sémantique dans la base de pannes</li>
+                <li>Output JSON structuré avec Pydantic : <code>diagnostic</code>, <code>urgence</code>, <code>conseil</code>, <code>garages[]</code>, <code>prix_estime</code></li>
+                <li>Historique véhicule par plaque : l'utilisateur entre sa plaque → retrouve son véhicule + interventions</li>
+                <li>Déploiement sur Railway/Render (backend + BDD en ligne)</li>
+                <li>CI/CD GitHub Actions : push → tests → build → déploiement automatique</li>
+              </ul>
+              <div class="badges">
+                <span class="badge purple">GPT-4o</span>
+                <span class="badge purple">pgvector</span>
+                <span class="badge purple">RAG</span>
+                <span class="badge green">Pydantic</span>
+                <span class="badge red">Docker</span>
+                <span class="badge red">GitHub Actions</span>
+                <span class="badge gray">Railway</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain</div>
+              <ul>
+                <li>Tester l'agent IA avec <strong>20 vraies questions</strong> posées par les automobilistes visités</li>
+                <li>Montrer l'app complète aux 5 garages pilotes</li>
+                <li>Simuler <strong>5 vrais RDV</strong> de bout en bout avec les pilotes et leurs clients</li>
+                <li>Collecter les premiers retours sur l'agent IA (compréhension darija, pertinence réponses)</li>
+              </ul>
+            </div>
+            <div class="block academique">
+              <div class="block-title">📚 Académique</div>
+              <ul>
+                <li>Rapport d'avancement N°4</li>
+                <li>Inclure : architecture RAG expliquée, exemples de questions darija → réponses IA, logs CI/CD</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin de semaine</div>
+            <ul>
+              <li>Agent IA accessible depuis l'app, répond en darija et français</li>
+              <li>App déployée en ligne — accessible depuis n'importe quel téléphone</li>
+              <li>CI/CD fonctionnel : déploiement automatique en 3 minutes</li>
+              <li>5 vrais RDV réalisés via l'app avec de vrais clients</li>
+              <li>Rapport N°4 remis — <strong>FIN PHASE JUILLET</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /phase-juillet -->
+
+
+  <!-- ══════════════════════════════════════════
+       PHASE : AOÛT — BETA + ML
+  ══════════════════════════════════════════ -->
+  <div class="phase-section" id="phase-aout">
+    <div class="phase-header-block bg-aout">
+      <div class="phase-icon">🤖</div>
+      <div>
+        <div class="phase-title">AOÛT 2026 — Beta + Tous les Modèles ML</div>
+        <div class="phase-sub">Pipeline data · Feature Engineering · 3 Modèles ML · Agent IA V2 · MLflow · Docker · Monitoring</div>
+      </div>
+      <div class="phase-stats">
+        <div class="s-num">5 semaines</div>
+        <div class="s-lbl">28 juil → 31 août · Objectif : tout en prod</div>
+      </div>
+    </div>
+
+    <!-- S5 -->
+    <div class="week-card open" id="wk5">
+      <div class="week-header" onclick="toggleWeek('wk5')">
+        <div class="week-num num-aout">S5</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 5 — Pipeline Nettoyage + Feature Engineering + Beta lancée</div>
+          <div class="week-period">28 juillet – 3 août 2026</div>
+        </div>
+        <div class="week-theme">🧹 Data Pipeline</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-3">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li><strong>Pipeline nettoyage</strong> (Great Expectations + Pydantic) :</li>
+                <li>→ Normalisation plaques marocaines : regex <code>A-12345-1</code></li>
+                <li>→ Détection coûts aberrants (vidange 50 DH ou 50 000 DH = erreur)</li>
+                <li>→ Validation dates (intervention avant fabrication = impossible)</li>
+                <li>→ Déduplication (même intervention, même jour, même garage)</li>
+                <li>→ Normalisation Unicode darija</li>
+                <li><strong>Feature Engineering</strong> :</li>
+                <li>→ Features véhicule : <code>age_voiture</code>, <code>nb_interventions</code>, <code>cout_total_entretien</code>, <code>derniere_intervention_jours</code>, <code>types_reparations[]</code></li>
+                <li>→ Features garage : <code>rating_pondere</code>, <code>nb_avis_verifies</code>, <code>taux_confirmation_rdv</code>, <code>prix_moyen_service</code>, <code>distance_user</code></li>
+                <li>Stocker les features dans le <strong>Feature Store</strong> (fichiers Parquet versionnés)</li>
+              </ul>
+              <div class="badges">
+                <span class="badge orange">Great Expectations</span>
+                <span class="badge green">Pydantic</span>
+                <span class="badge green">Pandas</span>
+                <span class="badge green">PySpark</span>
+                <span class="badge gray">Parquet</span>
+                <span class="badge gray">DVC</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain</div>
+              <ul>
+                <li><strong>Lancer la beta fermée</strong> : inviter 50 premiers utilisateurs (famille, amis, réseau WhatsApp)</li>
+                <li>Onboarding 10 nouveaux garages → total 15 garages sur la plateforme</li>
+                <li>Créer un groupe WhatsApp de suivi avec les beta users</li>
+              </ul>
+            </div>
+            <div class="block academique">
+              <div class="block-title">📚 Académique</div>
+              <ul>
+                <li>Rapport d'avancement N°5</li>
+                <li>Inclure : rapport de qualité des données (stats Great Expectations), liste des features avec justification</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin de semaine</div>
+            <ul>
+              <li>Pipeline nettoyage automatique — zéro données corrompues en BDD</li>
+              <li>Feature Store V1 avec features véhicule + garage calculées et versionnées</li>
+              <li>50 beta users actifs invités</li>
+              <li>15 garages sur la plateforme</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6 -->
+    <div class="week-card" id="wk6">
+      <div class="week-header" onclick="toggleWeek('wk6')">
+        <div class="week-num num-aout">S6</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 6 — Modèle A (Pricing Véhicule) + Modèle C (Faux Avis) + MLflow</div>
+          <div class="week-period">4 – 10 août 2026</div>
+        </div>
+        <div class="week-theme">📊 ML Modèles A & C</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">📊 Modèle A — Estimation valeur véhicule</div>
+              <ul>
+                <li>Split temporel : données 2025 → train (70%), val (15%), test (15%)</li>
+                <li>Phase 1 : entraîner XGBoost (robuste avec peu de données)</li>
+                <li>Tuning hyperparamètres avec Optuna</li>
+                <li>Métrique : MAE (erreur absolue moyenne en DH)</li>
+                <li>Logger dans MLflow : <code>mlflow.log_param("n_estimators", 200)</code>, <code>mlflow.log_metric("mae", X)</code></li>
+                <li>Exposer via FastAPI : <code>POST /predict/vehicle-value</code></li>
+              </ul>
+              <div class="badges">
+                <span class="badge green">XGBoost</span>
+                <span class="badge green">scikit-learn</span>
+                <span class="badge purple">MLflow</span>
+                <span class="badge purple">Optuna</span>
+                <span class="badge red">FastAPI</span>
+              </div>
+            </div>
+            <div class="block tech">
+              <div class="block-title">🚨 Modèle C — Détection faux avis</div>
+              <ul>
+                <li><strong>Règles comportementales</strong> :</li>
+                <li>→ Compte créé moins de 24h + avis 5★ = flag automatique</li>
+                <li>→ Même IP + multiple comptes + avis même garage = flag</li>
+                <li>→ Aucun RDV enregistré + avis posté = flag</li>
+                <li><strong>Isolation Forest</strong> sur features comportementales</li>
+                <li><strong>CAMeL-Tools NLP</strong> : texte trop générique ou sentiment incohérent avec la note</li>
+                <li>Exposer via FastAPI : <code>POST /predict/review-fraud</code></li>
+              </ul>
+              <div class="badges">
+                <span class="badge green">Isolation Forest</span>
+                <span class="badge purple">CAMeL-Tools</span>
+                <span class="badge green">scikit-learn</span>
+                <span class="badge red">FastAPI</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain + Académique</div>
+              <ul>
+                <li>Interviews 10 beta users : "qu'est-ce qui vous a bloqué cette semaine ?"</li>
+                <li>Rapport d'avancement N°6 : inclure métriques MLflow des deux modèles (MAE, F1-score), comparaison paramètres</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin de semaine</div>
+            <ul>
+              <li>Modèle A (XGBoost pricing) loggé dans MLflow avec MAE calculé</li>
+              <li>Modèle C (détection faux avis) actif — zéro faux avis visible automatiquement</li>
+              <li>2 endpoints FastAPI ML en ligne : <code>/predict/vehicle-value</code>, <code>/predict/review-fraud</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7 -->
+    <div class="week-card" id="wk7">
+      <div class="week-header" onclick="toggleWeek('wk7')">
+        <div class="week-num num-aout">S7</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 7 — Modèle B (Recommandation Garage) — Hybride</div>
+          <div class="week-period">11 – 17 août 2026</div>
+        </div>
+        <div class="week-theme">🎯 Modèle B — Recommandation</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">🎯 Content-Based Filtering</div>
+              <ul>
+                <li>Encoder le problème déclaré par l'user avec sentence-transformers</li>
+                <li>Encoder les spécialités de chaque garage</li>
+                <li>Score : <code>similarity(probleme_user, specialites_garage)</code></li>
+                <li>Tester avec 20 types de pannes différentes</li>
+              </ul>
+              <div class="badges">
+                <span class="badge green">sentence-transformers</span>
+                <span class="badge blue">pgvector</span>
+              </div>
+            </div>
+            <div class="block tech">
+              <div class="block-title">🤝 Collaborative Filtering</div>
+              <ul>
+                <li>Matrice user × garage (quel user a choisi quel garage ?)</li>
+                <li>Entraîner avec scikit-surprise (SVD ou KNN)</li>
+                <li>Score final hybride :</li>
+                <li><code>rank = α×contenu + β×cf + γ×distance + δ×rating</code></li>
+                <li>Tuner les pondérations α, β, γ, δ sur les données beta</li>
+                <li>Exposer : <code>POST /predict/garage-rank</code></li>
+              </ul>
+              <div class="badges">
+                <span class="badge green">scikit-surprise</span>
+                <span class="badge purple">MLflow</span>
+                <span class="badge red">FastAPI</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain + Académique</div>
+              <ul>
+                <li>Atteindre <strong>20 garages sur la plateforme</strong> (objectif Phase Beta)</li>
+                <li>Sprint corrections : résoudre les 3 problèmes les plus signalés par les beta users</li>
+                <li>Rapport d'avancement N°7 : inclure architecture complète du modèle hybride, résultats A/B test recommandation</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin de semaine</div>
+            <ul>
+              <li>Recommandation hybride active : les garages proposés en premier sont les plus pertinents selon la panne</li>
+              <li>3 endpoints ML en production : pricing, fraud, garage-rank</li>
+              <li>20 garages sur la plateforme</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S8 -->
+    <div class="week-card" id="wk8">
+      <div class="week-header" onclick="toggleWeek('wk8')">
+        <div class="week-num num-aout">S8</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 8 — Agent IA V2 + Docker Complet + Orchestration</div>
+          <div class="week-period">18 – 24 août 2026</div>
+        </div>
+        <div class="week-theme">🧠 Agent V2 + Docker</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-3">
+            <div class="block tech">
+              <div class="block-title">🧠 Agent IA V2</div>
+              <ul>
+                <li>Fine-tuner BERT multilingue pour classification d'intent :</li>
+                <li>→ <code>PANNE_MOTEUR</code>, <code>PANNE_FREINS</code>, <code>ENTRETIEN</code>, <code>RECHERCHE_GARAGE</code>, <code>PRIX</code>, <code>AUTRE</code></li>
+                <li>Gérer le mix darija/français/arabe avec CAMeL-Tools + langdetect</li>
+                <li>RAG amélioré : base pannes par marque/modèle dans pgvector</li>
+                <li>Taux de bonne compréhension intent cible : > 85% sur 100 phrases test</li>
+              </ul>
+              <div class="badges">
+                <span class="badge purple">BERT multilingue</span>
+                <span class="badge purple">CAMeL-Tools</span>
+                <span class="badge purple">langdetect</span>
+                <span class="badge purple">GPT-4o</span>
+                <span class="badge blue">pgvector</span>
+              </div>
+            </div>
+            <div class="block tech">
+              <div class="block-title">🐳 Docker + Orchestration</div>
+              <ul>
+                <li>Containeriser tous les services :</li>
+                <li>→ <code>autoplus-api</code> (Node.js)</li>
+                <li>→ <code>autoplus-ml-service</code> (FastAPI + modèles)</li>
+                <li>→ <code>autoplus-agent</code> (pipeline NLP)</li>
+                <li>→ <code>autoplus-db</code> (PostgreSQL + pgvector)</li>
+                <li>→ <code>autoplus-worker</code> (jobs Airflow)</li>
+                <li>Docker Compose : tout lance en 1 commande</li>
+                <li>Cron jobs : nettoyage 2h/nuit, features toutes les 4h, modèles chaque lundi</li>
+              </ul>
+              <div class="badges">
+                <span class="badge red">Docker</span>
+                <span class="badge red">Docker Compose</span>
+                <span class="badge orange">Apache Airflow</span>
+                <span class="badge gray">Cron</span>
+              </div>
+            </div>
+            <div class="block academique">
+              <div class="block-title">📚 Terrain + Académique</div>
+              <ul>
+                <li>Tester agent IA V2 avec 20 nouvelles phrases darija — mesurer amélioration vs V1</li>
+                <li>Rapport d'avancement N°8 : inclure matrice de confusion intent classification, courbes d'apprentissage BERT</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin de semaine</div>
+            <ul>
+              <li>Agent IA V2 : taux compréhension > 85% sur 100 phrases darija/français/mix</li>
+              <li>Docker Compose qui lance toute la plateforme en 1 commande</li>
+              <li>Jobs automatiques planifiés fonctionnels (Airflow ou Cron)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S9 -->
+    <div class="week-card" id="wk9">
+      <div class="week-header" onclick="toggleWeek('wk9')">
+        <div class="week-num num-aout">S9</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 9 — Tests de Charge + Monitoring + Bilan Beta + Clôture ML</div>
+          <div class="week-period">25 – 31 août 2026</div>
+        </div>
+        <div class="week-theme">✅ Clôture Beta + ML</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-3">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Tests de charge Locust : simuler 500 users simultanés — latence API cible &lt; 200ms</li>
+                <li>Setup Prometheus + Grafana : dashboards uptime, latence, erreurs 5xx</li>
+                <li>Evidently AI : data drift detection sur les features ML</li>
+                <li>A/B Testing setup : 10% trafic → nouveau modèle recommandation, 90% → ancien</li>
+                <li>MLflow Model Registry : meilleur modèle de chaque type en statut "Production"</li>
+                <li>Modèle A V2 : tester Neural Network PyTorch si données suffisantes (>5k véhicules)</li>
+              </ul>
+              <div class="badges">
+                <span class="badge red">Locust</span>
+                <span class="badge red">Prometheus</span>
+                <span class="badge red">Grafana</span>
+                <span class="badge red">Evidently AI</span>
+                <span class="badge purple">MLflow</span>
+                <span class="badge green">PyTorch</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain — Bilan Beta</div>
+              <ul>
+                <li>Compiler les métriques beta complètes : nb users actifs, nb RDV réels, taux conversion, satisfaction 1-5</li>
+                <li>NPS (Net Promoter Score) des 5 garages pilotes</li>
+                <li>NPS des 50 beta users</li>
+                <li>Rapport terrain : ce qui marche, ce qui manque, priorités pour septembre</li>
+              </ul>
+            </div>
+            <div class="block academique">
+              <div class="block-title">📚 Académique — Bilan Août</div>
+              <ul>
+                <li>Rapport d'avancement N°9</li>
+                <li><strong>Rapport de bilan mi-stage</strong> (si requis par l'école) : récapitulatif technique complet des 9 semaines</li>
+                <li>Inclure : 3 modèles ML entraînés + métriques, architecture système, dashboard Grafana</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable" style="border-color:#c62828; background:#fff0f0;">
+            <div class="block-title" style="color:#c62828;">🏁 CLÔTURE AOÛT — Résultats obligatoires</div>
+            <ul>
+              <li>✅ <strong>3 modèles ML en production</strong> (pricing véhicule, recommandation garage, détection faux avis)</li>
+              <li>✅ <strong>Agent IA V2</strong> darija/français > 85% précision intent</li>
+              <li>✅ <strong>50 beta users actifs + 20 garages</strong> sur la plateforme</li>
+              <li>✅ <strong>Monitoring Grafana</strong> actif en temps réel</li>
+              <li>✅ <strong>Docker Compose</strong> — toute la stack en 1 commande</li>
+              <li>✅ Rapport de bilan beta avec métriques réelles remis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /phase-aout -->
+
+
+  <!-- ══════════════════════════════════════════
+       PHASE : SEPT–OCT
+  ══════════════════════════════════════════ -->
+  <div class="phase-section" id="phase-septoct">
+    <div class="phase-header-block bg-septoct">
+      <div class="phase-icon">⚙️</div>
+      <div>
+        <div class="phase-title">SEPTEMBRE – OCTOBRE 2026 — Itération + Candidatures</div>
+        <div class="phase-sub">A/B Testing · Kafka · CMI Paiement · App Store · Candidature 212 Founders</div>
+      </div>
+      <div class="phase-stats">
+        <div class="s-num">8 semaines</div>
+        <div class="s-lbl">1 sept → 26 oct</div>
+      </div>
+    </div>
+
+    <!-- S10 -->
+    <div class="week-card open" id="wk10">
+      <div class="week-header" onclick="toggleWeek('wk10')">
+        <div class="week-num num-septoct">S10</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 10 — A/B Testing + Pipeline Airflow + Itérations Beta</div>
+          <div class="week-period">1 – 7 septembre 2026</div>
+        </div>
+        <div class="week-theme">🧪 A/B Testing</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>A/B Testing : 10% trafic → nouveau modèle recommandation, 90% → ancien — comparer taux conversion RDV dans Grafana</li>
+                <li>Pipeline Airflow complet : DAG nettoyage data (2h/nuit), DAG feature engineering (4h), DAG ré-entraînement modèles (lundi)</li>
+                <li>Analytics comportementaux : entonnoir conversion (recherche → profil → RDV → confirmation), rétention J7/J30</li>
+                <li>Sprint corrections : résoudre les 3 problèmes les plus signalés en beta</li>
+              </ul>
+              <div class="badges">
+                <span class="badge orange">Apache Airflow</span>
+                <span class="badge red">Grafana</span>
+                <span class="badge blue">Analytics</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain + Académique</div>
+              <ul>
+                <li>Préparer le dossier candidature <strong>212 Founders</strong> avec métriques beta réelles</li>
+                <li>Rapport d'avancement N°10 : inclure résultats A/B testing, DAG Airflow expliqué, métriques entonnoir conversion</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu</div>
+            <ul>
+              <li>A/B testing actif avec métriques visibles dans Grafana</li>
+              <li>Pipeline Airflow orchestré automatiquement 24/7</li>
+              <li>Dossier candidature 212 Founders prêt</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S11 -->
+    <div class="week-card" id="wk11">
+      <div class="week-header" onclick="toggleWeek('wk11')">
+        <div class="week-num num-septoct">S11</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 11 — Neural Network + Analyse données sectorielles</div>
+          <div class="week-period">8 – 14 septembre 2026</div>
+        </div>
+        <div class="week-theme">🧠 PyTorch + Insights</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Modèle A V2 : entraîner Neural Network PyTorch sur pricing véhicule (si >10k véhicules)</li>
+                <li>Comparer XGBoost vs NN dans MLflow — sélectionner automatiquement le meilleur (MAE)</li>
+                <li>Analyse données sectorielles : pannes les plus fréquentes au Maroc par marque, modèle, région, saison</li>
+                <li>Rapport data insight : "voici ce qu'on observe sur le parc automobile marocain" — document à valeur stratégique</li>
+              </ul>
+              <div class="badges">
+                <span class="badge green">PyTorch</span>
+                <span class="badge purple">MLflow</span>
+                <span class="badge green">scikit-learn</span>
+                <span class="badge gray">Jupyter</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain + Académique</div>
+              <ul>
+                <li>Soumettre candidature <strong>212 Founders / Maroc Numeric Fund</strong></li>
+                <li>Rapport d'avancement N°11 : comparaison XGBoost vs NN (courbes apprentissage, métriques), rapport data insight</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu</div>
+            <ul>
+              <li>Meilleur modèle pricing sélectionné automatiquement par MLflow</li>
+              <li>Rapport d'analyse sectorielle sur les pannes marocaines (contribution académique potentielle)</li>
+              <li>Candidature 212 Founders soumise</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S12 -->
+    <div class="week-card" id="wk12">
+      <div class="week-header" onclick="toggleWeek('wk12')">
+        <div class="week-num num-septoct">S12</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 12 — Paiement CMI + WhatsApp API + Kafka</div>
+          <div class="week-period">15 – 21 septembre 2026</div>
+        </div>
+        <div class="week-theme">💳 Paiement + Kafka</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Intégration paiement CMI (Centre Monétique Interbancaire Maroc)</li>
+                <li>Système facturation SaaS garage : facture mensuelle auto-générée</li>
+                <li>WhatsApp Business API : notifications RDV 24h avant, confirmation intervention, rappels entretien</li>
+                <li>Setup <strong>Apache Kafka</strong> si >1 000 events/jour — remplacer Redis pour l'event streaming</li>
+                <li>Topics Kafka : <code>user-actions</code>, <code>garage-events</code>, <code>ml-predictions</code></li>
+              </ul>
+              <div class="badges">
+                <span class="badge blue">CMI</span>
+                <span class="badge green">WhatsApp API</span>
+                <span class="badge orange">Apache Kafka</span>
+                <span class="badge gray">Billing</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain + Académique</div>
+              <ul>
+                <li>Recruter 50 nouveaux garages pour le lancement public (Casablanca élargi)</li>
+                <li>Rapport d'avancement N°12 : architecture Kafka expliquée vs Redis, flux paiement CMI documenté</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S13 -->
+    <div class="week-card" id="wk13">
+      <div class="week-header" onclick="toggleWeek('wk13')">
+        <div class="week-num num-septoct">S13</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 13 — Sécurité + Review Code + Préparation App Store</div>
+          <div class="week-period">22 – 28 septembre 2026</div>
+        </div>
+        <div class="week-theme">🔐 Sécurité + Stores</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Review sécurité complète : injection SQL, XSS, authentification, données personnelles (RGPD Maroc)</li>
+                <li>Optimisation performances app : chargement &lt;2s, cache intelligent, lazy loading images</li>
+                <li>Tests end-to-end automatisés sur les flux critiques (RDV, paiement, IA)</li>
+                <li>Préparer App Store + Google Play : screenshots, descriptions FR/AR/Darija, politique de confidentialité, icônes</li>
+                <li>Soumettre l'app pour review (délai 1–2 semaines)</li>
+              </ul>
+              <div class="badges">
+                <span class="badge red">OWASP</span>
+                <span class="badge gray">Jest</span>
+                <span class="badge gray">pytest</span>
+                <span class="badge blue">App Store</span>
+                <span class="badge blue">Google Play</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain + Académique</div>
+              <ul>
+                <li>Former les 50 nouveaux garages au dashboard web (sessions de 30 min par groupe)</li>
+                <li>Rapport d'avancement N°13 : rapport de sécurité, métriques de performance avant/après optimisation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S14-S17 groupées -->
+    <div class="week-card" id="wk14">
+      <div class="week-header" onclick="toggleWeek('wk14')">
+        <div class="week-num num-septoct">S14→17</div>
+        <div class="week-meta">
+          <div class="week-title">Semaines 14 à 17 — Docker Prod + Pitch Deck + 100 Garages</div>
+          <div class="week-period">29 septembre – 26 octobre 2026</div>
+        </div>
+        <div class="week-theme">🚀 Préparation Lancement</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique (4 semaines)</div>
+              <ul>
+                <li><strong>S14</strong> : Docker en production, MLflow Model Registry final, alertes Grafana si uptime &lt;99%</li>
+                <li><strong>S15</strong> : Dashboard métriques live (page web interne avec KPIs temps réel pour le pitch)</li>
+                <li><strong>S16</strong> : Tests de charge final (Locust 1 000 users), corrections bugs bloquants restants</li>
+                <li><strong>S17</strong> : Documentation technique complète : Swagger API, schéma BDD, guide déploiement, architecture système</li>
+              </ul>
+              <div class="badges">
+                <span class="badge red">Docker prod</span>
+                <span class="badge purple">MLflow Registry</span>
+                <span class="badge red">Locust</span>
+                <span class="badge gray">Swagger</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain (4 semaines)</div>
+              <ul>
+                <li><strong>S14</strong> : Activer monétisation SaaS (200–400 DH/mois) — objectif 10 premiers garages payants</li>
+                <li><strong>S15</strong> : Campagne pré-lancement réseaux sociaux (vidéos "avant/après" garages pilotes)</li>
+                <li><strong>S16</strong> : Préparer pitch deck investisseurs avec métriques réelles (12 slides)</li>
+                <li><strong>S17</strong> : Objectif <strong>100 garages partenaires</strong> atteint avant lancement</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin octobre</div>
+            <ul>
+              <li>App approuvée sur App Store + Google Play et prête pour publication</li>
+              <li>100 garages partenaires actifs (objectif lancement)</li>
+              <li>10 premiers garages payants (SaaS)</li>
+              <li>Pitch deck avec vrais chiffres prêt</li>
+              <li>Documentation technique complète</li>
+              <li>Rapports d'avancement N°14, 15, 16, 17 remis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /phase-septoct -->
+
+
+  <!-- ══════════════════════════════════════════
+       PHASE : NOV–DÉC
+  ══════════════════════════════════════════ -->
+  <div class="phase-section" id="phase-novdec">
+    <div class="phase-header-block bg-novdec">
+      <div class="phase-icon">🚀</div>
+      <div>
+        <div class="phase-title">NOVEMBRE – DÉCEMBRE 2026 — Lancement + Pitch + Rapport Final</div>
+        <div class="phase-sub">App Store Live · 500 Users · Pitchs Investisseurs · Rapport de Stage Final</div>
+      </div>
+      <div class="phase-stats">
+        <div class="s-num">9 semaines</div>
+        <div class="s-lbl">27 oct → 31 déc</div>
+      </div>
+    </div>
+
+    <!-- S18 -->
+    <div class="week-card open" id="wk18">
+      <div class="week-header" onclick="toggleWeek('wk18')">
+        <div class="week-num num-novdec">S18</div>
+        <div class="week-meta">
+          <div class="week-title">Semaine 18 — Lancement Public Casablanca</div>
+          <div class="week-period">27 octobre – 2 novembre 2026</div>
+        </div>
+        <div class="week-theme">🎉 LANCEMENT</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Publication App Store + Google Play Store</li>
+                <li>Monitoring intensif semaine de lancement : crashes, erreurs API 5xx, latence, charge</li>
+                <li>Correction immédiate des bugs critiques signalés sur les stores (objectif note > 4/5)</li>
+                <li>Pipeline ML en surveillance : vérifier que les modèles se comportent bien avec le trafic réel</li>
+              </ul>
+              <div class="badges">
+                <span class="badge blue">App Store</span>
+                <span class="badge blue">Google Play</span>
+                <span class="badge red">Prometheus</span>
+                <span class="badge red">Grafana</span>
+              </div>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain + Académique</div>
+              <ul>
+                <li>Annonce lancement sur tous les réseaux sociaux</li>
+                <li>Campagne Google Ads : "mécanicien Casablanca", "panne voiture", "vidange rapide" (5 000–10 000 MAD/mois)</li>
+                <li>Demander aux 100 garages partenaires d'envoyer l'app à leurs clients WhatsApp</li>
+                <li>Rapport d'avancement N°18 : métriques J1, J3, J7 post-lancement</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu</div>
+            <ul>
+              <li>App live sur les deux stores</li>
+              <li>200+ téléchargements la première semaine</li>
+              <li>Zéro incident critique (uptime > 99%)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S19-S21 -->
+    <div class="week-card" id="wk19">
+      <div class="week-header" onclick="toggleWeek('wk19')">
+        <div class="week-num num-novdec">S19→21</div>
+        <div class="week-meta">
+          <div class="week-title">Semaines 19 à 21 — Croissance + 500 Users + Monétisation</div>
+          <div class="week-period">3 – 23 novembre 2026</div>
+        </div>
+        <div class="week-theme">📈 Croissance</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Monitoring ML drift avec Evidently AI — détecter si les données réelles dévient du training</li>
+                <li>Ré-entraînement automatique si dérive détectée (DAG Airflow)</li>
+                <li>Dashboard métriques investisseur : URL live avec KPIs en temps réel</li>
+                <li>Optimisation continue basée sur les données réelles de production</li>
+              </ul>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain + Académique</div>
+              <ul>
+                <li>Campagne Facebook/Instagram ciblée 20–45 ans Casa, budget 3 000 MAD/semaine</li>
+                <li>Objectif : <strong>500 users actifs + 100 garages</strong> (métriques investisseur)</li>
+                <li>Activer facturation SaaS pour tous les garages actifs</li>
+                <li>Rapports N°19, 20, 21 : métriques de croissance semaine par semaine</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable">
+            <div class="block-title">✅ Résultat attendu fin novembre</div>
+            <ul>
+              <li>500 users actifs + 100 garages partenaires</li>
+              <li>Revenus SaaS premiers : 10+ garages payants × 300 DH = 3 000+ MAD/mois</li>
+              <li>Dashboard métriques live prêt pour les pitchs</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S22-S24 -->
+    <div class="week-card" id="wk22">
+      <div class="week-header" onclick="toggleWeek('wk22')">
+        <div class="week-num num-novdec">S22→24</div>
+        <div class="week-meta">
+          <div class="week-title">Semaines 22 à 24 — Pitchs Investisseurs + Rapport de Stage</div>
+          <div class="week-period">24 novembre – 14 décembre 2026</div>
+        </div>
+        <div class="week-theme">🎤 Pitchs + Rapport</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique + Académique</div>
+              <ul>
+                <li>Analyse finale des données : pannes fréquentes par marque/région/saison → rapport data insight publiable</li>
+                <li>Roadmap technique 2027 : architecture marketplace pièces, intégration assurances, module logistique</li>
+                <li><strong>Rédiger le rapport de stage final</strong> :</li>
+                <li>→ Contexte & problématique</li>
+                <li>→ Architecture technique (8 couches)</li>
+                <li>→ Pipeline Data complet (5 étapes)</li>
+                <li>→ 3 Modèles ML (description, métriques, résultats)</li>
+                <li>→ Agent IA darija/français (innovation NLP)</li>
+                <li>→ Déploiement & MLOps</li>
+                <li>→ Résultats business (users, garages, revenus)</li>
+                <li>→ Perspectives & travaux futurs</li>
+              </ul>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain</div>
+              <ul>
+                <li><strong>3 pitchs investisseurs</strong> : 212 Founders, Maroc Numeric Fund, business angels</li>
+                <li>Bilan annuel avec les 5 garages pilotes (témoignages vidéo)</li>
+                <li>Plan expansion Rabat Q1 2027 : liste 30 garages Rabat, identifier responsable terrain</li>
+              </ul>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="block delivrable" style="border-color:#7b1fa2; background:#faf0ff;">
+            <div class="block-title" style="color:#7b1fa2;">🏁 CLÔTURE STAGE — Livrables finaux</div>
+            <ul>
+              <li>✅ <strong>Rapport de stage final</strong> remis à l'école</li>
+              <li>✅ <strong>3 pitchs investisseurs réalisés</strong></li>
+              <li>✅ Rapport d'analyse sectorielle data (contribution académique)</li>
+              <li>✅ 26 rapports d'avancement hebdomadaires</li>
+              <li>✅ Documentation technique complète</li>
+              <li>✅ App live avec 500+ users et 100+ garages</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S25-S26 -->
+    <div class="week-card" id="wk25">
+      <div class="week-header" onclick="toggleWeek('wk25')">
+        <div class="week-num num-novdec">S25→26</div>
+        <div class="week-meta">
+          <div class="week-title">Semaines 25 & 26 — Clôture + Bilan Final</div>
+          <div class="week-period">15 – 31 décembre 2026</div>
+        </div>
+        <div class="week-theme">🎯 Clôture Stage</div>
+        <div class="week-toggle">▼</div>
+      </div>
+      <div class="week-body">
+        <div class="week-body-inner">
+          <div class="grid-2">
+            <div class="block tech">
+              <div class="block-title">⚙️ Technique</div>
+              <ul>
+                <li>Finaliser et remettre le rapport de stage</li>
+                <li>Handover technique : documenter tout ce qu'un nouveau développeur doit savoir pour reprendre le projet</li>
+                <li>Préparer la soutenance (slides, démo live, métriques)</li>
+              </ul>
+            </div>
+            <div class="block terrain">
+              <div class="block-title">🏙️ Terrain</div>
+              <ul>
+                <li>Bilan final avec métriques réelles vs objectifs du cahier des charges</li>
+                <li>Préparer pipeline Rabat pour janvier 2027</li>
+                <li>Rapport d'avancement N°25 + N°26 (bilans)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /phase-novdec -->
+
+</div><!-- /content -->
+
+<script>
+function showPhase(name) {
+  document.querySelectorAll('.phase-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('phase-' + name).classList.add('active');
+  // mark correct tab
+  const map = { juillet: 0, aout: 1, septoct: 2, novdec: 3 };
+  document.querySelectorAll('.phase-tab')[map[name]]?.classList.add('active');
+}
+function toggleWeek(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+// init : ouvrir la première semaine de chaque phase
+document.querySelectorAll('.phase-section').forEach(sec => {
+  const first = sec.querySelector('.week-card');
+  if (first) first.classList.add('open');
+});
+</script>
+</body>
+</html>
