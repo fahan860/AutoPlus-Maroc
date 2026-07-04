@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: autoplus-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-autoplus}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-autoplus}
+      POSTGRES_DB: ${POSTGRES_DB:-autoplus}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-autoplus}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./api
+    container_name: autoplus-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-autoplus}:${POSTGRES_PASSWORD:-autoplus}@db:5432/${POSTGRES_DB:-autoplus}
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./api:/usr/src/app
+      - /usr/src/app/node_modules
+
+volumes:
+  postgres-data:

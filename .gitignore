@@ -1,0 +1,32 @@
+# Environnement
+.env
+.env.local
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Python
+ml/venv/
+ml/__pycache__/
+**/__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.pem
+
+# Mobile (Expo/React Native)
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+
+# Data (Data Lake local — pas versionné)
+data/events/**
+!data/events/.gitkeep
+
+# Docker
+postgres-data/
+
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
