@@ -1,4 +1,4 @@
-nom,categorie,adresse,ville,telephone,note,nb_avis,lien_fiche,source,a_completer
+﻿nom,categorie,adresse,ville,telephone,note,nb_avis,lien_fiche,source,a_completer
 Maroc Industrie Automobile (M.I.A),Garage automobile / Mécanique,"rue Ibn Rachid El Fihri (R.Noires), n°86/87 rdc. Hay roches noires 20290",Casablanca,05 22 24 97 99,4.7,3,https://www.telecontact.ma/annonceur/maroc-industrie-automobile-m-i-a/1129900/casablanca.php,telecontact.ma,false
 Accessoires Réparations Automobiles (A.R.A.),Garage automobile / Mécanique,36 rue Beni Amar Hay mohammadi,Casablanca,05 22 61 31 24,,0,https://www.telecontact.ma/annonceur/a-r-a/2158896/casablanca.php,telecontact.ma,false
 Adel Multi-Services,Garage automobile / Mécanique,107 bd de Sefrou Ain chok,Casablanca,05 22 21 63 83,,0,https://www.telecontact.ma/annonceur/adel-multi-services/3184739/casablanca.php,telecontact.ma,false
@@ -98,4 +98,4 @@ Garage Almasrah,garage-automobile,"hay Salama III , grp. 8 bloc F n°20 Hay sidi
 Garage Alqods,garage-automobile,"quartier Lissasfa I (route d'El Jadida) , mosquée AlQods n° 8",Casablanca,,,0,https://www.telecontact.ma/annonceur/garage-alqods/3167170/casablanca.php,telecontact.ma,true
 Garage Amane,garage-automobile,"hay Aïn Chiffa 1, rue 14 n°26 Hay farah",Casablanca,05 22 81 37 24,,0,https://www.telecontact.ma/annonceur/garage-amane/3055895/casablanca.php,telecontact.ma,false
 Garage Anfa,garage-automobile,14 rue d' Algérie Quartier bourgogne,Casablanca,,,0,https://www.telecontact.ma/annonceur/garage-anfa/2183180/casablanca.php,telecontact.ma,true
-Garage Ariha,garage-automobile,"lot. El Fadl (Aïn Chok) , rue 79 n°26 Ain chok",Casablanca,05 22 21 03 23,,0,https://www.telecontact.ma/annonceur/garage-ariha/3073211/casablanca.php,telecontact.ma,false
+Garage Ariha,garage-automobile,"lot. El Fadl (Aïn Chok) , rue 79 n°26 Ain chok",Casablanca,05 22 21 03 23,,0,https://www.telecontact.ma/annonceur/garage-ariha/3073211/casablanca.php,telecontact.ma,fals
