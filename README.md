@@ -94,12 +94,13 @@ npx expo start
 
 → Scanner le QR code avec l'app **Expo Go** sur ton téléphone, ou taper `w` pour ouvrir dans le navigateur.
 
-## Roadmap
+### 4. Import des garages scrapés (Postgres)
 
-Voir la synthèse complète dans la mémoire du projet et le planning détaillé semaine par semaine dans
-[`docs/autoplus_planning_stage.html`](docs/autoplus_planning_stage.html) :
+Les CSV bruts (`data/scraping/garages*.csv`) viennent de 3 scrapes telecontact.ma qui se recoupent.
+`merge_and_clean_garages.py` les fusionne en une seule fiche par garage (dédup par `lien_fiche`,
+en gardant la valeur la plus complète entre les sources) et nettoie les champs (encodage UTF-8,
+téléphone normalisé, note vidée si aucun vrai avis).
 
-- **Juillet 2026** — Terrain + MVP complet (setup, BDD/API, app mobile, agent IA V1)
-- **Août 2026** — Beta + 3 modèles ML en production (pricing, recommandation, détection faux avis)
-- **Sept–Oct 2026** — Itération, paiement CMI, candidatures accélérateurs
-- **Nov–Déc 2026** — Lancement public + pitch + rapport final
+```powershell
+cd data/scraping
+python merge_and_clean_garages.py garages_casablanca_telecontact.csv garages.csv garages_v2.csv -o gar
