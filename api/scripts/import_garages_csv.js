@@ -9,10 +9,10 @@
  *   - npm install (ajoute csv-parse)
  *
  * Usage (depuis le dossier api/) :
- *   node scripts/import_garages_csv.js ../data/scraping/garages_casablanca_clean.csv telecontact.ma
+ *   node scripts/import_garages_csv.js ../data/scraping/garages_clean.csv telecontact.ma
  *
- * Utilise le CSV NETTOYE (garages_casablanca_clean.csv, colonne a_completer
- * incluse), pas le CSV brut de scraping.
+ * Utilise le CSV NETTOYE (garages_clean.csv, colonne a_completer incluse),
+ * pas les CSV bruts de scraping.
  *
  * Le script fait un UPSERT sur `lien_fiche` : relancer l'import avec un CSV
  * plus recent met a jour les lignes existantes au lieu de les dupliquer.
@@ -41,7 +41,7 @@ async function main() {
   }
 
   const raw = fs.readFileSync(csvPath, 'utf-8');
-  const rows = parse(raw, { columns: true, skip_empty_lines: true, trim: true });
+  const rows = parse(raw, { columns: true, skip_empty_lines: true, trim: true, delimiter: ';', bom: true });
 
   console.log(`${rows.length} lignes lues dans ${csvPath}`);
 
@@ -78,7 +78,7 @@ async function main() {
          source = EXCLUDED.source,
          a_completer = EXCLUDED.a_completer,
          updated_at = now()
-       RETURNING (xmax = 0) AS inserted`, // xmax=0 => ligne neuve, sinon c'etait un update
+       RETURNING (xmax = 0) AS inserted`,
       [
         row.nom,
         row.categorie || null,

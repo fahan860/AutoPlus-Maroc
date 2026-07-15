@@ -82,7 +82,6 @@ def merge_sources(paths: list) -> list:
     indexed = [{normalize_space(r["lien_fiche"]): r for r in rows if normalize_space(r.get("lien_fiche", ""))}
                for rows in sources]
 
-    # union ordonnee des cles (garde l'ordre d'apparition, priorite au 1er fichier)
     seen = set()
     ordered_keys = []
     for idx in indexed:
@@ -102,8 +101,6 @@ def merge_sources(paths: list) -> list:
         telephone_raw = first_nonempty(*[r.get("telephone", "") for r in rows_for_key])
         telephone = normalize_phone(telephone_raw)
 
-        # note/nb_avis : on prend la 1ere source qui a un vrai avis (nb_avis > 0),
-        # sinon 0/0 par defaut
         note_val, nb_avis_val = 0.0, 0
         for r in rows_for_key:
             n = parse_int(r.get("nb_avis", 0))
@@ -139,8 +136,8 @@ def main():
 
     merged = merge_sources(args.inputs)
 
-    with open(args.out, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+    with open(args.out, "w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES, delimiter=";")
         writer.writeheader()
         writer.writerows(merged)
 
