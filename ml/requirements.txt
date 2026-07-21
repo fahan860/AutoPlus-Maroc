@@ -5,3 +5,5 @@ matplotlib
 scikit-learn
 faker
 python-dotenv
+pyarrow
+redis

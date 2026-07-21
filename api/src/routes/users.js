@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
 const { pool } = require('../db');
+const { logEvent } = require('../events');
 
 const router = express.Router();
 
@@ -60,6 +61,9 @@ router.post('/register', async (req, res) => {
     );
 
     const user = rows[0];
+
+    logEvent('user_register', { role: user.role }, user.id);
+
     res.status(201).json({ user: toPublicUser(user), token: signToken(user) });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -87,6 +91,8 @@ router.post('/login', async (req, res) => {
     if (!valid) {
       return res.status(401).json({ status: 'error', message: 'Identifiants invalides' });
     }
+
+    logEvent('user_login', {}, user.id);
 
     res.json({ user: toPublicUser(user), token: signToken(user) });
   } catch (err) {

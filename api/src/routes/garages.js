@@ -6,6 +6,7 @@
 const express = require('express');
 const { z } = require('zod');
 const { pool } = require('../db');
+const { logEvent } = require('../events');
 
 const router = express.Router();
 
@@ -37,6 +38,8 @@ router.get('/', async (req, res) => {
 
     const where = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
+    let rows;
+
     if (lat && lng) {
       const point = `ST_SetSRID(ST_MakePoint($${params.length + 1}, $${params.length + 2}), 4326)::geography`;
       params.push(Number(lng), Number(lat));
@@ -47,7 +50,7 @@ router.get('/', async (req, res) => {
         radiusFilter = `${where ? 'AND' : 'WHERE'} geom IS NOT NULL AND ST_DWithin(geom, ${point}, $${params.length})`;
       }
 
-      const { rows } = await pool.query(
+      ({ rows } = await pool.query(
         `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, a_completer,
                 ST_Distance(geom, ${point}) AS distance_m
          FROM garages
@@ -56,18 +59,20 @@ router.get('/', async (req, res) => {
          ORDER BY geom IS NULL, distance_m ASC NULLS LAST
          LIMIT 50`,
         params
-      );
-      return res.json({ count: rows.length, garages: rows });
+      ));
+    } else {
+      ({ rows } = await pool.query(
+        `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, a_completer
+         FROM garages
+         ${where}
+         ORDER BY note DESC NULLS LAST
+         LIMIT 50`,
+        params
+      ));
     }
 
-    const { rows } = await pool.query(
-      `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, a_completer
-       FROM garages
-       ${where}
-       ORDER BY note DESC NULLS LAST
-       LIMIT 50`,
-      params
-    );
+    logEvent('recherche_garage', { lat: lat || null, lng: lng || null, ville: ville || null, resultats: rows.length });
+
     res.json({ count: rows.length, garages: rows });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -79,6 +84,9 @@ router.get('/:id', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM garages WHERE id = $1', [req.params.id]);
     if (!rows[0]) return res.status(404).json({ status: 'error', message: 'Garage introuvable' });
+
+    logEvent('consultation_garage', { garage_id: rows[0].id });
+
     res.json(rows[0]);
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -101,6 +109,9 @@ router.post('/', async (req, res) => {
        RETURNING *`,
       [nom, categorie || null, adresse || null, ville, telephone || null, source, !telephone]
     );
+
+    logEvent('garage_cree', { garage_id: rows[0].id, source });
+
     res.status(201).json(rows[0]);
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
