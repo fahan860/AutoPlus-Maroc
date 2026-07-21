@@ -15,28 +15,45 @@ planning de stage (voir [`docs/autoplus_planning_stage.html`](docs/autoplus_plan
 ## Structure du dépôt
 
 ```
-/api      Backend Node.js + Express + PostgreSQL (API REST)
+/api      Backend Node.js + Express + PostgreSQL/PostGIS (API REST) + Redis (events)
 /mobile   App mobile React Native (Expo)
-/ml       Notebooks et modèles ML (Python 3.10) : pricing véhicule, recommandation garage, détection faux avis
-/data     Data Lake local (events applicatifs en Parquet, non versionné)
+/ml       Notebooks et modèles ML (Python) : pricing véhicule, recommandation garage, détection faux avis
+/data     Scraping garages (data/scraping) + Data Lake local en Parquet (data/events, non versionné)
+          + pipeline de flush Redis -> Parquet (data/pipeline)
 /docs     Documents projet : cahier des charges, dossier startup, guides d'entretien terrain, planning
 ```
 
-## Ce qui a été fait — Semaine 1 (Setup complet)
+## Ce qui a été fait
+
+### Semaine 1 — Setup complet
 
 - Environnement Docker + PostgreSQL/PostGIS configuré via `docker-compose.yml`
 - Squelette API Node.js/Express (`/api`) avec route `/health` qui vérifie la connexion à la base de données
-- Environnement Python 3.10 (venv) pour le ML, avec `requirements.txt` et un premier notebook d'exploration
+- Environnement Python (venv) pour le ML, avec `requirements.txt` et un premier notebook d'exploration
   de données fictives (garages, véhicules) via Faker
 - App mobile scaffoldée avec Expo (`/mobile`)
 - Documents startup existants (cahier des charges, BMC, guides d'entretien, etc.) rangés dans `/docs`
 - `.gitignore` et `.env.example` mis en place
 
+### Semaine 2 — BDD + API + Pipeline d'ingestion
+
+- Schéma BDD complet : tables `garages`, `users`, `vehicles`, `interventions`, `reviews`, `events`
+  (voir `api/migrations/`)
+- Scraping et import de ~100 garages réels (Casablanca, via Telecontact.ma) dans la table `garages`
+  (voir `data/scraping/` et `api/scripts/import_garages_csv.js`)
+- Seed de données fictives (30 automobilistes + 50 véhicules) pour les tests
+  (`api/scripts/seed_fake_users_vehicles.js`)
+- 5 endpoints REST : `GET /garages`, `GET /garages/:id`, `POST /garages`, `POST /users/register`,
+  `POST /users/login` (auth par mot de passe + JWT ; l'OTP SMS est prévu Semaine 3)
+- Pipeline events : chaque action (recherche garage, inscription, connexion...) est loggée en JSON dans
+  Redis (`events:queue`), puis vidée périodiquement vers le Data Lake Parquet par
+  `data/pipeline/flush_events_to_parquet.py` (voir `data/README.md`)
+
 ## Prérequis
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Docker + Docker Compose)
 - Node.js 20+
-- Python 3.10 (`py -3.10` doit fonctionner — voir `py -0p` pour lister les versions installées)
+- Python 3.10+ (`py -0p` pour lister les versions installées sur Windows)
 - Un téléphone avec l'app **Expo Go** (Android/iOS) pour tester le mobile, ou un émulateur
 
 > **Note environnement Windows avec Avast** : si `pip install` échoue avec une erreur
@@ -45,7 +62,7 @@ planning de stage (voir [`docs/autoplus_planning_stage.html`](docs/autoplus_plan
 
 ## Lancer le projet
 
-### 1. API + Base de données (Docker)
+### 1. API + Base de données + Redis (Docker)
 
 ```powershell
 copy .env.example .env
@@ -60,11 +77,15 @@ curl http://localhost:3000/health
 
 → Réponse attendue : `{"status":"ok","db_time":"..."}`
 
+Endpoints disponibles : `GET /garages`, `GET /garages/:id`, `POST /garages`, `POST /users/register`,
+`POST /users/login`.
+
 En cas de problème :
 
 ```powershell
 docker compose logs api
 docker compose logs db
+docker compose logs redis
 ```
 
 Arrêter les services :
@@ -73,16 +94,21 @@ Arrêter les services :
 docker compose down
 ```
 
-### 2. ML / Notebooks (Python)
+### 2. ML / Notebooks / Pipeline events (Python)
 
 ```powershell
 cd ml
-py -3.10 -m venv venv          # si pas déjà fait
+py -3.13 -m venv venv          # si pas déjà fait (adapter la version selon `py -0p`)
 .\venv\Scripts\pip install -r requirements.txt
 .\venv\Scripts\jupyter notebook notebooks/01_exploration.ipynb
 ```
 
-→ Exécuter les cellules : doit afficher un tableau de 10 garages fictifs et 50 véhicules fictifs.
+Pour vider la queue Redis vers le Data Lake Parquet (une fois l'API utilisée un minimum, pour
+qu'il y ait des events à flush) :
+
+```powershell
+.\venv\Scripts\python ..\data\pipeline\flush_events_to_parquet.py
+```
 
 ### 3. Mobile (Expo)
 
