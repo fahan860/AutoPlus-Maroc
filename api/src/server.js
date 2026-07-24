@@ -1,6 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const { pool } = require('./db');
+const garagesRouter = require('./routes/garages');
+const usersRouter = require('./routes/users');
+const vehiclesRouter = require('./routes/vehicles');
+const interventionsRouter = require('./routes/interventions');
 
 const app = express();
 app.use(express.json());
@@ -14,6 +18,11 @@ app.get('/health', async (_req, res) => {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
+
+app.use('/garages', garagesRouter);
+app.use('/users', usersRouter);
+app.use('/vehicles', vehiclesRouter);
+app.use('/interventions', interventionsRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
