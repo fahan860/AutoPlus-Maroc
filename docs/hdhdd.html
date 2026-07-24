@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Auto+ Maroc — Suivi de Stage</title>
+<style>
+  :root {
+    color-scheme: light;
+    --navy: #1a2744;
+    --orange: #e8590c;
+    --lightblue: #eaf1fb;
+    --grey-bg: #f7f8fa;
+    --border: #e2e5eb;
+    --text: #222b3d;
+    --muted: #6b7280;
+    --green: #16a34a;
+    --green-bg: #eafaf0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    background: var(--grey-bg);
+    color: var(--text);
+    padding: 24px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  .header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+  }
+  .header h1 { margin: 0; font-size: 22px; color: var(--navy); }
+  .header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  .badge {
+    background: var(--navy); color: white; font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+
+  .repo-card {
+    background: #101a30; border: 1px solid #24314f; border-radius: 14px;
+    padding: 16px 20px; margin-bottom: 18px; color: #e6ebf5;
+  }
+  .repo-card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+  .repo-icon {
+    width: 30px; height: 30px; border-radius: 8px; background: var(--orange); color: white;
+    display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+  }
+  .repo-title { font-size: 14px; font-weight: 700; color: white; }
+  .repo-sub { font-size: 11.5px; color: #9aa7c0; margin-top: 2px; }
+  .repo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .repo-item { min-width: 0; }
+  .repo-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.03em; color: #8b98b5; font-weight: 700; margin-bottom: 4px; }
+  .repo-link { color: #7db2ff; font-size: 13px; text-decoration: none; word-break: break-all; }
+  .repo-link:hover { text-decoration: underline; }
+  .repo-code {
+    display: block; font-family: "SFMono-Regular", Consolas, monospace; font-size: 11.5px;
+    background: #1a2744; padding: 8px 10px; border-radius: 6px; color: #d7e0f2; line-height: 1.5; word-break: break-word;
+  }
+  .repo-note { font-size: 12px; color: #c3cce0; line-height: 1.5; }
+  .repo-note code { background: #1a2744; padding: 1px 5px; border-radius: 4px; color: #ffb37a; font-size: 11px; }
+  @media (max-width: 640px) { .repo-grid { grid-template-columns: 1fr; } }
+
+  .overview {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 18px 20px; margin-bottom: 18px;
+    display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+  }
+  .overview-stat { flex: 1; min-width: 140px; }
+  .overview-stat .num { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .overview-stat .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .progress-outer {
+    flex: 2; min-width: 220px; height: 10px; background: #e9edf3; border-radius: 999px; overflow: hidden;
+  }
+  .progress-inner { height: 100%; background: linear-gradient(90deg, var(--orange), #ff8a4c); border-radius: 999px; transition: width 0.4s; }
+
+  .next-banner {
+    background: var(--lightblue); border: 1px solid #c9dcf3; border-radius: 14px;
+    padding: 16px 20px; margin-bottom: 22px; display: flex; gap: 14px; align-items: center;
+  }
+  .next-banner .icon { font-size: 22px; }
+  .next-banner .content b { color: var(--navy); }
+  .next-banner .content .owner-tag { margin-left: 6px; }
+
+  .phase {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    margin-bottom: 14px; overflow: hidden;
+  }
+  .phase-header {
+    display: flex; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; user-select: none;
+  }
+  .phase-header .num {
+    width: 26px; height: 26px; border-radius: 8px; background: var(--navy); color: white;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0;
+  }
+  .phase.parallel .phase-header .num { background: var(--orange); }
+  .phase-meta { flex: 1; min-width: 0; }
+  .phase-title { font-size: 14.5px; font-weight: 700; color: var(--navy); }
+  .phase-period { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+  .phase-progress-mini {
+    width: 90px; height: 6px; background: #e9edf3; border-radius: 999px; overflow: hidden; flex-shrink: 0;
+  }
+  .phase-progress-mini > div { height: 100%; background: var(--orange); }
+  .phase-pct { font-size: 12px; font-weight: 700; color: var(--orange); width: 36px; text-align: right; flex-shrink: 0; }
+  .chevron { font-size: 12px; color: var(--muted); transition: transform 0.25s; flex-shrink: 0; }
+  .phase.open .chevron { transform: rotate(180deg); }
+  .phase-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; padding: 0 18px; }
+  .phase.open .phase-body { max-height: 900px; padding: 0 18px 14px; }
+
+  .task-row {
+    display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-top: 1px solid #f0f2f5;
+  }
+  .task-row:first-child { border-top: none; }
+  .task-check {
+    width: 18px; height: 18px; border-radius: 5px; border: 2px solid #c7cdd8; flex-shrink: 0; margin-top: 2px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; color: white;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .task-check.done { background: var(--green); border-color: var(--green); }
+  .task-label { font-size: 13.5px; line-height: 1.4; flex: 1; }
+  .task-row.done .task-label { color: var(--muted); text-decoration: line-through; }
+  .owner-tag {
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap;
+  }
+  .owner-fatima { background: #fde8e0; color: #b8410a; }
+  .owner-binome { background: #e2ecfb; color: #1a4f9c; }
+  .owner-both { background: #eaf7ea; color: #1f7a3d; }
+
+  .meeting {
+    background: white; border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-top: 22px;
+  }
+  .meeting h2 { margin: 0 0 4px; font-size: 15px; color: var(--navy); }
+  .meeting .sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .meeting-row { display: flex; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+  .meeting-field { flex: 1; min-width: 160px; }
+  .meeting-field label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+  .meeting-field input, .meeting-field textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px;
+    font-family: inherit; color: var(--text); background: var(--grey-bg);
+  }
+  .meeting-field textarea { min-height: 90px; resize: vertical; }
+  .saved-tag { font-size: 11px; color: var(--green); font-weight: 600; opacity: 0; transition: opacity 0.3s; }
+  .saved-tag.show { opacity: 1; }
+  .footer-note { text-align: center; font-size: 11px; color: var(--muted); margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div>
+      <h1>Auto+ Maroc — Suivi du Stage</h1>
+      <p>Fatima Zahra Ahannuk & Marouane — Pipeline Data & Agent IA — Juillet → Décembre 2026</p>
+    </div>
+    <span class="badge">Cahier des charges v2</span>
+  </div>
+
+  <div class="repo-card">
+    <div class="repo-card-head">
+      <span class="repo-icon">⌥</span>
+      <div>
+        <div class="repo-title">Dépôt de code du projet</div>
+        <div class="repo-sub">Tout le code (API, mobile, ML, data, docs) vit dans ce repo Git — pas dans ce tracker.</div>
+      </div>
+    </div>
+    <div class="repo-grid">
+      <div class="repo-item">
+        <div class="repo-label">Repo GitHub</div>
+        <a href="https://github.com/fahan860/AutoPlus-Maroc" target="_blank" class="repo-link">github.com/fahan860/AutoPlus-Maroc</a>
+      </div>
+      <div class="repo-item">
+        <div class="repo-label">Structure</div>
+        <code class="repo-code">/api (Node.js+Express) · /mobile (React Native/Expo) · /ml (Python, notebooks) · /data (data lake local) · /docs (cahier des charges, guides terrain, planning)</code>
+      </div>
+      <div class="repo-item">
+        <div class="repo-label">Démarrer en local</div>
+        <code class="repo-code">copy .env.example .env && docker compose up -d --build</code>
+      </div>
+      <div class="repo-item">
+        <div class="repo-label">Planning détaillé semaine par semaine</div>
+        <span class="repo-note">Déjà présent dans le repo : <code>docs/autoplus_planning_stage.html</code> (26 semaines, granularité fine). Ce tracker-ci est la vue synthétique par phase à utiliser en réunion d'encadrement ; le fichier du repo reste la référence détaillée pour le travail quotidien.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="overview">
+    <div class="overview-stat">
+      <div class="num" id="overallPct">0%</div>
+      <div class="lbl">avancement global</div>
+    </div>
+    <div class="progress-outer"><div class="progress-inner" id="overallBar" style="width:0%"></div></div>
+    <div class="overview-stat">
+      <div class="num" id="doneCount">0/0</div>
+      <div class="lbl">tâches terminées</div>
+    </div>
+  </div>
+
+  <div class="next-banner">
+    <div class="icon">→</div>
+    <div class="content">
+      <div><b>Prochaine étape :</b> <span id="nextTaskText">—</span> <span id="nextTaskOwner"></span></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px;" id="nextTaskPhase"></div>
+    </div>
+  </div>
+
+  <div id="phasesContainer"></div>
+
+  <div class="meeting">
+    <h2>Point avec l'encadrant académique</h2>
+    <div class="sub">Ces informations restent enregistrées dans ce document au fil des séances.</div>
+    <div class="meeting-row">
+      <div class="meeting-field">
+        <label>Dernière réunion</label>
+        <input type="date" id="lastMeeting">
+      </div>
+      <div class="meeting-field">
+        <label>Prochaine réunion prévue</label>
+        <input type="date" id="nextMeeting">
+      </div>
+    </div>
+    <div class="meeting-field" style="margin-bottom:8px;">
+      <label>Notes / décisions / blocages à évoquer</label>
+      <textarea id="meetingNotes" placeholder="Ex: date du customer discovery reprogrammée, arbitrage sur l'agent IA, difficulté rencontrée sur le scoring..."></textarea>
+    </div>
+    <span class="saved-tag" id="savedTag">Enregistré ✓</span>
+  </div>
+
+  <div class="footer-note">Cochez les tâches au fur et à mesure — tout est sauvegardé automatiquement sur cet appareil. Rouvrez cette page à tout moment pour suivre l'avancement avec Marouane et votre encadrant.</div>
+</div>
+
+<script>
+const PHASES = [
+  {
+    id: "p1", title: "Setup technique", period: "Sem. 1–2 · 7–20 juillet 2026", parallel: false,
+    tasks: [
+      { t: "Créer le dépôt Git et la structure du projet", o: "both" },
+      { t: "Mettre en place Docker / docker-compose (environnement dev)", o: "binome" },
+      { t: "Définir le schéma de données garages (PostgreSQL + PostGIS)", o: "fatima" },
+      { t: "Numériser les listes de garages existantes (Sidi Maarouf) en CSV structuré", o: "fatima" },
+      { t: "Créer un compte Google Cloud et activer l'API Google Places", o: "binome" },
+    ]
+  },
+  {
+    id: "p2", title: "Pipeline data", period: "Sem. 3–6 · 21 juillet – 17 août 2026", parallel: false,
+    tasks: [
+      { t: "Script de collecte Google Places API (grille Casablanca)", o: "fatima" },
+      { t: "Script Overpass API (OpenStreetMap) pour garages/ateliers", o: "fatima" },
+      { t: "Scraping Avito.ma (annonces mécanique, indices de prix)", o: "binome" },
+      { t: "Dédoublonnage et nettoyage (nom, GPS, téléphone)", o: "fatima" },
+      { t: "Chargement en base PostgreSQL + PostGIS", o: "binome" },
+      { t: "Rapport qualité des données (complétude, doublons)", o: "fatima" },
+      { t: "Génération du dataset synthétique panne × prix", o: "fatima" },
+    ]
+  },
+  {
+    id: "p3", title: "Modèles ML v1", period: "Sem. 7–10 · 18 août – 14 sept. 2026", parallel: false,
+    tasks: [
+      { t: "Feature engineering scoring de confiance (note, nb avis, ancienneté)", o: "fatima" },
+      { t: "Entraînement XGBoost — scoring de confiance", o: "fatima" },
+      { t: "Entraînement modèle de pricing prédictif", o: "fatima" },
+      { t: "Évaluation MAE et itération", o: "fatima" },
+      { t: "Setup MLflow (tracking des expériences)", o: "binome" },
+    ]
+  },
+  {
+    id: "p4", title: "Agent IA", period: "Sem. 11–14 · 15 sept. – 12 oct. 2026", parallel: false,
+    tasks: [
+      { t: "Choix architecture NLP (BERT multilingue)", o: "binome" },
+      { t: "Dataset annoté classification d'intention darija/français", o: "both" },
+      { t: "Intégration API GPT-4o", o: "binome" },
+      { t: "Prompt engineering (diagnostic, prise de RDV)", o: "binome" },
+      { t: "Tests conversationnels avec utilisateurs internes", o: "both" },
+    ]
+  },
+  {
+    id: "p5", title: "Customer discovery", period: "Piste parallèle · date à confirmer", parallel: true,
+    tasks: [
+      { t: "Reprogrammer la date de sortie terrain", o: "both" },
+      { t: "Élargir la liste de garages (Sidi Maarouf → Ain Sebaa, Hay Hassani)", o: "fatima" },
+      { t: "Mener les interviews automobilistes (20+)", o: "both" },
+      { t: "Mener les interviews mécaniciens/garages", o: "both" },
+      { t: "Recalibrer hypothèses et modèles avec les données réelles", o: "fatima" },
+    ]
+  },
+  {
+    id: "p6", title: "Intégration & tests", period: "Sem. 15–18 · 13 oct. – 9 nov. 2026", parallel: false,
+    tasks: [
+      { t: "Intégration API backend ↔ app mobile React Native", o: "binome" },
+      { t: "Migration Redis → Kafka", o: "binome" },
+      { t: "Tests end-to-end avec garages pilotes", o: "both" },
+      { t: "Corrections et itérations", o: "both" },
+    ]
+  },
+  {
+    id: "p7", title: "Déploiement & beta", period: "Sem. 19–22 · 10 nov. – 7 déc. 2026", parallel: false,
+    tasks: [
+      { t: "Déploiement en production (Docker)", o: "binome" },
+      { t: "Mise en place du monitoring (Grafana/Prometheus)", o: "binome" },
+      { t: "Lancement de la beta fermée (50 utilisateurs)", o: "both" },
+      { t: "Suivi hebdomadaire de l'usage et itérations", o: "both" },
+    ]
+  },
+  {
+    id: "p8", title: "Clôture", period: "Sem. 23–24 · 8–21 déc. 2026", parallel: false,
+    tasks: [
+      { t: "Rédaction du rapport de stage", o: "both" },
+      { t: "Documentation technique finale", o: "both" },
+      { t: "Préparation de la soutenance", o: "both" },
+      { t: "Remise des livrables", o: "both" },
+    ]
+  },
+];
+
+const OWNER_LABEL = { fatima: "Fatima", binome: "Marouane", both: "Les deux" };
+const OWNER_CLASS = { fatima: "owner-fatima", binome: "owner-binome", both: "owner-both" };
+
+const STORAGE_KEY = "autoplus_stage_tracker_v1";
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveState(state) { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+let state = loadState();
+if (!state.tasks) state.tasks = {};
+if (!state.openPhases) state.openPhases = { p1: true };
+
+function taskKey(phaseId, idx) { return phaseId + "_" + idx; }
+
+function render() {
+  const container = document.getElementById("phasesContainer");
+  container.innerHTML = "";
+  let totalTasks = 0, totalDone = 0;
+  let nextTask = null;
+
+  PHASES.forEach(phase => {
+    const isOpen = !!state.openPhases[phase.id];
+    const phaseDiv = document.createElement("div");
+    phaseDiv.className = "phase" + (isOpen ? " open" : "") + (phase.parallel ? " parallel" : "");
+
+    let phaseDone = 0;
+    phase.tasks.forEach((task, idx) => {
+      totalTasks++;
+      const key = taskKey(phase.id, idx);
+      const done = !!state.tasks[key];
+      if (done) { totalDone++; phaseDone++; }
+      else if (!nextTask && !phase.parallel) { nextTask = { phase, task }; }
+    });
+    const phasePct = phase.tasks.length ? Math.round((phaseDone / phase.tasks.length) * 100) : 0;
+
+    const header = document.createElement("div");
+    header.className = "phase-header";
+    header.innerHTML = `
+      <div class="num">${phase.id.replace('p','')}</div>
+      <div class="phase-meta">
+        <div class="phase-title">${phase.title}</div>
+        <div class="phase-period">${phase.period}</div>
+      </div>
+      <div class="phase-progress-mini"><div style="width:${phasePct}%"></div></div>
+      <div class="phase-pct">${phasePct}%</div>
+      <div class="chevron">▾</div>
+    `;
+    header.onclick = () => {
+      state.openPhases[phase.id] = !state.openPhases[phase.id];
+      saveState(state);
+      render();
+    };
+    phaseDiv.appendChild(header);
+
+    const body = document.createElement("div");
+    body.className = "phase-body";
+    phase.tasks.forEach((task, idx) => {
+      const key = taskKey(phase.id, idx);
+      const done = !!state.tasks[key];
+      const row = document.createElement("div");
+      row.className = "task-row" + (done ? " done" : "");
+      row.innerHTML = `
+        <div class="task-check ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
+        <div class="task-label">${task.t}</div>
+        <div class="owner-tag ${OWNER_CLASS[task.o]}">${OWNER_LABEL[task.o]}</div>
+      `;
+      row.querySelector(".task-check").onclick = (e) => {
+        e.stopPropagation();
+        state.tasks[key] = !done;
+        saveState(state);
+        render();
+      };
+      body.appendChild(row);
+    });
+    phaseDiv.appendChild(body);
+    container.appendChild(phaseDiv);
+  });
+
+  const overallPct = totalTasks ? Math.round((totalDone / totalTasks) * 100) : 0;
+  document.getElementById("overallPct").textContent = overallPct + "%";
+  document.getElementById("overallBar").style.width = overallPct + "%";
+  document.getElementById("doneCount").textContent = totalDone + "/" + totalTasks;
+
+  if (nextTask) {
+    document.getElementById("nextTaskText").textContent = nextTask.task.t;
+    document.getElementById("nextTaskOwner").innerHTML = `<span class="owner-tag ${OWNER_CLASS[nextTask.task.o]}">${OWNER_LABEL[nextTask.task.o]}</span>`;
+    document.getElementById("nextTaskPhase").textContent = nextTask.phase.title + " — " + nextTask.phase.period;
+  } else {
+    document.getElementById("nextTaskText").textContent = "Toutes les tâches des phases séquentielles sont terminées 🎉";
+    document.getElementById("nextTaskOwner").textContent = "";
+    document.getElementById("nextTaskPhase").textContent = "";
+  }
+}
+
+// Meeting fields
+const lastMeetingEl = document.getElementById("lastMeeting");
+const nextMeetingEl = document.getElementById("nextMeeting");
+const notesEl = document.getElementById("meetingNotes");
+const savedTag = document.getElementById("savedTag");
+
+lastMeetingEl.value = state.lastMeeting || "";
+nextMeetingEl.value = state.nextMeeting || "";
+notesEl.value = state.meetingNotes || "";
+
+let saveTimeout;
+function markSaved() {
+  savedTag.classList.add("show");
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => savedTag.classList.remove("show"), 1500);
+}
+lastMeetingEl.addEventListener("change", () => { state.lastMeeting = lastMeetingEl.value; saveState(state); markSaved(); });
+nextMeetingEl.addEventListener("change", () => { state.nextMeeting = nextMeetingEl.value; saveState(state); markSaved(); });
+notesEl.addEventListener("input", () => { state.meetingNotes = notesEl.value; saveState(state); markSaved(); });
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+ville,osm_id,osm_type,nom,lat,lon,telephone,horaires,adresse
+Casablanca,2140793926,node,,33.5963212,-7.6281162,,,
+Casablanca,2653976722,node,Fast Pro,33.5750318,-7.6817012,,,
+Casablanca,3905334238,node,Scama Ford,33.598526,-7.579803,,,
+Casablanca,3956887758,node,Rahmouni Renault Dacia,33.599542,-7.6335274,,,
+Casablanca,3960660006,node,Auto Assistance كهرباء السيارات,33.5501385,-7.6794464,+212 6 30 90 20 20,09:00-19:00,
+Casablanca,3984266908,node,,33.601865,-7.6331453,,,
+Casablanca,4221347652,node,Motrio,33.5898401,-7.5925382,,,
+Casablanca,4443044689,node,kia KMBG Moulay slimane,33.6186633,-7.5404282,,,
+Casablanca,4447332489,node,,33.5861222,-7.6070623,,,
+Casablanca,4524682589,node,Renault Académie Maroc,33.6033205,-7.5349822,,,
+Casablanca,4645089891,node,diag pro maroc,33.5522759,-7.6763798,+212 668469030,Mo-Sa 09:00-20:00,
+Casablanca,4757978324,node,FADEL BLIDI,33.5434181,-7.6677878,,,
+Casablanca,5051889430,node,Scama,33.5903209,-7.6124969,,,Avenue Lalla Yacout
+Casablanca,5059143122,node,toyota,33.5984168,-7.5723846,,,
+Casablanca,5424315623,node,la continentale de services,33.5773223,-7.6263427,,,Rue Soumaya
+Casablanca,5839039185,node,Auto Paris,33.5629453,-7.668336,,,
+Casablanca,6593151295,node,Pneumatiques Ouled Haddou,33.5154906,-7.6423966,,,
+Casablanca,7549542843,node,Garage Electro Wagen,33.5505763,-7.6770069,+212 6 61 14 41 19,,
+Casablanca,8449510319,node,,33.6010541,-7.6341111,,,
+Casablanca,9621212208,node,Garage SIMBAG,33.5802826,-7.6242545,,,
+Casablanca,12315489281,node,,33.5819695,-7.6430317,,,Rue Caïd al-Achtar
+Casablanca,12323348671,node,GARAGE MISTRAL,33.5816566,-7.6396749,,,
+Casablanca,12339182915,node,Garniture et nétoyage des Coussins,33.580294,-7.6409738,,,Rue Al Fourate زنقة الفرات
+Casablanca,12554481457,node,Power batterie,33.5638185,-7.5916059,,,
+Casablanca,12915147971,node,,33.5658276,-7.649421,,,
+Casablanca,12927390322,node,Winauto,33.5573407,-7.6452279,,,
+Casablanca,13167613178,node,,33.5747772,-7.6413924,,,Rue des Bruyères
+Casablanca,13322000393,node,,33.5773619,-7.6746456,,,
+Casablanca,13360659543,node,Ets Bounouh Frères,33.5768612,-7.6366573,,,Rue Georges Sand زنقة جورج ساند
+Casablanca,13618927401,node,اصلاح السيارات عند بن الشيخ,33.5396428,-7.736879,,,
+Casablanca,13853743578,node,Garage Georges Sand,33.5769004,-7.6365522,,,
+Casablanca,419332594,way,Volkswagen,33.5893255,-7.6114358,,,Rue du Koweït
+Casablanca,419332696,way,Porsche,33.5894824,-7.6110613,,,Rue du Koweït
+Casablanca,589955844,way,Volvo,33.5888295,-7.6107536,,,Boulevard Rahal El Meskini
+Casablanca,1329454396,way,,33.580807,-7.6409741,,,
