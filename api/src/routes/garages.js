@@ -52,6 +52,7 @@ router.get('/', async (req, res) => {
 
       ({ rows } = await pool.query(
         `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, a_completer,
+                ST_Y(geom::geometry) AS latitude, ST_X(geom::geometry) AS longitude,
                 ST_Distance(geom, ${point}) AS distance_m
          FROM garages
          ${where}
@@ -62,7 +63,8 @@ router.get('/', async (req, res) => {
       ));
     } else {
       ({ rows } = await pool.query(
-        `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, a_completer
+        `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, a_completer,
+                ST_Y(geom::geometry) AS latitude, ST_X(geom::geometry) AS longitude
          FROM garages
          ${where}
          ORDER BY note DESC NULLS LAST
@@ -82,7 +84,12 @@ router.get('/', async (req, res) => {
 // GET /garages/:id
 router.get('/:id', async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM garages WHERE id = $1', [req.params.id]);
+    const { rows } = await pool.query(
+      `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, a_completer, source, scraped_at, created_at,
+              ST_Y(geom::geometry) AS latitude, ST_X(geom::geometry) AS longitude
+       FROM garages WHERE id = $1`,
+      [req.params.id]
+    );
     if (!rows[0]) return res.status(404).json({ status: 'error', message: 'Garage introuvable' });
 
     logEvent('consultation_garage', { garage_id: rows[0].id });

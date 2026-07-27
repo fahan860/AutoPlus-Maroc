@@ -48,6 +48,17 @@ planning de stage (voir [`docs/autoplus_planning_stage.html`](docs/autoplus_plan
 - Pipeline events : chaque action (recherche garage, inscription, connexion...) est loggée en JSON dans
   Redis (`events:queue`), puis vidée périodiquement vers le Data Lake Parquet par
   `data/pipeline/flush_events_to_parquet.py` (voir `data/README.md`)
+- Endpoints `vehicles` et `interventions` (CRUD véhicules, cycle de vie RDV `demande → confirme →
+  en_cours → termine/annule`), protégés par JWT (`api/src/middleware/auth.js`)
+
+### Semaine 3 — App mobile (automobiliste)
+
+- Authentification (inscription / connexion), session persistée via `expo-secure-store`
+- Écran Garages : liste triée par distance (géolocalisation `expo-location`) ou carte (`react-native-maps`)
+- Écran Détail garage + prise de RDV (choix véhicule + type de panne)
+- Écran Mes véhicules (liste + ajout)
+- Écran Mes RDV (suivi du statut)
+- Voir `mobile/src/` — `api/` (client HTTP), `context/AuthContext.js`, `navigation/`, `screens/`
 
 ## Prérequis
 
@@ -119,6 +130,59 @@ npx expo start
 ```
 
 → Scanner le QR code avec l'app **Expo Go** sur ton téléphone, ou taper `w` pour ouvrir dans le navigateur.
+
+**Important** : le téléphone doit être sur le **même réseau Wi-Fi** que la machine qui fait tourner
+l'API (`docker compose up`). L'app détecte automatiquement l'IP locale de la machine de dev via Expo
+(`hostUri`) — pas de configuration manuelle nécessaire. Pour forcer une autre URL (API déployée, etc.),
+renseigner `expo.extra.apiUrl` dans `mobile/app.json`.
+
+#### Tester sur un émulateur Android (au lieu d'un téléphone)
+
+1. Installer [Android Studio](https://developer.android.com/studio), puis créer un appareil virtuel :
+   ouvrir **Android Studio → More Actions → Virtual Device Manager → Create device** (choisir un
+   Pixel récent + une image système Android 14/15, télécharger si besoin).
+2. Démarrer l'émulateur créé (bouton ▶ dans le Virtual Device Manager), ou en ligne de commande :
+   ```powershell
+   emulator -avd <nom_de_l_avd>
+   ```
+3. Lancer l'app dessus :
+   ```powershell
+   cd mobile
+   npx expo start
+   ```
+   puis appuyer sur `a` dans le terminal (ou `npx expo start --android` directement). Expo installe
+   Expo Go sur l'émulateur automatiquement au premier lancement si besoin.
+4. **Piège réseau propre aux émulateurs** : l'auto-détection par IP LAN (qui fonctionne très bien sur un
+   téléphone physique) échoue en général sur un émulateur Android — le pare-feu Windows bloque souvent
+   les connexions entrantes vers le port Docker (3000) depuis l'adaptateur réseau virtuel de l'émulateur,
+   même si le port du bundler Metro (8081) passe (Node a déjà une autorisation pare-feu existante). Deux
+   étapes pour contourner ça de façon fiable :
+   ```powershell
+   adb reverse tcp:3000 tcp:3000
+   ```
+   (à refaire à chaque redémarrage de l'émulateur), **et** forcer l'app à passer par ce tunnel au lieu de
+   l'IP LAN, en renseignant dans `mobile/app.json` :
+   ```json
+   "extra": { "apiUrl": "http://localhost:3000" }
+   ```
+   Remettre `"apiUrl": null` pour retester sur un téléphone physique (l'auto-détection par IP LAN est ce
+   qu'il faut dans ce cas).
+
+> Un émulateur iOS (Xcode Simulator) n'est pas utilisable sur Windows — il faut un Mac. Sur Mac, aucun
+> forward n'est nécessaire : le simulateur iOS partage directement le réseau de la machine hôte.
+
+#### Carte des garages sur émulateur Android
+
+En Expo Go sur émulateur Android, la carte (onglet "Carte") se charge mais affiche un fond vide (pas de
+tuiles Google Maps) tant qu'aucune clé Google Maps API n'est renseignée dans
+`mobile/app.json` → `expo.android.config.googleMaps.apiKey` — contrairement à ce qu'on pourrait attendre,
+Expo Go ne fournit pas de clé de démo partagée pour ce SDK. La vue "Liste" (avec tri par distance) reste
+utilisable sans configuration. Sur téléphone physique avec build autonome, même contrainte : une vraie
+clé est nécessaire.
+
+> La carte (onglet "Carte" dans Garages) fonctionne sans configuration dans **Expo Go**. Pour un build
+> autonome (`expo prebuild` / EAS build), il faudra renseigner une vraie clé Google Maps dans
+> `mobile/app.json` → `expo.android.config.googleMaps.apiKey`.
 
 ## Roadmap
 

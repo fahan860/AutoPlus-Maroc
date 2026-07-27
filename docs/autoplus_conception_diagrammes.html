@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dossier de Conception — AUTO+ Maroc</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f4f6fb; color: #1a1a2e; }
+
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white; padding: 32px 40px;
+    border-bottom: 4px solid #f57c00;
+  }
+  .header-top { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+  .logo { font-size: 28px; font-weight: 900; color: #f57c00; }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header p { font-size: 13px; color: #aaa; margin-top: 4px; }
+
+  .content { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  .section {
+    background: white; border-radius: 12px; margin-bottom: 24px;
+    border: 1.5px solid #e8eaf0; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 16px 24px; color: white; font-weight: 800; font-size: 15px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-header .num {
+    width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+  .section-sub { padding: 10px 24px 0; font-size: 12px; color: #666; }
+  .section-body { padding: 20px 24px 28px; overflow-x: auto; }
+
+  .c-blue { background: #1a1a2e; }
+  .c-orange { background: #c25a00; }
+  .c-green { background: #146c43; }
+
+  .note {
+    margin: 0 24px 20px; padding: 12px 16px; background: #fff8ee;
+    border-left: 3px solid #f57c00; font-size: 12px; color: #555; border-radius: 4px;
+  }
+
+  .mermaid { display: flex; justify-content: center; }
+
+  .toc { list-style: none; padding: 0; margin: 0; }
+  .toc li { padding: 6px 0; font-size: 12px; }
+  .toc a { color: #1a1a2e; text-decoration: none; font-weight: 700; }
+  .toc a:hover { color: #f57c00; }
+  .toc .d { color: #888; font-weight: 400; }
+
+  .phase-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+  .phase-table th { background: #f4f6fb; text-align: left; padding: 8px 10px; border: 1px solid #e8eaf0; }
+  .phase-table td { padding: 8px 10px; border: 1px solid #e8eaf0; vertical-align: top; }
+
+  .step-card {
+    border: 1.5px solid #e8eaf0; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;
+    background: #fafbfd;
+  }
+  .step-card .step-title { font-weight: 800; font-size: 13px; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+  .step-card .step-n {
+    width: 22px; height: 22px; border-radius: 50%; background: #1a1a2e; color: white;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0;
+  }
+  .step-card .step-def { font-size: 12px; color: #666; margin: 6px 0 8px 30px; font-style: italic; }
+  .step-card .step-app { font-size: 12px; margin-left: 30px; }
+  .step-card .step-app ul { margin: 4px 0 0 16px; }
+
+  footer { text-align: center; padding: 24px; font-size: 11px; color: #999; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">AUTO+</div>
+    <div>
+      <h1>Dossier de Conception — AUTO+ Maroc</h1>
+      <p>Modèle de développement, cycle de vie appliqué au projet, et tous les diagrammes de conception (UML/Merise)</p>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <div class="section-header c-blue">📑 Sommaire</div>
+    <div class="section-body">
+      <ul class="toc">
+        <li><a href="#s1">1. Modèle de développement retenu</a> <span class="d">— comparatif des 5 modèles du cours + justification</span></li>
+        <li><a href="#s2">2. Cycle de vie du logiciel appliqué à AUTO+</a> <span class="d">— les 8 étapes, une par une</span></li>
+        <li><a href="#s3">3. Diagramme de cas d'utilisation</a> <span class="d">— acteurs et cas d'usage</span></li>
+        <li><a href="#s4">4. Scénarios d'utilisation détaillés</a> <span class="d">— fiches texte des cas d'usage</span></li>
+        <li><a href="#s5">5. Diagramme d'activité — Prise de RDV</a></li>
+        <li><a href="#s6">6. Diagramme de classes / MCD</a></li>
+        <li><a href="#s7">7. Diagramme de composants</a></li>
+        <li><a href="#s8">8. Diagramme de séquence — Prise de RDV</a></li>
+        <li><a href="#s9">9. Diagramme de séquence — Traitement par le mécanicien</a></li>
+        <li><a href="#s10">10. Diagramme d'état-transition</a></li>
+        <li><a href="#s11">11. Diagramme de déploiement</a></li>
+        <li><a href="#s12">12. Dictionnaire de données</a></li>
+        <li><a href="#s13">13. Plan de tests</a> <span class="d">— niveaux de test + cas de tests concrets</span></li>
+        <li><a href="#s14">14. Catalogue des scénarios d'erreur</a> <span class="d">— tous les codes HTTP par endpoint</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section" id="s1">
+    <div class="section-header c-blue"><span class="num">1</span> Modèle de développement retenu</div>
+    <div class="section-sub">Comparatif des 5 modèles vus en cours (Génie Logiciel, Pr. Jebari Hakim) et choix justifié pour AUTO+</div>
+    <div class="section-body">
+      <table class="phase-table">
+        <thead>
+          <tr><th>Modèle</th><th>Principe</th><th>Adapté à AUTO+ ?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Cascade</strong></td><td>Étapes strictement séquentielles, on ne revient pas en arrière</td><td>❌ Trop rigide — les besoins évoluent chaque semaine de stage</td></tr>
+          <tr><td><strong>Modèle en V</strong></td><td>Cascade + test associé à chaque étape de conception</td><td>⚠️ Utile pour les modules critiques (paiement, auth) mais trop lourd pour tout le projet</td></tr>
+          <tr><td><strong>Spirale</strong></td><td>Boucles successives, chaque tour = analyse de risques + prototypage + mini-cascade</td><td>✅ Adapté aux modules à risque technique élevé : agent IA darija/français, RAG, modèles ML (Semaine 4+)</td></tr>
+          <tr><td><strong>Incrémental (Agile)</strong></td><td>Livraison par incréments utilisables, feedback rapide</td><td>✅✅ <strong>Retenu comme modèle principal</strong> — correspond exactement au découpage réel du stage en semaines (Semaine 1 = setup, Semaine 2 = data garages, Semaine 3 = auth+RDV, ...)</td></tr>
+          <tr><td><strong>Orienté réutilisation</strong></td><td>Composants/APIs existants (COTS)</td><td>✅ Complémentaire — utilisé de fait (Express, pg, Zod, jsonwebtoken, Expo, GPT-4o/Mistral en API)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note" style="margin:16px 0 0;">
+        <strong>Modèle retenu : Incrémental (agile) comme cadre principal, avec une composante Spirale pour les modules à risque (IA/ML).</strong> Chaque semaine de stage = un incrément complet qui suit le mini-cycle en cascade (spécification → conception → codage → tests → livraison), exactement comme observé dans le code : Semaine 2 a livré le pipeline garages de bout en bout, Semaine 3 a livré auth+vehicles+interventions de bout en bout.
+      </div>
+
+      <p style="font-size:12px; margin-top:14px; font-weight:700;">Détail des phases du modèle incrémental appliqué à chaque semaine (incrément) :</p>
+      <pre class="mermaid">
+flowchart LR
+    subgraph I1["Incrément Semaine N"]
+        direction TB
+        A1["1. Spécification<br/>(besoins de la semaine)"] --> A2["2. Conception<br/>(architecture + détaillée)"]
+        A2 --> A3["3. Codage"]
+        A3 --> A4["4. Tests<br/>(unitaires + intégration)"]
+        A4 --> A5["5. Livraison<br/>(commit + démo)"]
+    end
+    A5 -.->|"feedback / ajustement"| B1
+    subgraph I2["Incrément Semaine N+1"]
+        direction TB
+        B1["1. Spécification"] --> B2["2. Conception"] --> B3["3. Codage"] --> B4["4. Tests"] --> B5["5. Livraison"]
+    end
+      </pre>
+      <div class="note" style="margin-top:10px;">
+        Pourquoi la spirale en complément : le cours insiste sur le fait que la spirale est adaptée quand "les exigences sont démesurées par rapport à la technologie maîtrisée". C'est exactement le cas de l'agent IA darija/français et du RAG pgvector prévus Semaine 4 — l'équipe ne maîtrise pas encore ces briques, donc chaque itération sur l'IA doit commencer par une analyse de risque + un prototype jetable avant tout codage définitif.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="s2">
+    <div class="section-header c-orange"><span class="num">2</span> Cycle de vie du logiciel appliqué à AUTO+</div>
+    <div class="section-sub">Les 8 étapes du cycle de vie (cours Génie Logiciel), appliquées concrètement à chaque incrément du projet</div>
+    <div class="section-body">
+
+      <pre class="mermaid">
+flowchart TD
+    E1["1. Analyse des besoins et faisabilite"] --> E2["2. Specifications / conception generale"]
+    E2 --> E3["3. Conception architecturale"]
+    E3 --> E4["4. Conception detaillee"]
+    E4 --> E5["5. Programmation le codage"]
+    E5 --> E6["6. Tests unitaires / tests d'integration"]
+    E6 --> E7["7. Verification"]
+    E7 --> E8["8. Maintenance"]
+    E8 -.->|"nouvelle iteration / bug remonte"| E1
+      </pre>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-n">1</span> Analyse des besoins et faisabilité</div>
+        <div class="step-def">Expression, recueil et formalisation des besoins du demandeur, estimation de la faisabilité technique et financière.</div>
+        <div class="step-app"><strong>Appliqué à AUTO+ :</strong>
+          <ul>
+            <li>Besoin identifié : 18 000 besoins/jour en atelier au Maroc, 95% non digitalisés</li>
+            <li>Faisabilité technique validée dès Semaine 1 (Docker + PostgreSQL/PostGIS + API opérationnels, test <code>/health</code> réussi)</li>
+            <li>Faisabilité financière : stack open-source (Node.js, PostgreSQL, Redis) + coûts variables API (Google Maps, GPT-4o) reportés à la Phase Beta</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-n">2</span> Spécifications ou conception générale</div>
+        <div class="step-def">Élaboration des spécifications de l'architecture générale du logiciel — définir CE que le logiciel doit faire (le "quoi").</div>
+        <div class="step-app"><strong>Appliqué à AUTO+ :</strong>
+          <ul>
+            <li>Cas d'utilisation définis (Espace Client, Espace Mécanicien, Espace Admin, Espace Worker futur) — cf. <code>AutoPlus_Diagrammes_Architecture.pdf</code> et section 3 ci-dessous</li>
+            <li>Périmètre MVP explicitement séparé du périmètre futur (Phase 2/3 : IA, logistique)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-n">3</span> Conception architecturale</div>
+        <div class="step-def">Description de l'architecture du logiciel : identification de la structure globale, des composants principaux et de leurs relations.</div>
+        <div class="step-app"><strong>Appliqué à AUTO+ :</strong>
+          <ul>
+            <li>Architecture 8 couches définie (Users → Entry Points → MVP Core → Platform Engine → Data Storage → AI Module → Logistics → Integrations)</li>
+            <li>Diagramme de déploiement réel (section 8) : conteneurs Docker (API / PostgreSQL+PostGIS / Redis)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-n">4</span> Conception détaillée</div>
+        <div class="step-def">Définition précise de chaque sous-ensemble du logiciel (structures de données, algorithmes), jusqu'à une forme permettant d'écrire directement les programmes.</div>
+        <div class="step-app"><strong>Appliqué à AUTO+ :</strong>
+          <ul>
+            <li>Diagramme de classes/MCD (section 4) : structure précise des 6 tables et de leurs relations</li>
+            <li>Diagrammes de séquence (sections 5-6) : algorithme détaillé de chaque endpoint (validations, ordre des requêtes SQL, codes d'erreur)</li>
+            <li>Dictionnaire de données (section 9) : chaque colonne, type et contrainte</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-n">5</span> Programmation (le codage)</div>
+        <div class="step-def">Traduction dans un langage de programmation des fonctionnalités définies lors des phases de conception.</div>
+        <div class="step-app"><strong>Appliqué à AUTO+ :</strong>
+          <ul>
+            <li>Migrations SQL : <code>api/migrations/001_create_garages.sql</code>, <code>002_create_core_tables.sql</code></li>
+            <li>Routes Express : <code>api/src/routes/garages.js</code>, <code>vehicles.js</code>, <code>interventions.js</code>, middleware <code>auth.js</code></li>
+            <li>Scripts de scraping/import : <code>data/scrape_garages_osm.py</code>, <code>api/scripts/import_garages_csv.js</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-n">6</span> Tests unitaires / Tests d'intégration</div>
+        <div class="step-def">Tests unitaires : vérifient individuellement que chaque sous-ensemble est implémenté conformément aux spécifications. Tests d'intégration : assemblent les parties pour obtenir un système exécutable et vérifient les interactions entre composants.</div>
+        <div class="step-app"><strong>Appliqué à AUTO+ :</strong>
+          <ul>
+            <li>Test unitaire réalisé : <code>curl http://localhost:3000/health</code> → connexion DB confirmée (Semaine 1)</li>
+            <li>Test d'intégration réalisé : import CSV → UPSERT idempotent → 123 garages en base, relancé sans duplication</li>
+            <li><strong>Manquant :</strong> suite de tests automatisés (Jest/Supertest) pour les routes vehicles/interventions — à ajouter au plan de tests</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-n">7</span> Vérification</div>
+        <div class="step-def">Vérifier la conformité du logiciel aux spécifications globales (le système fait-il ce qui était prévu ?).</div>
+        <div class="step-app"><strong>Appliqué à AUTO+ :</strong>
+          <ul>
+            <li>Prototype cliquable (<code>docs/prototype_mobile_app.html</code>) utilisé pour vérifier visuellement que le cycle de vie du RDV correspond bien au diagramme d'état-transition (section 7) avant tout développement mobile réel</li>
+            <li>Rapport d'avancement (<code>RAPPORT_AVANCEMENT.md</code>) : tableau des écarts entre prévu et réalisé, mis à jour chaque semaine</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title"><span class="step-n">8</span> Maintenance</div>
+        <div class="step-def">Actions correctives (maintenance corrective) et évolutives (maintenance évolutive/perfective) sur le logiciel après mise en service.</div>
+        <div class="step-app"><strong>Appliqué à AUTO+ :</strong>
+          <ul>
+            <li>Maintenance corrective déjà vécue : restauration de <code>merge_and_clean_garages.py</code> et <code>import_garages_csv.js</code> après une corruption d'écriture (commit <code>8ea0a90</code>)</li>
+            <li>Maintenance évolutive prévue : enrichissement des 42 garages sans téléphone, ajout de l'historique véhicule par plaque (Semaine 4)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section" id="s3">
+    <div class="section-header c-green"><span class="num">3</span> Diagramme de cas d'utilisation</div>
+    <div class="section-sub">Reprend et centralise les acteurs/cas d'usage de <code>AutoPlus_Diagrammes_Architecture.pdf</code> (pages 2-3), pour que ce fichier soit autonome</div>
+    <div class="section-body">
+      <pre class="mermaid">
+flowchart LR
+    Client(("Client\nAutomobiliste")) --> UC1["S'inscrire / Se connecter"]
+    Client --> UC2["Rechercher un mecanicien"]
+    Client --> UC3["Consulter profil mecanicien"]
+    Client --> UC4["Voir avis et notes"]
+    Client --> UC5["Prendre rendez-vous"]
+    Client --> UC6["Gerer son vehicule"]
+    Client --> UC7["Recevoir notifications"]
+
+    Meca(("User\nMecanicien")) --> UC8["Creer / gerer profil"]
+    Meca --> UC9["Gerer son planning"]
+    Meca --> UC10["Consulter les demandes"]
+    Meca --> UC11["Accepter / Refuser un RDV"]
+
+    Admin(("Administrateur")) --> UC12["Valider les mecaniciens"]
+    Admin --> UC13["Gerer la plateforme"]
+    Admin --> UC14["Gerer les utilisateurs"]
+
+    Worker(("Worker\nAgent logistique - futur")) --> UC15["Recuperer le vehicule"]
+    Worker --> UC16["Livrer le vehicule"]
+      </pre>
+      <div class="note" style="margin-top:10px;">
+        Périmètre MVP réellement codé à ce jour (Semaine 3) : UC1, UC2, UC3, UC5, UC6, UC10, UC11 — les autres cas (avis/notes, planning mécanicien, back-office admin, logistique) restent à développer, conformément au tableau d'écarts de <code>RAPPORT_AVANCEMENT.md</code>.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="s4">
+    <div class="section-header c-blue"><span class="num">4</span> Scénarios d'utilisation détaillés</div>
+    <div class="section-sub">Fiches de cas d'utilisation (acteur, préconditions, scénario nominal, scénarios alternatifs, postconditions) — pour les cas déjà couverts par le code de la Semaine 3</div>
+    <div class="section-body">
+
+      <table class="phase-table">
+        <thead><tr><th style="width:16%;">Rubrique</th><th>Détail</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nom</strong></td><td>Prendre rendez-vous (RDV)</td></tr>
+          <tr><td><strong>Acteur principal</strong></td><td>Client (automobiliste)</td></tr>
+          <tr><td><strong>Acteurs secondaires</strong></td><td>User (mécanicien du garage visé)</td></tr>
+          <tr><td><strong>Préconditions</strong></td><td>Le client est authentifié (JWT valide, rôle = automobiliste) ; le client possède au moins un véhicule enregistré ; le garage visé existe</td></tr>
+          <tr><td><strong>Scénario nominal</strong></td><td>
+            1. Le client recherche un garage depuis l'écran d'accueil<br>
+            2. Il consulte le profil du garage (note, avis, coordonnées)<br>
+            3. Il sélectionne "Prendre rendez-vous"<br>
+            4. Il choisit son véhicule, le type de panne, décrit le problème, choisit une date/heure<br>
+            5. Le système vérifie que le véhicule appartient bien au client et que le garage existe<br>
+            6. Le système crée l'intervention avec le statut <code>demande</code><br>
+            7. Le système journalise l'événement <code>rdv_demande</code><br>
+            8. Le client reçoit la confirmation d'envoi de sa demande
+          </td></tr>
+          <tr><td><strong>Scénarios alternatifs / exceptions</strong></td><td>
+            A1. Token absent/invalide → 401 Token manquant/invalide<br>
+            A2. Champs du formulaire invalides (schéma Zod) → 400 Bad Request<br>
+            A3. Véhicule inexistant ou n'appartenant pas au client → 404 Véhicule introuvable<br>
+            A4. Garage inexistant → 404 Garage introuvable
+          </td></tr>
+          <tr><td><strong>Postcondition</strong></td><td>Une nouvelle ligne <code>interventions</code> existe avec statut <code>demande</code> ; elle apparaît dans le dashboard du mécanicien du garage concerné</td></tr>
+        </tbody>
+      </table>
+
+      <table class="phase-table" style="margin-top:18px;">
+        <thead><tr><th style="width:16%;">Rubrique</th><th>Détail</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nom</strong></td><td>Traiter une demande de RDV</td></tr>
+          <tr><td><strong>Acteur principal</strong></td><td>User (mécanicien)</td></tr>
+          <tr><td><strong>Préconditions</strong></td><td>Le mécanicien est authentifié (rôle = mecanicien) et rattaché à un garage (<code>garage_id</code>) ; une intervention existe pour ce garage</td></tr>
+          <tr><td><strong>Scénario nominal</strong></td><td>
+            1. Le mécanicien consulte la liste des demandes reçues pour son garage<br>
+            2. Il sélectionne une demande au statut <code>demande</code><br>
+            3. Il choisit "Confirmer" (ou "Refuser")<br>
+            4. Le système vérifie que l'intervention appartient bien à son garage<br>
+            5. Le système met à jour le statut (<code>confirme</code> ou <code>annule</code>) et journalise <code>rdv_statut_change</code><br>
+            6. Le mécanicien répète l'opération pour faire avancer le statut jusqu'à <code>en_cours</code> puis <code>termine</code>
+          </td></tr>
+          <tr><td><strong>Scénarios alternatifs / exceptions</strong></td><td>
+            A1. Rôle incorrect (client essaie d'appeler la route) → 403 Accès refusé<br>
+            A2. Statut demandé hors de l'énumération autorisée → 400 Bad Request<br>
+            A3. Intervention inexistante pour ce garage → 404 Intervention introuvable pour ce garage
+          </td></tr>
+          <tr><td><strong>Postcondition</strong></td><td>Le statut de l'intervention est mis à jour ; le client peut le consulter dans "Mes RDV"</td></tr>
+        </tbody>
+      </table>
+
+      <table class="phase-table" style="margin-top:18px;">
+        <thead><tr><th style="width:16%;">Rubrique</th><th>Détail</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nom</strong></td><td>Rechercher un mécanicien / garage</td></tr>
+          <tr><td><strong>Acteur principal</strong></td><td>Client (automobiliste, authentifié ou non)</td></tr>
+          <tr><td><strong>Préconditions</strong></td><td>Aucune (consultation publique du répertoire de garages)</td></tr>
+          <tr><td><strong>Scénario nominal</strong></td><td>
+            1. Le client ouvre l'écran d'accueil<br>
+            2. Le système affiche la liste des garages (nom, catégorie, note, avis)<br>
+            3. Le client consulte le profil détaillé d'un garage (adresse, téléphone)
+          </td></tr>
+          <tr><td><strong>Scénarios alternatifs / exceptions</strong></td><td>Aucun garage à proximité → liste vide affichée avec message dédié (à implémenter)</td></tr>
+          <tr><td><strong>Postcondition</strong></td><td>Aucune (lecture seule) ; événement <code>recherche_garage</code> journalisé pour le futur modèle de recommandation</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="section" id="s5">
+    <div class="section-header c-orange"><span class="num">5</span> Diagramme d'activité — Prise de RDV</div>
+    <div class="section-sub">Vue "couloirs d'activité" (swimlanes) du scénario nominal ci-dessus, Client / Système / Mécanicien</div>
+    <div class="section-body">
+      <pre class="mermaid">
+flowchart TD
+    subgraph SW1["Client"]
+        direction TB
+        c1(["Debut"]) --> c2["Rechercher un garage"]
+        c2 --> c3["Consulter le profil"]
+        c3 --> c4["Remplir le formulaire de RDV<br/>(vehicule, panne, description, date)"]
+        c4 --> c5["Envoyer la demande"]
+    end
+    subgraph SW2["Systeme (API)"]
+        direction TB
+        s1{"Token JWT valide<br/>et role automobiliste ?"}
+        s2{"Vehicule appartient<br/>au client ?"}
+        s3{"Garage existe ?"}
+        s4["Creer intervention<br/>statut = demande"]
+        s5["Journaliser evenement<br/>rdv_demande"]
+    end
+    subgraph SW3["Mecanicien"]
+        direction TB
+        m1["Recevoir la demande<br/>dans le dashboard"]
+    end
+
+    c5 --> s1
+    s1 -- non --> err1(["401 / 403"])
+    s1 -- oui --> s2
+    s2 -- non --> err2(["404 Vehicule introuvable"])
+    s2 -- oui --> s3
+    s3 -- non --> err3(["404 Garage introuvable"])
+    s3 -- oui --> s4 --> s5 --> m1
+    m1 --> fin(["Fin"])
+      </pre>
+    </div>
+  </div>
+
+  <div class="section" id="s6">
+    <div class="section-header c-blue"><span class="num">6</span> Diagramme de classes / MCD</div>
+    <div class="section-sub">Dérivé du schéma réel en base : <code>api/migrations/001_create_garages.sql</code> + <code>002_create_core_tables.sql</code></div>
+    <div class="section-body">
+      <pre class="mermaid">
+classDiagram
+    class Utilisateur {
+        &lt;&lt;abstract&gt;&gt;
+        +int id
+        +string nom
+        +string telephone
+        +string email
+        +string mot_de_passe_hash
+        +datetime created_at
+    }
+    class Client {
+        role = "automobiliste"
+    }
+    class User {
+        role = "mecanicien"
+        +int garage_id
+    }
+    class Admin {
+        role = "admin"
+    }
+    Utilisateur <|-- Client
+    Utilisateur <|-- User
+    Utilisateur <|-- Admin
+
+    class Garage {
+        +int id
+        +string nom
+        +string categorie
+        +string adresse
+        +string ville
+        +string telephone
+        +numeric note
+        +int nb_avis
+        +string lien_fiche
+        +string source
+        +bool a_completer
+        +geography geom
+    }
+    class Vehicle {
+        +int id
+        +int user_id
+        +string plaque
+        +string marque
+        +string modele
+        +int annee
+    }
+    class Intervention {
+        +int id
+        +int vehicle_id
+        +int garage_id
+        +int user_id
+        +string type_panne
+        +string description
+        +string statut
+        +numeric prix_estime
+        +numeric prix_final
+        +datetime date_rdv
+    }
+    class Review {
+        +int id
+        +int garage_id
+        +int user_id
+        +int intervention_id
+        +numeric note
+        +string commentaire
+        +bool suspect_faux_avis
+    }
+    class Event {
+        +bigint id
+        +int user_id
+        +string type_event
+        +jsonb payload
+        +datetime created_at
+    }
+
+    User "1" --> "1" Garage : gere
+    Client "1" --> "0..*" Vehicle : possede
+    Client "1" --> "0..*" Intervention : demande
+    Client "1" --> "0..*" Review : redige
+    Utilisateur "1" --> "0..*" Event : genere
+    Vehicle "1" --> "0..*" Intervention : concerne
+    Garage "1" --> "0..*" Intervention : recoit
+    Garage "1" --> "0..*" Review : recoit
+    Intervention "0..1" --> "0..1" Review : donne lieu a
+      </pre>
+    </div>
+    <div class="note" style="margin:0 0 0;">
+      <strong>Clarification des catégories d'utilisateurs :</strong> deux catégories bien distinctes cohabitent dans la table <code>users</code> (implémentation en table unique avec colonne <code>role</code>, mais conceptuellement deux profils différents) :
+      <ul style="margin:8px 0 0 18px;">
+        <li><strong>Client</strong> (<code>role = 'automobiliste'</code>) — possède un ou plusieurs <em>véhicules</em>, demande des interventions, rédige des avis.</li>
+        <li><strong>User</strong> (<code>role = 'mecanicien'</code>) — rattaché à <strong>un</strong> garage (<code>garage_id</code>), reçoit et traite les demandes d'intervention de ce garage.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section" id="s7">
+    <div class="section-header c-green"><span class="num">7</span> Diagramme de composants</div>
+    <div class="section-sub">Vue "boîte blanche" des modules internes de l'API et de leurs dépendances — complète le diagramme de déploiement (section 11) qui décrit lui les nœuds physiques</div>
+    <div class="section-body">
+      <pre class="mermaid">
+flowchart TB
+    MOB["App Mobile\n(Expo / React Native)"]
+
+    subgraph API["Composant : API Express (api/src)"]
+        SRV["server.js"]
+        RG["routes/garages.js"]
+        RU["routes/users.js"]
+        RV["routes/vehicles.js"]
+        RI["routes/interventions.js"]
+        MW["middleware/auth.js"]
+        EVT["events.js (logEvent)"]
+        DB["db.js (pool pg)"]
+    end
+
+    PG[("PostgreSQL + PostGIS")]
+    RD[("Redis")]
+
+    MOB -- "HTTPS/JSON" --> SRV
+    SRV --> RG & RU & RV & RI
+    RV --> MW
+    RI --> MW
+    RG --> DB
+    RU --> DB
+    RV --> DB
+    RI --> DB
+    RI --> EVT
+    RU --> EVT
+    RV --> EVT
+    DB --> PG
+    EVT --> RD
+      </pre>
+    </div>
+  </div>
+
+  <div class="section" id="s8">
+    <div class="section-header c-orange"><span class="num">8</span> Diagramme de séquence — Prise de RDV</div>
+    <div class="section-sub">Correspond au cas d'usage détaillé p.4 de AutoPlus_Diagrammes_Architecture.pdf, ici au niveau technique (route réellement codée : <code>POST /interventions</code>)</div>
+    <div class="section-body">
+      <pre class="mermaid">
+sequenceDiagram
+    actor C as Client (App mobile)
+    participant A as API Express /interventions
+    participant M as Middleware Auth (JWT)
+    participant DB as PostgreSQL
+    participant EV as Events (Redis)
+
+    C->>A: POST /interventions {vehicle_id, garage_id, type_panne, ...} + Bearer token
+    A->>M: requireAuth + requireRole('automobiliste')
+    M->>M: jwt.verify(token)
+    alt token invalide ou role incorrect
+        M-->>C: 401 / 403
+    else token valide
+        M-->>A: req.user {id, role}
+        A->>A: validation Zod du body
+        alt body invalide
+            A-->>C: 400 Bad Request
+        else body valide
+            A->>DB: SELECT vehicle WHERE id AND user_id
+            DB-->>A: vehicule (ou vide)
+            alt vehicule introuvable
+                A-->>C: 404 Vehicule introuvable
+            else vehicule trouve
+                A->>DB: SELECT garage WHERE id
+                DB-->>A: garage (ou vide)
+                alt garage introuvable
+                    A-->>C: 404 Garage introuvable
+                else garage trouve
+                    A->>DB: INSERT INTO interventions RETURNING *
+                    DB-->>A: nouvelle intervention (statut=demande)
+                    A->>EV: logEvent('rdv_demande', ...)
+                    A-->>C: 201 Created (intervention)
+                end
+            end
+        end
+    end
+      </pre>
+    </div>
+  </div>
+
+  <div class="section" id="s9">
+    <div class="section-header c-green"><span class="num">9</span> Diagramme de séquence — Traitement du RDV par le mécanicien</div>
+    <div class="section-sub">Route <code>PATCH /interventions/:id/statut</code> — suite logique du cas 2, cycle de vie complet de la demande</div>
+    <div class="section-body">
+      <pre class="mermaid">
+sequenceDiagram
+    actor Me as Mecanicien (Dashboard)
+    participant A as API Express /interventions/:id/statut
+    participant M as Middleware Auth (JWT)
+    participant DB as PostgreSQL
+    participant EV as Events (Redis)
+
+    Me->>A: PATCH /interventions/42/statut {statut: "confirme"} + Bearer token
+    A->>M: requireAuth + requireRole('mecanicien')
+    M-->>A: req.user {id, role: mecanicien}
+    A->>A: validation Zod (statut in enum autorise)
+    A->>DB: SELECT garage_id FROM users WHERE id = user.id
+    DB-->>A: garage_id du mecanicien
+    A->>DB: UPDATE interventions SET statut WHERE id AND garage_id
+    alt intervention introuvable pour ce garage
+        DB-->>A: 0 ligne
+        A-->>Me: 404 Intervention introuvable pour ce garage
+    else mise a jour reussie
+        DB-->>A: intervention mise a jour
+        A->>EV: logEvent('rdv_statut_change', ...)
+        A-->>Me: 200 OK (intervention)
+    end
+      </pre>
+    </div>
+  </div>
+
+  <div class="section" id="s10">
+    <div class="section-header c-blue"><span class="num">10</span> Diagramme d'état-transition — Statut d'une intervention</div>
+    <div class="section-sub">Basé sur la contrainte <code>CHECK (statut IN ...)</code> de <code>api/migrations/002_create_core_tables.sql</code> et les transitions réellement permises par les routes (création = automobiliste, changement = mécanicien uniquement)</div>
+    <div class="section-body">
+      <pre class="mermaid">
+stateDiagram-v2
+    [*] --> demande : POST /interventions (automobiliste)
+    demande --> confirme : PATCH /statut (mecanicien accepte)
+    demande --> annule : PATCH /statut (mecanicien refuse)
+    confirme --> en_cours : PATCH /statut (mecanicien demarre)
+    confirme --> annule : PATCH /statut (annulation)
+    en_cours --> termine : PATCH /statut (travaux finis)
+    termine --> [*]
+    annule --> [*]
+
+    note right of demande
+        Etat initial force par
+        le DEFAULT SQL 'demande'
+    end note
+    note right of termine
+        Peut declencher un
+        Review (avis) associe
+    end note
+      </pre>
+    </div>
+  </div>
+
+  <div class="section" id="s11">
+    <div class="section-header c-orange"><span class="num">11</span> Diagramme de déploiement</div>
+    <div class="section-sub">Infrastructure réelle : <code>docker-compose.yml</code> (local/dev) + cible de déploiement prévue Semaine 4 (Railway/Render, cf. roadmap)</div>
+    <div class="section-body">
+      <pre class="mermaid">
+flowchart TB
+    subgraph Client["Poste client"]
+        MOB["App Mobile (Expo / React Native)"]
+    end
+
+    subgraph Cloud["Hebergement cible (Railway / Render - Semaine 4)"]
+        subgraph Docker["docker-compose.yml"]
+            API["Conteneur API<br/>Node.js / Express<br/>:3000"]
+            PG["Conteneur PostgreSQL + PostGIS<br/>:5432"]
+            RD["Conteneur Redis<br/>buffer events<br/>:6379"]
+        end
+        CRON["Job flush periodique<br/>Redis -> Parquet"]
+        LAKE[("Data Lake local<br/>data/events/year=/month=/day=/*.parquet")]
+    end
+
+    subgraph Ext["Services externes"]
+        MAPS["Google Maps API"]
+        SMS["Passerelle OTP SMS (prevue)"]
+    end
+
+    MOB -- "HTTPS / JSON" --> API
+    API -- "SQL (pg)" --> PG
+    API -- "logEvent()" --> RD
+    RD --> CRON --> LAKE
+    MOB -. "geolocalisation" .-> MAPS
+    API -. "auth OTP (a venir)" .-> SMS
+      </pre>
+    </div>
+  </div>
+
+  <div class="section" id="s12">
+    <div class="section-header c-green"><span class="num">12</span> Dictionnaire de données</div>
+    <div class="section-sub">Toutes les colonnes réellement définies dans <code>api/migrations/001_create_garages.sql</code> et <code>002_create_core_tables.sql</code></div>
+    <div class="section-body">
+      <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead>
+          <tr style="background:#f4f6fb; text-align:left;">
+            <th style="padding:8px 10px; border:1px solid #e8eaf0;">Table</th>
+            <th style="padding:8px 10px; border:1px solid #e8eaf0;">Colonne</th>
+            <th style="padding:8px 10px; border:1px solid #e8eaf0;">Type</th>
+            <th style="padding:8px 10px; border:1px solid #e8eaf0;">Contrainte / Défaut</th>
+            <th style="padding:8px 10px; border:1px solid #e8eaf0;">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td rowspan="12" style="padding:6px 10px; border:1px solid #e8eaf0; font-weight:700;">garages</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">SERIAL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">PK</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Identifiant unique</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">nom</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NOT NULL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Nom du garage</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">categorie</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Type d'activité</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">adresse</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Adresse postale</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">ville</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NOT NULL, défaut 'Casablanca'</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Ville</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">telephone</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Format marocain normalisé</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">note</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NUMERIC(2,1)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Note moyenne source</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">nb_avis</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">défaut 0</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Nombre d'avis source</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">lien_fiche</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">UNIQUE</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Clé de dédup entre imports</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">source</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NOT NULL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">telecontact.ma / openstreetmap</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">a_completer</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">BOOLEAN</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">défaut false</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">true si téléphone manquant</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">geom</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">GEOGRAPHY(POINT,4326)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Géolocalisation (index GIST)</td></tr>
+
+          <tr><td rowspan="7" style="padding:6px 10px; border:1px solid #e8eaf0; font-weight:700;">users</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">SERIAL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">PK</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Identifiant unique</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">nom</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NOT NULL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Nom complet</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">telephone</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NOT NULL, UNIQUE</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Identifiant principal (OTP prévu)</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">email</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">UNIQUE</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Optionnel</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">mot_de_passe_hash</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">nullable</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">bcrypt, en attendant OTP</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">role</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">CHECK IN (automobiliste, mecanicien, admin)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Distingue les 2 catégories conceptuelles : <strong>Client</strong> (automobiliste, a une voiture) / <strong>User</strong> (mecanicien, a un garage)</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">garage_id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">FK garages(id)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Rempli si role=mecanicien</td></tr>
+
+          <tr><td rowspan="5" style="padding:6px 10px; border:1px solid #e8eaf0; font-weight:700;">vehicles</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">SERIAL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">PK</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Identifiant unique</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">user_id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">FK users(id) CASCADE</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Propriétaire</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">plaque</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NOT NULL, UNIQUE</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Clé historique (Semaine 4)</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">marque / modele</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Optionnels</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">annee</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Année du véhicule</td></tr>
+
+          <tr><td rowspan="9" style="padding:6px 10px; border:1px solid #e8eaf0; font-weight:700;">interventions</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">SERIAL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">PK</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Identifiant unique</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">vehicle_id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">FK vehicles(id) CASCADE</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Véhicule concerné</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">garage_id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">FK garages(id)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Garage sollicité</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">user_id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">FK users(id)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Demandeur</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">type_panne / description</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Détail de la demande</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">statut</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">CHECK IN (demande, confirme, en_cours, termine, annule)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Cf. diagramme état-transition</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">prix_estime / prix_final</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NUMERIC(10,2)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Devis / facturation</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">date_rdv</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TIMESTAMPTZ</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">—</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Créneau choisi</td></tr>
+
+          <tr><td rowspan="6" style="padding:6px 10px; border:1px solid #e8eaf0; font-weight:700;">reviews</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">SERIAL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">PK</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Identifiant unique</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">garage_id / user_id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">FK</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Cible et auteur de l'avis</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">intervention_id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">FK, nullable</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Null si avis non vérifié</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">note</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NUMERIC(2,1)</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">CHECK BETWEEN 0 AND 5</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Note attribuée</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">suspect_faux_avis</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">BOOLEAN</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">défaut false</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Flag posé par ML (Semaine 6)</td></tr>
+
+          <tr><td rowspan="4" style="padding:6px 10px; border:1px solid #e8eaf0; font-weight:700;">events</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">BIGSERIAL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">PK</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Identifiant unique</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">user_id</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">INTEGER</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">FK, nullable</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Null si non authentifié</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">type_event</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">TEXT</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">NOT NULL</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">ex: rdv_demande</td></tr>
+          <tr><td style="padding:6px 10px; border:1px solid #e8eaf0;">payload</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">JSONB</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">défaut {}</td><td style="padding:6px 10px; border:1px solid #e8eaf0;">Données libres de l'event</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section" id="s13">
+    <div class="section-header c-blue"><span class="num">13</span> Plan de tests</div>
+    <div class="section-sub">Niveaux de test du cours de Génie Logiciel, appliqués aux endpoints réellement codés (api/src/routes/*.js)</div>
+    <div class="section-body">
+
+      <table class="phase-table">
+        <thead><tr><th style="width:16%;">Niveau</th><th>Ce qu'il vérifie</th><th>Statut sur AUTO+</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Test unitaire</strong></td><td>Une fonction/un module isolé fait ce qui est spécifié</td><td>🔴 À écrire (ex : validation Zod, <code>toPublicUser()</code>, <code>signToken()</code>)</td></tr>
+          <tr><td><strong>Test d'intégration</strong></td><td>Plusieurs modules assemblés fonctionnent ensemble (route + DB)</td><td>🟡 Fait manuellement (<code>curl /health</code>, import CSV rejoué) — pas encore automatisé</td></tr>
+          <tr><td><strong>Test système</strong></td><td>L'application complète respecte les spécifications globales</td><td>🟡 Fait via le prototype cliquable (<code>prototype_mobile_app.html</code>) sur le parcours RDV</td></tr>
+          <tr><td><strong>Test d'acceptation / recette</strong></td><td>Le client (fondateur/jury) valide que le besoin réel est couvert</td><td>🔴 À planifier (Semaine 3 : 10 visites terrain, 20 interviews)</td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:12px; font-weight:700; margin:18px 0 8px;">Cas de tests concrets à automatiser (Jest + Supertest recommandés, cf. stack Node.js) :</p>
+      <table class="phase-table">
+        <thead><tr><th>ID</th><th>Endpoint</th><th>Type</th><th>Entrée / Précondition</th><th>Résultat attendu</th></tr></thead>
+        <tbody>
+          <tr><td>T01</td><td>POST /users/register</td><td>Intégration</td><td>Corps valide, téléphone jamais utilisé</td><td>201 + user + token JWT</td></tr>
+          <tr><td>T02</td><td>POST /users/register</td><td>Unitaire</td><td>Mot de passe de 3 caractères</td><td>400 (Zod : min 6)</td></tr>
+          <tr><td>T03</td><td>POST /users/register</td><td>Intégration</td><td>Téléphone déjà en base</td><td>409 Ce numéro est déjà utilisé</td></tr>
+          <tr><td>T04</td><td>POST /users/login</td><td>Intégration</td><td>Téléphone + mot de passe corrects</td><td>200 + token</td></tr>
+          <tr><td>T05</td><td>POST /users/login</td><td>Intégration</td><td>Mot de passe incorrect</td><td>401 Identifiants invalides</td></tr>
+          <tr><td>T06</td><td>GET /garages</td><td>Intégration</td><td>Aucun paramètre</td><td>200, liste triée par note DESC, max 50</td></tr>
+          <tr><td>T07</td><td>GET /garages?lat=&lng=&radius_km=</td><td>Intégration</td><td>Coordonnées Casablanca + rayon 5km</td><td>200, triée par distance, uniquement garages géolocalisés</td></tr>
+          <tr><td>T08</td><td>GET /garages/:id</td><td>Unitaire</td><td>ID inexistant (ex: 999999)</td><td>404 Garage introuvable</td></tr>
+          <tr><td>T09</td><td>POST /vehicles</td><td>Intégration</td><td>Sans header Authorization</td><td>401 Token manquant</td></tr>
+          <tr><td>T10</td><td>POST /vehicles</td><td>Intégration</td><td>Plaque déjà enregistrée par un autre user</td><td>409 Cette plaque est déjà enregistrée</td></tr>
+          <tr><td>T11</td><td>GET /vehicles/:id</td><td>Intégration</td><td>Véhicule d'un autre utilisateur</td><td>404 Véhicule introuvable (isolation des données)</td></tr>
+          <tr><td>T12</td><td>POST /interventions</td><td>Intégration</td><td>Rôle mecanicien (pas automobiliste)</td><td>403 Accès refusé</td></tr>
+          <tr><td>T13</td><td>POST /interventions</td><td>Intégration</td><td>vehicle_id n'appartenant pas au client</td><td>404 Véhicule introuvable pour cet utilisateur</td></tr>
+          <tr><td>T14</td><td>POST /interventions</td><td>Intégration</td><td>Corps valide, véhicule + garage existants</td><td>201 + statut='demande' + event rdv_demande journalisé</td></tr>
+          <tr><td>T15</td><td>PATCH /interventions/:id/statut</td><td>Intégration</td><td>Mécanicien d'un AUTRE garage tente de modifier</td><td>404 Intervention introuvable pour ce garage</td></tr>
+          <tr><td>T16</td><td>PATCH /interventions/:id/statut</td><td>Unitaire</td><td>statut = "en_pause" (hors enum)</td><td>400 Bad Request (Zod enum)</td></tr>
+          <tr><td>T17</td><td>PATCH /interventions/:id/statut</td><td>Système</td><td>Enchaîner demande→confirme→en_cours→termine</td><td>Chaque transition réussit, l'historique de statut suit le diagramme d'état-transition (section 10)</td></tr>
+          <tr><td>T18</td><td>Middleware auth</td><td>Unitaire</td><td>Token JWT expiré (&gt;30j)</td><td>401 Token invalide ou expiré</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section" id="s14">
+    <div class="section-header c-orange"><span class="num">14</span> Catalogue des scénarios d'erreur</div>
+    <div class="section-sub">Tous les chemins d'erreur réellement implémentés dans le code, endpoint par endpoint — sert de base directe au plan de tests ci-dessus</div>
+    <div class="section-body">
+
+      <table class="phase-table">
+        <thead><tr><th style="width:20%;">Endpoint</th><th style="width:10%;">Code</th><th>Déclencheur</th><th>Message retourné</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="3"><strong>POST /users/register</strong></td><td>400</td><td>Corps invalide (nom vide, téléphone &lt;9 ou &gt;20 car., email mal formé, mot de passe &lt;6 car.)</td><td>Message de la 1ère erreur Zod</td></tr>
+          <tr><td>409</td><td>Téléphone déjà utilisé par un autre compte</td><td>"Ce numero de telephone est deja utilise"</td></tr>
+          <tr><td>500</td><td>Erreur DB inattendue</td><td>Message de l'exception</td></tr>
+
+          <tr><td rowspan="2"><strong>POST /users/login</strong></td><td>400</td><td>Corps invalide</td><td>Message Zod</td></tr>
+          <tr><td>401</td><td>Téléphone inconnu, compte sans mot de passe (OTP), ou mot de passe incorrect</td><td>"Identifiants invalides" (volontairement générique, pas d'énumération de comptes)</td></tr>
+
+          <tr><td><strong>GET /garages</strong></td><td>500</td><td>Erreur DB / requête géospatiale invalide</td><td>Message de l'exception</td></tr>
+
+          <tr><td><strong>GET /garages/:id</strong></td><td>404</td><td>Aucun garage avec cet id</td><td>"Garage introuvable"</td></tr>
+
+          <tr><td><strong>POST /garages</strong></td><td>400</td><td>Corps invalide (nom manquant)</td><td>Message Zod</td></tr>
+
+          <tr><td rowspan="2"><strong>Middleware requireAuth</strong><br><span style="font-weight:400;">(vehicles, interventions)</span></td><td>401</td><td>Header Authorization absent, scheme ≠ Bearer, ou <code>jwt.verify()</code> échoue (signature invalide / token expiré)</td><td>"Token manquant" / "Token invalide ou expire"</td></tr>
+          <tr><td>403</td><td>Rôle de l'utilisateur non autorisé pour la route (<code>requireRole</code>)</td><td>"Acces refuse"</td></tr>
+
+          <tr><td rowspan="2"><strong>POST /vehicles</strong></td><td>400</td><td>Plaque vide, année hors [1980, 2100]</td><td>Message Zod</td></tr>
+          <tr><td>409</td><td>Plaque déjà enregistrée (tous utilisateurs confondus)</td><td>"Cette plaque est deja enregistree"</td></tr>
+
+          <tr><td><strong>GET /vehicles/:id</strong></td><td>404</td><td>Véhicule inexistant OU appartenant à un autre utilisateur</td><td>"Vehicule introuvable"</td></tr>
+
+          <tr><td rowspan="4"><strong>POST /interventions</strong></td><td>403</td><td>Rôle ≠ automobiliste</td><td>"Acces refuse"</td></tr>
+          <tr><td>400</td><td>vehicle_id/garage_id non entiers, date_rdv mal formée</td><td>Message Zod</td></tr>
+          <tr><td>404</td><td>Véhicule inexistant ou n'appartenant pas au client</td><td>"Vehicule introuvable pour cet utilisateur"</td></tr>
+          <tr><td>404</td><td>Garage inexistant</td><td>"Garage introuvable"</td></tr>
+
+          <tr><td><strong>GET /interventions</strong></td><td>400</td><td>Rôle mecanicien sans <code>garage_id</code> rattaché</td><td>"Aucun garage rattache a ce compte mecanicien"</td></tr>
+
+          <tr><td rowspan="3"><strong>PATCH /interventions/:id/statut</strong></td><td>403</td><td>Rôle ≠ mecanicien</td><td>"Acces refuse"</td></tr>
+          <tr><td>400</td><td>Statut hors énumération (demande, confirme, en_cours, termine, annule)</td><td>Message Zod (enum)</td></tr>
+          <tr><td>404</td><td>Intervention inexistante OU n'appartenant pas au garage du mécanicien connecté</td><td>"Intervention introuvable pour ce garage"</td></tr>
+
+          <tr><td colspan="4" style="background:#fff8ee; font-weight:700;">⚠️ Gaps identifiés (non gérés explicitement par le code actuel)</td></tr>
+          <tr><td>GET /garages?lat=</td><td>—</td><td>lat/lng non numériques (ex: <code>lat=abc</code>) → <code>Number("abc")</code> = NaN, pas de validation Zod sur les query params</td><td>Comportement non garanti — à ajouter en test + validation</td></tr>
+          <tr><td>Toutes routes</td><td>500</td><td>Tous les messages d'erreur DB bruts (<code>err.message</code>) sont renvoyés tels quels au client</td><td>Fuite d'information technique en prod — à remplacer par un message générique + log serveur avant mise en production</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Portée de ce dossier :</strong> ce fichier est autonome — il couvre le modèle de développement retenu (section 1), le cycle de vie appliqué étape par étape (section 2), les scénarios d'utilisation détaillés (section 4), l'ensemble des diagrammes UML de conception (sections 3, 5-12 : cas d'utilisation, activité, classes/MCD, composants, séquences, état-transition, déploiement, dictionnaire de données), et le plan de tests avec catalogue complet des scénarios d'erreur (sections 13-14). Tout est calé sur le code réellement livré (migrations SQL + routes Express de la Semaine 3), pas sur des hypothèses — y compris les gaps encore ouverts (section 14). Le prototype cliquable des écrans mobile est disponible séparément dans <code>docs/prototype_mobile_app.html</code>.
+  </div>
+
+</div>
+
+<footer>Auto+ Maroc — Dossier Technique — Confidentiel — 2026</footer>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

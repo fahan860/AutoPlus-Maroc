@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype — AUTO+ Maroc</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif; background: #eef1f7; color: #1a1a2e;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    padding: 24px 12px 60px;
+  }
+
+  .banner {
+    max-width: 420px; width: 100%; background: #1a1a2e; color: #ddd;
+    border-radius: 10px; padding: 12px 16px; font-size: 11px; margin-bottom: 16px;
+    border-left: 3px solid #f57c00;
+  }
+  .banner b { color: #f57c00; }
+
+  .role-switch {
+    display: flex; gap: 8px; margin-bottom: 16px; background: white; padding: 4px;
+    border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .role-switch button {
+    border: none; background: transparent; padding: 8px 18px; border-radius: 8px;
+    font-size: 12px; font-weight: 700; cursor: pointer; color: #888;
+  }
+  .role-switch button.active { background: #1a1a2e; color: white; }
+
+  /* ── PHONE FRAME ── */
+  .phone {
+    width: 375px; max-width: 100%; height: 720px; background: #fff;
+    border-radius: 36px; border: 10px solid #1a1a2e; box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    overflow: hidden; position: relative; display: flex; flex-direction: column;
+  }
+  .notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 18px; background: #1a1a2e; border-radius: 0 0 12px 12px; z-index: 20;
+  }
+  .screen { flex: 1; overflow-y: auto; background: #f7f8fc; padding-top: 22px; }
+
+  .topbar {
+    background: #1a1a2e; color: white; padding: 14px 18px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .topbar .brand { font-weight: 900; color: #f57c00; font-size: 15px; }
+  .topbar h2 { font-size: 14px; font-weight: 700; }
+  .back-btn { cursor: pointer; font-size: 16px; color: #f57c00; }
+
+  .content { padding: 16px; }
+
+  .search-bar {
+    background: white; border-radius: 10px; padding: 10px 14px; font-size: 12px;
+    color: #999; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 14px;
+  }
+
+  .card {
+    background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #eee; cursor: pointer;
+  }
+  .card:active { transform: scale(0.98); }
+  .g-name { font-size: 13px; font-weight: 800; }
+  .g-cat { font-size: 10px; color: #999; margin-top: 2px; }
+  .g-meta { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 11px; }
+  .stars { color: #f57c00; font-size: 12px; }
+  .badge-src {
+    font-size: 9px; padding: 2px 7px; border-radius: 10px; background: #eef1f7; color: #666;
+  }
+
+  .btn {
+    display: block; width: 100%; text-align: center; padding: 12px; border-radius: 10px;
+    background: #f57c00; color: white; font-weight: 800; font-size: 13px; border: none;
+    cursor: pointer; margin-top: 8px;
+  }
+  .btn.secondary { background: #eef1f7; color: #1a1a2e; }
+  .btn.danger { background: #fdeeee; color: #c0392b; }
+  .btn.small { padding: 8px; font-size: 11px; margin-top: 6px; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn-row .btn { margin-top: 0; }
+
+  label { font-size: 11px; font-weight: 700; color: #555; display: block; margin: 12px 0 5px; }
+  input, select, textarea {
+    width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid #e0e0e0;
+    font-size: 12px; font-family: inherit; background: white;
+  }
+  textarea { resize: vertical; min-height: 60px; }
+
+  .detail-hero {
+    background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; padding: 20px 16px;
+  }
+  .detail-hero .g-name { font-size: 16px; color: white; }
+  .detail-hero .g-cat { color: #bbb; }
+  .info-row { display: flex; gap: 8px; align-items: center; font-size: 12px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  .info-row .ic { width: 20px; text-align: center; }
+
+  .statut-badge {
+    font-size: 9px; font-weight: 800; padding: 3px 9px; border-radius: 10px; text-transform: uppercase;
+  }
+  .statut-demande { background: #fff3e0; color: #e67e22; }
+  .statut-confirme { background: #e3f2fd; color: #1976d2; }
+  .statut-en_cours { background: #ede7f6; color: #6a3fb5; }
+  .statut-termine { background: #e8f5e9; color: #2e7d32; }
+  .statut-annule { background: #fdeeee; color: #c0392b; }
+
+  .rdv-card .top-row { display: flex; justify-content: space-between; align-items: flex-start; }
+  .rdv-card .garage { font-size: 12px; font-weight: 800; }
+  .rdv-card .meta { font-size: 10px; color: #888; margin-top: 3px; }
+
+  .bottom-nav {
+    display: flex; background: white; border-top: 1px solid #eee;
+  }
+  .bottom-nav button {
+    flex: 1; border: none; background: none; padding: 10px 4px; font-size: 10px;
+    color: #999; cursor: pointer; font-weight: 700;
+  }
+  .bottom-nav button.active { color: #f57c00; }
+  .bottom-nav .ic { font-size: 16px; display: block; margin-bottom: 2px; }
+
+  .empty { text-align: center; padding: 40px 20px; color: #999; font-size: 12px; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #1a1a2e; color: white; padding: 10px 20px; border-radius: 30px;
+    font-size: 12px; font-weight: 700; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; }
+
+  .section-lbl { font-size: 11px; font-weight: 800; color: #999; text-transform: uppercase; margin: 4px 0 10px; }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <b>Prototype cliquable</b> — écrans de la Semaine 3 (cf. cas d'usage p.2-4 de AutoPlus_Diagrammes_Architecture.pdf). Données de garages réelles (extrait garages_clean.csv). Aucun appel API réel : état gardé en mémoire du navigateur (localStorage), pour tester le parcours seulement.
+</div>
+
+<div class="role-switch">
+  <button id="roleClient" class="active" onclick="setRole('client')">📱 Automobiliste</button>
+  <button id="roleMeca" onclick="setRole('mecanicien')">🔧 Mécanicien</button>
+</div>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen" id="screen"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Données réelles (extrait garages_clean.csv) ─────────────────────
+const GARAGES = [
+  { id: 1, nom: "Maroc Industrie Automobile (M.I.A)", categorie: "Garage automobile / Mécanique", adresse: "rue Ibn Rachid El Fihri (R.Noires), n°86/87 rdc. Hay roches noires", ville: "Casablanca", telephone: "05 22 24 97 99", note: 4.7, nb_avis: 3, source: "telecontact.ma" },
+  { id: 2, nom: "Boss Auto", categorie: "Garage automobile / Mécanique", adresse: "lot. Elhamra, rue 2 n°21 Hay inara", ville: "Casablanca", telephone: "05 22 87 54 50", note: 5.0, nb_avis: 2, source: "telecontact.ma" },
+  { id: 3, nom: "Chrono Auto", categorie: "Garage automobile / Mécanique", adresse: "145 Lot Communal Hay sidi maarouf 1", ville: "Casablanca", telephone: "06 33 74 21 34", note: 5.0, nb_avis: 1, source: "telecontact.ma" },
+  { id: 4, nom: "Auto Assistance كهرباء السيارات", categorie: "Garage automobile / Mécanique", adresse: "Localisation GPS disponible (OSM)", ville: "Casablanca", telephone: "06 30 90 20 20", note: null, nb_avis: 0, source: "openstreetmap" },
+  { id: 5, nom: "diag pro maroc", categorie: "Garage automobile / Mécanique", adresse: "Localisation GPS disponible (OSM)", ville: "Casablanca", telephone: "06 68 46 90 30", note: null, nb_avis: 0, source: "openstreetmap" },
+];
+
+const VEHICLES = [
+  { id: 1, label: "Dacia Logan — 12345-A-6" },
+  { id: 2, label: "Renault Clio — 98765-B-12" },
+];
+
+const PANNES = ["Vidange", "Freins", "Climatisation", "Batterie / électricité", "Autre"];
+
+// Le mecanicien connecte gere le garage id=1 (M.I.A)
+const MECANICIEN_GARAGE_ID = 1;
+
+// ── Etat (persist localStorage) ─────────────────────────────────────
+function loadInterventions() {
+  const raw = localStorage.getItem('autoplus_proto_interventions');
+  if (raw) return JSON.parse(raw);
+  const seed = [
+    { id: 1, garage_id: 1, vehicle_id: 1, type_panne: "Vidange", description: "Bruit moteur au demarrage", statut: "demande", date_rdv: "2026-07-26T09:00", client: "Youssef B." },
+    { id: 2, garage_id: 1, vehicle_id: 2, type_panne: "Freins", description: "Grincement roue avant droite", statut: "confirme", date_rdv: "2026-07-25T14:30", client: "Salma K." },
+  ];
+  save(seed);
+  return seed;
+}
+function save(list) { localStorage.setItem('autoplus_proto_interventions', JSON.stringify(list)); }
+let interventions = loadInterventions();
+let nextId = Math.max(0, ...interventions.map(i => i.id)) + 1;
+
+let role = 'client';
+let clientNav = 'accueil'; // accueil | mesrdv | profil
+let stack = []; // simple back-stack of {view, params}
+
+function setRole(r) {
+  role = r;
+  document.getElementById('roleClient').classList.toggle('active', r === 'client');
+  document.getElementById('roleMeca').classList.toggle('active', r === 'mecanicien');
+  stack = [];
+  render(role === 'client' ? { view: 'accueil' } : { view: 'dashboard' });
+}
+
+function push(view, params) { stack.push({ view, params }); render({ view, params }); }
+function back() { stack.pop(); const prev = stack.pop() || { view: role === 'client' ? 'accueil' : 'dashboard' }; push(prev.view, prev.params); }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function stars(note) {
+  if (!note) return '<span style="color:#ccc;font-size:11px;">Pas encore noté</span>';
+  const full = Math.round(note);
+  return '<span class="stars">' + '★'.repeat(full) + '☆'.repeat(5 - full) + '</span> <b>' + note.toFixed(1) + '</b>';
+}
+
+function statutLabel(s) {
+  return { demande: 'Demandé', confirme: 'Confirmé', en_cours: 'En cours', termine: 'Terminé', annule: 'Annulé' }[s];
+}
+
+// ── Vues ─────────────────────────────────────────────────────────────
+function viewAccueil() {
+  const cards = GARAGES.map(g => `
+    <div class="card" onclick="push('profil', {id:${g.id}})">
+      <div class="g-name">${g.nom}</div>
+      <div class="g-cat">${g.categorie} — ${g.ville}</div>
+      <div class="g-meta">${stars(g.note)} <span style="color:#ccc;">·</span> ${g.nb_avis} avis <span class="badge-src">${g.source}</span></div>
+    </div>
+  `).join('');
+  return `
+    <div class="topbar"><span class="brand">AUTO+</span><h2>Rechercher un mécanicien</h2></div>
+    <div class="content">
+      <div class="search-bar">🔍 Rechercher par nom, quartier, panne...</div>
+      <div class="section-lbl">Garages à proximité (Casablanca)</div>
+      ${cards}
+    </div>
+  `;
+}
+
+function viewProfil(params) {
+  const g = GARAGES.find(x => x.id === params.id);
+  return `
+    <div class="detail-hero">
+      <div class="back-btn" onclick="back()">← Retour</div>
+      <div class="g-name" style="margin-top:10px;">${g.nom}</div>
+      <div class="g-cat">${g.categorie}</div>
+      <div style="margin-top:10px;">${stars(g.note)} · ${g.nb_avis} avis</div>
+    </div>
+    <div class="content">
+      <div class="info-row"><span class="ic">📍</span> ${g.adresse}</div>
+      <div class="info-row"><span class="ic">📞</span> ${g.telephone || 'Non renseigné'}</div>
+      <div class="info-row"><span class="ic">🏷️</span> Source : ${g.source}</div>
+      <button class="btn" onclick="push('rdv', {garageId:${g.id}})">Prendre rendez-vous</button>
+      <button class="btn secondary" onclick="back()">Voir les avis (${g.nb_avis})</button>
+    </div>
+  `;
+}
+
+function viewRdv(params) {
+  const g = GARAGES.find(x => x.id === params.garageId);
+  const vehOpts = VEHICLES.map(v => `<option value="${v.id}">${v.label}</option>`).join('');
+  const panneOpts = PANNES.map(p => `<option value="${p}">${p}</option>`).join('');
+  return `
+    <div class="topbar"><span class="back-btn" onclick="back()">←</span><h2>Demande de RDV — ${g.nom}</h2></div>
+    <div class="content">
+      <label>Véhicule</label>
+      <select id="f-vehicle">${vehOpts}</select>
+      <label>Type de panne</label>
+      <select id="f-panne">${panneOpts}</select>
+      <label>Description</label>
+      <textarea id="f-desc" placeholder="Decrivez le probleme..."></textarea>
+      <label>Date souhaitée</label>
+      <input type="date" id="f-date" value="2026-07-27">
+      <label>Heure souhaitée</label>
+      <input type="time" id="f-time" value="10:00">
+      <button class="btn" onclick="submitRdv(${g.id})">Envoyer la demande</button>
+    </div>
+  `;
+}
+
+function submitRdv(garageId) {
+  const vehicleId = parseInt(document.getElementById('f-vehicle').value);
+  const panne = document.getElementById('f-panne').value;
+  const desc = document.getElementById('f-desc').value;
+  const date = document.getElementById('f-date').value;
+  const time = document.getElementById('f-time').value;
+  interventions.push({
+    id: nextId++, garage_id: garageId, vehicle_id: vehicleId, type_panne: panne,
+    description: desc, statut: 'demande', date_rdv: date + 'T' + time, client: 'Vous (automobiliste)',
+  });
+  save(interventions);
+  toast('Demande de RDV envoyée ✓');
+  clientNav = 'mesrdv';
+  push('mesrdv', {});
+}
+
+function viewMesRdv() {
+  const mine = interventions;
+  const list = mine.length ? mine.slice().reverse().map(i => {
+    const g = GARAGES.find(x => x.id === i.garage_id);
+    return `
+      <div class="card rdv-card" style="cursor:default;">
+        <div class="top-row">
+          <div>
+            <div class="garage">${g.nom}</div>
+            <div class="meta">${i.type_panne} · ${new Date(i.date_rdv).toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+          </div>
+          <span class="statut-badge statut-${i.statut}">${statutLabel(i.statut)}</span>
+        </div>
+      </div>
+    `;
+  }).join('') : '<div class="empty">Aucune demande de RDV pour le moment.</div>';
+  return `
+    <div class="topbar"><span class="brand">AUTO+</span><h2>Mes rendez-vous</h2></div>
+    <div class="content">${list}</div>
+    ${bottomNavHtml('mesrdv')}
+  `;
+}
+
+function viewProfilClient() {
+  return `
+    <div class="topbar"><span class="brand">AUTO+</span><h2>Mon profil</h2></div>
+    <div class="content">
+      <div class="card" style="cursor:default;">
+        <div class="g-name">👤 Automobiliste (démo)</div>
+        <div class="g-cat">Casablanca</div>
+      </div>
+      <div class="section-lbl">Mes véhicules</div>
+      ${VEHICLES.map(v => `<div class="card" style="cursor:default;">🚗 ${v.label}</div>`).join('')}
+    </div>
+    ${bottomNavHtml('profil')}
+  `;
+}
+
+function bottomNavHtml(active) {
+  return `
+    <div class="bottom-nav">
+      <button class="${active==='accueil'?'active':''}" onclick="clientNav='accueil'; push('accueil',{})"><span class="ic">🏠</span>Accueil</button>
+      <button class="${active==='mesrdv'?'active':''}" onclick="clientNav='mesrdv'; push('mesrdv',{})"><span class="ic">📅</span>Mes RDV</button>
+      <button class="${active==='profil'?'active':''}" onclick="clientNav='profil'; push('profilclient',{})"><span class="ic">👤</span>Profil</button>
+    </div>
+  `;
+}
+
+// ── Espace Mécanicien ────────────────────────────────────────────────
+const TRANSITIONS = {
+  demande: [ ['confirme', 'Confirmer', 'btn'], ['annule', 'Refuser', 'btn danger'] ],
+  confirme: [ ['en_cours', 'Démarrer', 'btn'], ['annule', 'Annuler', 'btn danger'] ],
+  en_cours: [ ['termine', 'Terminer', 'btn'] ],
+  termine: [],
+  annule: [],
+};
+
+function viewDashboard() {
+  const mine = interventions.filter(i => i.garage_id === MECANICIEN_GARAGE_ID);
+  const g = GARAGES.find(x => x.id === MECANICIEN_GARAGE_ID);
+  const list = mine.length ? mine.slice().reverse().map(i => {
+    const v = VEHICLES.find(x => x.id === i.vehicle_id);
+    const actions = TRANSITIONS[i.statut].map(([next, label, cls]) =>
+      `<button class="${cls} small" onclick="changeStatut(${i.id}, '${next}')">${label}</button>`
+    ).join('');
+    return `
+      <div class="card rdv-card" style="cursor:default;">
+        <div class="top-row">
+          <div>
+            <div class="garage">${i.client} — ${v.label}</div>
+            <div class="meta">${i.type_panne} · ${new Date(i.date_rdv).toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+            <div class="meta" style="margin-top:4px;">"${i.description || '—'}"</div>
+          </div>
+          <span class="statut-badge statut-${i.statut}">${statutLabel(i.statut)}</span>
+        </div>
+        ${actions ? `<div class="btn-row" style="margin-top:10px;">${actions}</div>` : ''}
+      </div>
+    `;
+  }).join('') : '<div class="empty">Aucune demande reçue.</div>';
+  return `
+    <div class="topbar"><span class="brand">AUTO+</span><h2>Dashboard — ${g.nom}</h2></div>
+    <div class="content">
+      <div class="section-lbl">Demandes reçues</div>
+      ${list}
+    </div>
+  `;
+}
+
+function changeStatut(id, statut) {
+  const i = interventions.find(x => x.id === id);
+  i.statut = statut;
+  save(interventions);
+  toast('Statut mis à jour : ' + statutLabel(statut));
+  render({ view: 'dashboard' });
+}
+
+// ── Router ───────────────────────────────────────────────────────────
+function render(current) {
+  const screen = document.getElementById('screen');
+  const view = current.view;
+  const params = current.params || {};
+  let html = '';
+  if (view === 'accueil') html = viewAccueil();
+  else if (view === 'profil') html = viewProfil(params);
+  else if (view === 'rdv') html = viewRdv(params);
+  else if (view === 'mesrdv') html = viewMesRdv();
+  else if (view === 'profilclient') html = viewProfilClient();
+  else if (view === 'dashboard') html = viewDashboard();
+  screen.innerHTML = html;
+  screen.scrollTop = 0;
+  if (stack.length === 0 || stack[stack.length - 1].view !== view) stack.push({ view, params });
+}
+
+// ── Init ─────────────────────────────────────────────────────────────
+render({ view: 'accueil' });
+</script>
+
+</body>
+</html>
