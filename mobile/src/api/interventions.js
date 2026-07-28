@@ -15,3 +15,9 @@ export function createIntervention({ vehicleId, garageId, typePanne, description
     })
     .then((res) => res.data);
 }
+
+// Cote garagiste : fait avancer le statut d'une demande de RDV
+// (demande -> confirme -> en_cours -> termine, ou annule).
+export function updateInterventionStatut(id, statut) {
+  return apiClient.patch(`/interventions/${id}/statut`, { statut }).then((res) => res.data);
+}

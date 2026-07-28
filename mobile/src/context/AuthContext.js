@@ -43,8 +43,8 @@ export function AuthProvider({ children }) {
     await persistSession(data);
   }
 
-  async function register(nom, telephone, motDePasse, email) {
-    const data = await registerRequest({ nom, telephone, motDePasse, email });
+  async function register(nom, telephone, motDePasse, email, role, garageId, adminCode) {
+    const data = await registerRequest({ nom, telephone, motDePasse, email, role, garageId, adminCode });
     await persistSession(data);
   }
 
