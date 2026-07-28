@@ -31,9 +31,15 @@ export default function GaragesScreen({ navigation }) {
 
   const loadGarages = useCallback(async (coords) => {
     try {
-      const data = await listGarages(
+      let data = await listGarages(
         coords ? { lat: coords.latitude, lng: coords.longitude, radiusKm: 30 } : {}
       );
+      // Peu de garages ont une geoloc exploitable pour l'instant (23/123, voir
+      // data/README.md) : si la recherche par proximite ne renvoie rien, on
+      // se replie sur la liste complete plutot que de laisser l'ecran vide.
+      if (coords && data.length === 0) {
+        data = await listGarages({});
+      }
       setGarages(data);
       setError('');
     } catch (err) {
