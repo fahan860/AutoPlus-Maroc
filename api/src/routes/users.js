@@ -15,11 +15,22 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-a-changer-en-prod';
 const JWT_EXPIRES_IN = '30d';
 
+// Code exige pour s'inscrire en tant qu'admin (evite qu'un compte admin soit
+// cree librement depuis l'app mobile). A definir en variable d'environnement.
+const ADMIN_SIGNUP_CODE = process.env.ADMIN_SIGNUP_CODE || null;
+
 const registerSchema = z.object({
   nom: z.string().min(1),
   telephone: z.string().min(9).max(20),
   email: z.string().email().optional(),
   mot_de_passe: z.string().min(6),
+  role: z.enum(['automobiliste', 'mecanicien', 'admin']).default('automobiliste'),
+  // Requis si role = 'mecanicien' : garage existant (base scrapee) que le
+  // mecanicien revendique. La revendication reste "en_attente" jusqu'a
+  // validation par un admin (voir routes/admin.js).
+  garage_id: z.number().int().optional(),
+  // Requis si role = 'admin'.
+  admin_code: z.string().optional(),
 });
 
 const loginSchema = z.object({
@@ -43,7 +54,21 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ status: 'error', message: parsed.error.errors[0].message });
   }
 
-  const { nom, telephone, email, mot_de_passe } = parsed.data;
+  const { nom, telephone, email, mot_de_passe, role, garage_id: garageId, admin_code: adminCode } = parsed.data;
+
+  // Regles specifiques par role, verifiees avant toute ecriture en base.
+  if (role === 'admin') {
+    if (!ADMIN_SIGNUP_CODE || adminCode !== ADMIN_SIGNUP_CODE) {
+      return res.status(403).json({ status: 'error', message: 'Code administrateur invalide' });
+    }
+  }
+
+  if (role === 'mecanicien' && !garageId) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'garage_id est requis pour un compte mecanicien (choisir un garage existant a revendiquer)',
+    });
+  }
 
   try {
     const existing = await pool.query('SELECT id FROM users WHERE telephone = $1', [telephone]);
@@ -51,18 +76,37 @@ router.post('/register', async (req, res) => {
       return res.status(409).json({ status: 'error', message: 'Ce numero de telephone est deja utilise' });
     }
 
+    let garageStatut = null;
+    if (role === 'mecanicien') {
+      const garage = await pool.query('SELECT id FROM garages WHERE id = $1', [garageId]);
+      if (!garage.rows[0]) {
+        return res.status(404).json({ status: 'error', message: 'Garage introuvable' });
+      }
+      // On tolere qu'un garage soit revendique par plusieurs comptes en attente
+      // (donnees scrapees, pas de proprietaire "verifie" au depart) : l'admin
+      // tranche a la validation. On bloque juste les doublons deja valides.
+      const dejaValide = await pool.query(
+        "SELECT id FROM users WHERE garage_id = $1 AND garage_statut = 'valide'",
+        [garageId]
+      );
+      if (dejaValide.rows[0]) {
+        return res.status(409).json({ status: 'error', message: 'Ce garage est deja revendique et valide par un autre compte' });
+      }
+      garageStatut = 'en_attente';
+    }
+
     const hash = await bcrypt.hash(mot_de_passe, 10);
 
     const { rows } = await pool.query(
-      `INSERT INTO users (nom, telephone, email, mot_de_passe_hash, role)
-       VALUES ($1, $2, $3, $4, 'automobiliste')
+      `INSERT INTO users (nom, telephone, email, mot_de_passe_hash, role, garage_id, garage_statut)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [nom, telephone, email || null, hash]
+      [nom, telephone, email || null, hash, role, role === 'mecanicien' ? garageId : null, garageStatut]
     );
 
     const user = rows[0];
 
-    logEvent('user_register', { role: user.role }, user.id);
+    logEvent('user_register', { role: user.role, garage_id: user.garage_id }, user.id);
 
     res.status(201).json({ user: toPublicUser(user), token: signToken(user) });
   } catch (err) {
@@ -90,6 +134,10 @@ router.post('/login', async (req, res) => {
     const valid = await bcrypt.compare(mot_de_passe, user.mot_de_passe_hash);
     if (!valid) {
       return res.status(401).json({ status: 'error', message: 'Identifiants invalides' });
+    }
+
+    if (!user.actif) {
+      return res.status(403).json({ status: 'error', message: 'Ce compte a ete desactive' });
     }
 
     logEvent('user_login', {}, user.id);
