@@ -69,10 +69,16 @@ router.post('/', requireAuth, requireRole('automobiliste'), async (req, res) => 
 router.get('/', requireAuth, async (req, res) => {
   try {
     if (req.user.role === 'mecanicien') {
-      const user = await pool.query('SELECT garage_id FROM users WHERE id = $1', [req.user.id]);
-      const garageId = user.rows[0]?.garage_id;
+      const user = await pool.query('SELECT garage_id, garage_statut FROM users WHERE id = $1', [req.user.id]);
+      const { garage_id: garageId, garage_statut: garageStatut } = user.rows[0] || {};
       if (!garageId) {
         return res.status(400).json({ status: 'error', message: 'Aucun garage rattache a ce compte mecanicien' });
+      }
+      if (garageStatut !== 'valide') {
+        return res.status(403).json({
+          status: 'error',
+          message: `Revendication du garage ${garageStatut === 'refuse' ? 'refusee' : 'en attente de validation par un admin'}`,
+        });
       }
       const { rows } = await pool.query(
         'SELECT * FROM interventions WHERE garage_id = $1 ORDER BY created_at DESC',
@@ -99,8 +105,11 @@ router.patch('/:id/statut', requireAuth, requireRole('mecanicien'), async (req, 
   }
 
   try {
-    const user = await pool.query('SELECT garage_id FROM users WHERE id = $1', [req.user.id]);
-    const garageId = user.rows[0]?.garage_id;
+    const user = await pool.query('SELECT garage_id, garage_statut FROM users WHERE id = $1', [req.user.id]);
+    const { garage_id: garageId, garage_statut: garageStatut } = user.rows[0] || {};
+    if (!garageId || garageStatut !== 'valide') {
+      return res.status(403).json({ status: 'error', message: 'Garage non rattache ou revendication non validee' });
+    }
 
     const { rows } = await pool.query(
       `UPDATE interventions

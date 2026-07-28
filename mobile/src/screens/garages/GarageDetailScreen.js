@@ -1,22 +1,54 @@
-import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Linking } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Linking, Pressable } from 'react-native';
 import { getGarage } from '../../api/garages';
+import { listReviews, postReview } from '../../api/reviews';
 import { extractErrorMessage } from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 import PrimaryButton from '../../components/PrimaryButton';
+import FormInput from '../../components/FormInput';
 import { colors } from '../../theme/colors';
 
 export default function GarageDetailScreen({ route, navigation }) {
   const { garageId } = route.params;
+  const { user } = useAuth();
   const [garage, setGarage] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [noteChoisie, setNoteChoisie] = useState(5);
+  const [commentaire, setCommentaire] = useState('');
+  const [postingReview, setPostingReview] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+
+  const loadReviews = useCallback(() => {
+    listReviews(garageId).then(setReviews).catch(() => {});
+  }, [garageId]);
+
   useEffect(() => {
-    getGarage(garageId)
-      .then(setGarage)
+    Promise.all([getGarage(garageId), listReviews(garageId).catch(() => [])])
+      .then(([garageData, reviewsData]) => {
+        setGarage(garageData);
+        setReviews(reviewsData);
+      })
       .catch((err) => setError(extractErrorMessage(err)))
       .finally(() => setLoading(false));
   }, [garageId]);
+
+  async function handlePostReview() {
+    setReviewError('');
+    setPostingReview(true);
+    try {
+      await postReview({ garageId, note: noteChoisie, commentaire: commentaire.trim() || undefined });
+      setCommentaire('');
+      loadReviews();
+      getGarage(garageId).then(setGarage).catch(() => {});
+    } catch (err) {
+      setReviewError(extractErrorMessage(err));
+    } finally {
+      setPostingReview(false);
+    }
+  }
 
   if (loading) {
     return <ActivityIndicator style={styles.flex} size="large" color={colors.primary} />;
@@ -52,6 +84,40 @@ export default function GarageDetailScreen({ route, navigation }) {
         title="Prendre rendez-vous"
         onPress={() => navigation.navigate('BookIntervention', { garageId: garage.id, garageNom: garage.nom })}
       />
+
+      <View style={styles.reviewsSection}>
+        <Text style={styles.sectionTitle}>Avis récents</Text>
+        {reviews.length === 0 ? (
+          <Text style={styles.hint}>Aucun avis pour le moment.</Text>
+        ) : (
+          reviews.slice(0, 5).map((r) => (
+            <View key={r.id} style={styles.reviewRow}>
+              <Text style={styles.reviewStars}>{'⭐'.repeat(Math.round(r.note))} {r.auteur}</Text>
+              {r.commentaire ? <Text style={styles.reviewComment}>{r.commentaire}</Text> : null}
+            </View>
+          ))
+        )}
+
+        {user?.role === 'automobiliste' ? (
+          <View style={styles.reviewForm}>
+            <Text style={styles.label}>Laisser un avis</Text>
+            <View style={styles.starPicker}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <Pressable key={n} onPress={() => setNoteChoisie(n)}>
+                  <Text style={styles.starPickerIcon}>{n <= noteChoisie ? '⭐' : '☆'}</Text>
+                </Pressable>
+              ))}
+            </View>
+            <FormInput
+              placeholder="Votre commentaire (optionnel)"
+              value={commentaire}
+              onChangeText={setCommentaire}
+            />
+            {reviewError ? <Text style={styles.error}>{reviewError}</Text> : null}
+            <PrimaryButton title="Publier l'avis" onPress={handlePostReview} loading={postingReview} />
+          </View>
+        ) : null}
+      </View>
     </ScrollView>
   );
 }
@@ -83,4 +149,21 @@ const styles = StyleSheet.create({
   infoValue: { fontSize: 16, color: colors.text, marginTop: 2 },
   spacer: { height: 12 },
   error: { color: colors.danger, textAlign: 'center', marginTop: 40 },
+  reviewsSection: { marginTop: 28 },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: colors.text, marginBottom: 12 },
+  hint: { fontSize: 13, color: colors.textMuted },
+  reviewRow: {
+    backgroundColor: colors.surface,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 12,
+    marginBottom: 10,
+  },
+  reviewStars: { fontSize: 14, color: colors.text, fontWeight: '600' },
+  reviewComment: { fontSize: 13, color: colors.textMuted, marginTop: 4 },
+  reviewForm: { marginTop: 16 },
+  label: { fontSize: 13, fontWeight: '600', color: colors.textMuted, marginBottom: 8 },
+  starPicker: { flexDirection: 'row', gap: 6, marginBottom: 12 },
+  starPickerIcon: { fontSize: 26 },
 });

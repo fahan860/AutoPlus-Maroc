@@ -1,8 +1,16 @@
 import { apiClient } from './client';
 
-export function register({ nom, telephone, email, motDePasse }) {
+export function register({ nom, telephone, email, motDePasse, role, garageId, adminCode }) {
   return apiClient
-    .post('/users/register', { nom, telephone, email: email || undefined, mot_de_passe: motDePasse })
+    .post('/users/register', {
+      nom,
+      telephone,
+      email: email || undefined,
+      mot_de_passe: motDePasse,
+      role: role || undefined,
+      garage_id: garageId || undefined,
+      admin_code: adminCode || undefined,
+    })
     .then((res) => res.data);
 }
 
