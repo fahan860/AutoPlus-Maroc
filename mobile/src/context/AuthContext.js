@@ -38,13 +38,13 @@ export function AuthProvider({ children }) {
     setUser(sessionUser);
   }
 
-  async function login(telephone, motDePasse) {
-    const data = await loginRequest({ telephone, motDePasse });
+  async function login(identifiant, motDePasse) {
+    const data = await loginRequest({ identifiant, motDePasse });
     await persistSession(data);
   }
 
-  async function register(nom, telephone, motDePasse, email, role, garageId, adminCode) {
-    const data = await registerRequest({ nom, telephone, motDePasse, email, role, garageId, adminCode });
+  async function register(nom, telephone, motDePasse, email, role, garageId) {
+    const data = await registerRequest({ nom, telephone, motDePasse, email, role, garageId });
     await persistSession(data);
   }
 

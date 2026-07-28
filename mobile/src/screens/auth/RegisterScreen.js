@@ -12,12 +12,12 @@ import { useAuth, extractErrorMessage } from '../../context/AuthContext';
 import { listGarages } from '../../api/garages';
 import FormInput from '../../components/FormInput';
 import PrimaryButton from '../../components/PrimaryButton';
+import PasswordRequirements, { isPasswordValid } from '../../components/PasswordRequirements';
 import { colors } from '../../theme/colors';
 
 const ROLES = [
   { value: 'automobiliste', label: 'Automobiliste' },
   { value: 'mecanicien', label: 'Mécanicien' },
-  { value: 'admin', label: 'Admin' },
 ];
 
 export default function RegisterScreen({ navigation }) {
@@ -27,7 +27,6 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [motDePasse, setMotDePasse] = useState('');
   const [role, setRole] = useState('automobiliste');
-  const [adminCode, setAdminCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -50,22 +49,26 @@ export default function RegisterScreen({ navigation }) {
     g.nom.toLowerCase().includes(garageSearch.trim().toLowerCase())
   );
 
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
   async function handleSubmit() {
     setError('');
-    if (!nom || !telephone || !motDePasse) {
-      setError('Nom, telephone et mot de passe sont requis');
+    if (!nom || !telephone || !email || !motDePasse) {
+      setError('Nom, telephone, email et mot de passe sont requis');
       return;
     }
-    if (motDePasse.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caracteres');
+    if (!isValidEmail(email.trim())) {
+      setError('Adresse email invalide');
+      return;
+    }
+    if (!isPasswordValid(motDePasse)) {
+      setError('Le mot de passe ne respecte pas les critères de sécurité ci-dessous');
       return;
     }
     if (role === 'mecanicien' && !selectedGarage) {
       setError('Choisissez le garage que vous representez');
-      return;
-    }
-    if (role === 'admin' && !adminCode) {
-      setError('Le code administrateur est requis');
       return;
     }
 
@@ -75,10 +78,9 @@ export default function RegisterScreen({ navigation }) {
         nom.trim(),
         telephone.trim(),
         motDePasse,
-        email.trim() || undefined,
+        email.trim(),
         role,
-        selectedGarage?.id,
-        adminCode.trim() || undefined
+        selectedGarage?.id
       );
     } catch (err) {
       setError(extractErrorMessage(err));
@@ -124,7 +126,7 @@ export default function RegisterScreen({ navigation }) {
           autoCapitalize="none"
         />
         <FormInput
-          label="Email (optionnel)"
+          label="Email"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -136,8 +138,9 @@ export default function RegisterScreen({ navigation }) {
           value={motDePasse}
           onChangeText={setMotDePasse}
           secureTextEntry
-          placeholder="6 caracteres minimum"
+          placeholder="Votre mot de passe"
         />
+        <PasswordRequirements password={motDePasse} />
 
         {role === 'mecanicien' ? (
           <View style={styles.garagePicker}>
@@ -181,16 +184,6 @@ export default function RegisterScreen({ navigation }) {
               </>
             )}
           </View>
-        ) : null}
-
-        {role === 'admin' ? (
-          <FormInput
-            label="Code administrateur"
-            value={adminCode}
-            onChangeText={setAdminCode}
-            secureTextEntry
-            placeholder="Fourni par l'equipe technique"
-          />
         ) : null}
 
         {error ? <Text style={styles.error}>{error}</Text> : null}

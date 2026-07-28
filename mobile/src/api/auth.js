@@ -1,21 +1,20 @@
 import { apiClient } from './client';
 
-export function register({ nom, telephone, email, motDePasse, role, garageId, adminCode }) {
+export function register({ nom, telephone, email, motDePasse, role, garageId }) {
   return apiClient
     .post('/users/register', {
       nom,
       telephone,
-      email: email || undefined,
+      email,
       mot_de_passe: motDePasse,
       role: role || undefined,
       garage_id: garageId || undefined,
-      admin_code: adminCode || undefined,
     })
     .then((res) => res.data);
 }
 
-export function login({ telephone, motDePasse }) {
+export function login({ identifiant, motDePasse }) {
   return apiClient
-    .post('/users/login', { telephone, mot_de_passe: motDePasse })
+    .post('/users/login', { identifiant, mot_de_passe: motDePasse })
     .then((res) => res.data);
 }

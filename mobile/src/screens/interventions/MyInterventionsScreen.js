@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator, RefreshControl } f
 import { useFocusEffect } from '@react-navigation/native';
 import { listInterventions } from '../../api/interventions';
 import { extractErrorMessage } from '../../api/client';
+import PrimaryButton from '../../components/PrimaryButton';
 import { colors } from '../../theme/colors';
 
 const STATUT_LABELS = {
@@ -21,7 +22,7 @@ const STATUT_COLORS = {
   annule: colors.danger,
 };
 
-export default function MyInterventionsScreen() {
+export default function MyInterventionsScreen({ navigation }) {
   const [interventions, setInterventions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -50,6 +51,10 @@ export default function MyInterventionsScreen() {
     setRefreshing(false);
   }
 
+  function goToBooking() {
+    navigation.navigate('Garages', { screen: 'GaragesList' });
+  }
+
   if (loading) {
     return <ActivityIndicator style={styles.flex} size="large" color={colors.primary} />;
   }
@@ -64,7 +69,21 @@ export default function MyInterventionsScreen() {
           keyExtractor={(item) => String(item.id)}
           contentContainerStyle={styles.listContent}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
-          ListEmptyComponent={<Text style={styles.empty}>Aucune demande de rendez-vous pour l'instant</Text>}
+          ListHeaderComponent={
+            <View style={styles.ctaCard}>
+              <Text style={styles.ctaIcon}>📅</Text>
+              <View style={styles.ctaTextGroup}>
+                <Text style={styles.ctaTitle}>Besoin d'un rendez-vous ?</Text>
+                <Text style={styles.ctaSubtitle}>
+                  Trouvez un garage pres de vous et reservez en quelques clics.
+                </Text>
+              </View>
+              <PrimaryButton title="Prendre un rendez-vous" onPress={goToBooking} />
+            </View>
+          }
+          ListEmptyComponent={
+            <Text style={styles.empty}>Aucune demande de rendez-vous pour l'instant</Text>
+          }
           renderItem={({ item }) => (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
@@ -88,6 +107,23 @@ export default function MyInterventionsScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.background },
   listContent: { padding: 16 },
+  ctaCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 18,
+    marginBottom: 18,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  ctaIcon: { fontSize: 28, marginBottom: 8, textAlign: 'center' },
+  ctaTextGroup: { marginBottom: 14 },
+  ctaTitle: { fontSize: 16, fontWeight: '700', color: colors.text, textAlign: 'center' },
+  ctaSubtitle: {
+    fontSize: 13,
+    color: colors.textMuted,
+    textAlign: 'center',
+    marginTop: 4,
+  },
   card: {
     backgroundColor: colors.surface,
     borderRadius: 12,

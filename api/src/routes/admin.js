@@ -10,6 +10,7 @@ const { z } = require('zod');
 const { pool } = require('../db');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { logEvent } = require('../events');
+const { decrypt } = require('../crypto');
 
 const router = express.Router();
 
@@ -23,6 +24,16 @@ const actifSchema = z.object({
   actif: z.boolean(),
 });
 
+// telephone/email sont stockes chiffres (voir ../crypto) : on les dechiffre
+// juste avant de les renvoyer au back-office.
+function withDecryptedContact(row) {
+  return {
+    ...row,
+    telephone: decrypt(row.telephone),
+    email: row.email ? decrypt(row.email) : null,
+  };
+}
+
 // GET /admin/mecaniciens/pending : revendications de garage en attente de validation
 router.get('/mecaniciens/pending', async (_req, res) => {
   try {
@@ -34,7 +45,7 @@ router.get('/mecaniciens/pending', async (_req, res) => {
        WHERE users.role = 'mecanicien' AND users.garage_statut = 'en_attente'
        ORDER BY users.created_at ASC`
     );
-    res.json({ count: rows.length, mecaniciens: rows });
+    res.json({ count: rows.length, mecaniciens: rows.map(withDecryptedContact) });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
@@ -62,7 +73,7 @@ router.patch('/mecaniciens/:userId/statut', async (req, res) => {
 
     logEvent('admin_mecanicien_statut', { user_id: rows[0].id, statut: rows[0].garage_statut }, req.user.id);
 
-    res.json(rows[0]);
+    res.json(withDecryptedContact(rows[0]));
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
@@ -84,7 +95,7 @@ router.get('/users', async (req, res) => {
        ORDER BY created_at DESC`,
       params
     );
-    res.json({ count: rows.length, users: rows });
+    res.json({ count: rows.length, users: rows.map(withDecryptedContact) });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
@@ -110,7 +121,7 @@ router.patch('/users/:id/actif', async (req, res) => {
 
     logEvent('admin_user_actif', { user_id: rows[0].id, actif: rows[0].actif }, req.user.id);
 
-    res.json(rows[0]);
+    res.json(withDecryptedContact(rows[0]));
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }

@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 const { z } = require('zod');
 const { pool } = require('../db');
 const { logEvent } = require('../events');
+const { encrypt, decrypt, hashForLookup } = require('../crypto');
 
 const router = express.Router();
 
@@ -19,11 +20,17 @@ const JWT_EXPIRES_IN = '30d';
 // cree librement depuis l'app mobile). A definir en variable d'environnement.
 const ADMIN_SIGNUP_CODE = process.env.ADMIN_SIGNUP_CODE || null;
 
+// 8 caracteres minimum, au moins une majuscule, une minuscule, un chiffre et
+// un caractere special.
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const PASSWORD_MESSAGE =
+  'Le mot de passe doit contenir au moins 8 caracteres, une majuscule, une minuscule, un chiffre et un caractere special';
+
 const registerSchema = z.object({
   nom: z.string().min(1),
   telephone: z.string().min(9).max(20),
-  email: z.string().email().optional(),
-  mot_de_passe: z.string().min(6),
+  email: z.string().email(),
+  mot_de_passe: z.string().regex(PASSWORD_REGEX, PASSWORD_MESSAGE),
   role: z.enum(['automobiliste', 'mecanicien', 'admin']).default('automobiliste'),
   // Requis si role = 'mecanicien' : garage existant (base scrapee) que le
   // mecanicien revendique. La revendication reste "en_attente" jusqu'a
@@ -34,13 +41,17 @@ const registerSchema = z.object({
 });
 
 const loginSchema = z.object({
-  telephone: z.string().min(9).max(20),
+  identifiant: z.string().min(3),
   mot_de_passe: z.string().min(1),
 });
 
 function toPublicUser(user) {
-  const { mot_de_passe_hash, ...publicUser } = user;
-  return publicUser;
+  const { mot_de_passe_hash, telephone_hash, email_hash, telephone, email, ...publicUser } = user;
+  return {
+    ...publicUser,
+    telephone: decrypt(telephone),
+    email: email ? decrypt(email) : null,
+  };
 }
 
 function signToken(user) {
@@ -70,10 +81,20 @@ router.post('/register', async (req, res) => {
     });
   }
 
+  const telephoneHash = hashForLookup(telephone);
+  const emailHash = hashForLookup(email);
+
   try {
-    const existing = await pool.query('SELECT id FROM users WHERE telephone = $1', [telephone]);
+    const existing = await pool.query(
+      'SELECT id, telephone_hash FROM users WHERE telephone_hash = $1 OR email_hash = $2',
+      [telephoneHash, emailHash]
+    );
     if (existing.rows[0]) {
-      return res.status(409).json({ status: 'error', message: 'Ce numero de telephone est deja utilise' });
+      const message =
+        existing.rows[0].telephone_hash === telephoneHash
+          ? 'Ce numero de telephone est deja utilise'
+          : 'Cet email est deja utilise';
+      return res.status(409).json({ status: 'error', message });
     }
 
     let garageStatut = null;
@@ -98,10 +119,20 @@ router.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(mot_de_passe, 10);
 
     const { rows } = await pool.query(
-      `INSERT INTO users (nom, telephone, email, mot_de_passe_hash, role, garage_id, garage_statut)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO users (nom, telephone, telephone_hash, email, email_hash, mot_de_passe_hash, role, garage_id, garage_statut)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [nom, telephone, email || null, hash, role, role === 'mecanicien' ? garageId : null, garageStatut]
+      [
+        nom,
+        encrypt(telephone),
+        telephoneHash,
+        encrypt(email),
+        emailHash,
+        hash,
+        role,
+        role === 'mecanicien' ? garageId : null,
+        garageStatut,
+      ]
     );
 
     const user = rows[0];
@@ -121,10 +152,14 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ status: 'error', message: parsed.error.errors[0].message });
   }
 
-  const { telephone, mot_de_passe } = parsed.data;
+  const { identifiant, mot_de_passe } = parsed.data;
 
   try {
-    const { rows } = await pool.query('SELECT * FROM users WHERE telephone = $1', [telephone]);
+    const identifiantHash = hashForLookup(identifiant);
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE telephone_hash = $1 OR email_hash = $1',
+      [identifiantHash]
+    );
     const user = rows[0];
 
     if (!user || !user.mot_de_passe_hash) {

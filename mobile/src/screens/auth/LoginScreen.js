@@ -7,20 +7,20 @@ import { colors } from '../../theme/colors';
 
 export default function LoginScreen({ navigation }) {
   const { login } = useAuth();
-  const [telephone, setTelephone] = useState('');
+  const [identifiant, setIdentifiant] = useState('');
   const [motDePasse, setMotDePasse] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit() {
     setError('');
-    if (!telephone || !motDePasse) {
-      setError('Numero de telephone et mot de passe requis');
+    if (!identifiant || !motDePasse) {
+      setError('Telephone ou email, et mot de passe requis');
       return;
     }
     setLoading(true);
     try {
-      await login(telephone.trim(), motDePasse);
+      await login(identifiant.trim(), motDePasse);
     } catch (err) {
       setError(extractErrorMessage(err));
     } finally {
@@ -38,11 +38,10 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.subtitle}>Connectez-vous pour trouver un garage pres de chez vous</Text>
 
         <FormInput
-          label="Telephone"
-          value={telephone}
-          onChangeText={setTelephone}
-          keyboardType="phone-pad"
-          placeholder="06 12 34 56 78"
+          label="Telephone ou email"
+          value={identifiant}
+          onChangeText={setIdentifiant}
+          placeholder="06 12 34 56 78 ou vous@exemple.com"
           autoCapitalize="none"
         />
         <FormInput
