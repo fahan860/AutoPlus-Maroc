@@ -67,11 +67,6 @@ export default function RegisterScreen({ navigation }) {
       setError('Le mot de passe ne respecte pas les critères de sécurité ci-dessous');
       return;
     }
-    if (role === 'mecanicien' && !selectedGarage) {
-      setError('Choisissez le garage que vous representez');
-      return;
-    }
-
     setLoading(true);
     try {
       await register(
@@ -144,10 +139,12 @@ export default function RegisterScreen({ navigation }) {
 
         {role === 'mecanicien' ? (
           <View style={styles.garagePicker}>
-            <Text style={styles.label}>Votre garage (base existante)</Text>
+            <Text style={styles.label}>Votre garage</Text>
             <Text style={styles.hint}>
-              Choisissez le garage que vous representez. Un admin doit valider la demande avant
-              l'acces au tableau de bord.
+              Si votre garage figure deja dans notre annuaire, recherchez-le et revendiquez-le.
+              Sinon, laissez ce champ vide : vous pourrez saisir ses details juste apres
+              l'inscription. Dans les deux cas, un admin doit valider avant l'acces au tableau de
+              bord.
             </Text>
             {selectedGarage ? (
               <Pressable style={styles.selectedGarage} onPress={() => setSelectedGarage(null)}>
@@ -157,16 +154,19 @@ export default function RegisterScreen({ navigation }) {
             ) : (
               <>
                 <FormInput
-                  placeholder="Rechercher un garage par nom..."
+                  placeholder="Rechercher un garage par nom (optionnel)..."
                   value={garageSearch}
                   onChangeText={setGarageSearch}
                 />
                 {garagesLoading ? (
                   <Text style={styles.hint}>Chargement des garages...</Text>
-                ) : (
+                ) : garageSearch.trim() ? (
                   <View style={styles.garageList}>
                     {filteredGarages.slice(0, 8).length === 0 ? (
-                      <Text style={styles.hint}>Aucun garage trouve</Text>
+                      <Text style={styles.hint}>
+                        Aucun garage trouve : laissez ce champ vide, vous pourrez le creer apres
+                        l'inscription.
+                      </Text>
                     ) : (
                       filteredGarages.slice(0, 8).map((item) => (
                         <Pressable
@@ -180,7 +180,7 @@ export default function RegisterScreen({ navigation }) {
                       ))
                     )}
                   </View>
-                )}
+                ) : null}
               </>
             )}
           </View>

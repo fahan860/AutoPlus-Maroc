@@ -6,12 +6,34 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { z } = require('zod');
 const { pool } = require('../db');
 const { logEvent } = require('../events');
 const { encrypt, decrypt, hashForLookup } = require('../crypto');
+const { requireAuth } = require('../middleware/auth');
+const { sendVerificationEmail } = require('../services/mailer');
 
 const router = express.Router();
+
+const VERIFICATION_CODE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+
+// Code a 6 chiffres + son hash SHA-256 (on ne stocke jamais le code en clair
+// en base, meme si sa duree de vie est courte).
+function generateVerificationCode() {
+  const code = String(crypto.randomInt(0, 1000000)).padStart(6, '0');
+  const hash = crypto.createHash('sha256').update(code).digest('hex');
+  return { code, hash, expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL_MS) };
+}
+
+async function issueAndSendVerificationCode(userId, email) {
+  const { code, hash, expiresAt } = generateVerificationCode();
+  await pool.query(
+    'UPDATE users SET verification_code_hash = $1, verification_code_expires_at = $2 WHERE id = $3',
+    [hash, expiresAt, userId]
+  );
+  await sendVerificationEmail(email, code);
+}
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-a-changer-en-prod';
 const JWT_EXPIRES_IN = '30d';
@@ -32,12 +54,23 @@ const registerSchema = z.object({
   email: z.string().email(),
   mot_de_passe: z.string().regex(PASSWORD_REGEX, PASSWORD_MESSAGE),
   role: z.enum(['automobiliste', 'mecanicien', 'admin']).default('automobiliste'),
-  // Requis si role = 'mecanicien' : garage existant (base scrapee) que le
+  // Optionnel si role = 'mecanicien' : garage existant (base scrapee) que le
   // mecanicien revendique. La revendication reste "en_attente" jusqu'a
-  // validation par un admin (voir routes/admin.js).
+  // validation par un admin (voir routes/admin.js). Si absent, le mecanicien
+  // n'a pas encore de garage a l'inscription : l'app mobile le redirige alors
+  // vers un ecran de creation de garage (POST /garages/mine).
   garage_id: z.number().int().optional(),
   // Requis si role = 'admin'.
   admin_code: z.string().optional(),
+});
+
+const verifyEmailSchema = z.object({
+  code: z.string().length(6),
+});
+
+const updateMeSchema = z.object({
+  adresse: z.string().max(255).optional(),
+  ville: z.string().max(120).optional(),
 });
 
 const loginSchema = z.object({
@@ -46,7 +79,16 @@ const loginSchema = z.object({
 });
 
 function toPublicUser(user) {
-  const { mot_de_passe_hash, telephone_hash, email_hash, telephone, email, ...publicUser } = user;
+  const {
+    mot_de_passe_hash,
+    telephone_hash,
+    email_hash,
+    telephone,
+    email,
+    verification_code_hash,
+    verification_code_expires_at,
+    ...publicUser
+  } = user;
   return {
     ...publicUser,
     telephone: decrypt(telephone),
@@ -74,13 +116,6 @@ router.post('/register', async (req, res) => {
     }
   }
 
-  if (role === 'mecanicien' && !garageId) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'garage_id est requis pour un compte mecanicien (choisir un garage existant a revendiquer)',
-    });
-  }
-
   const telephoneHash = hashForLookup(telephone);
   const emailHash = hashForLookup(email);
 
@@ -98,7 +133,7 @@ router.post('/register', async (req, res) => {
     }
 
     let garageStatut = null;
-    if (role === 'mecanicien') {
+    if (role === 'mecanicien' && garageId) {
       const garage = await pool.query('SELECT id FROM garages WHERE id = $1', [garageId]);
       if (!garage.rows[0]) {
         return res.status(404).json({ status: 'error', message: 'Garage introuvable' });
@@ -139,6 +174,15 @@ router.post('/register', async (req, res) => {
 
     logEvent('user_register', { role: user.role, garage_id: user.garage_id }, user.id);
 
+    // Envoi (best-effort) du code de verification email : une erreur SMTP ne
+    // doit pas empecher la creation du compte, l'utilisateur pourra toujours
+    // redemander un code via /users/resend-code.
+    try {
+      await issueAndSendVerificationCode(user.id, email);
+    } catch (mailErr) {
+      console.error('[users/register] envoi email de verification echoue :', mailErr.message);
+    }
+
     res.status(201).json({ user: toPublicUser(user), token: signToken(user) });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
@@ -178,6 +222,101 @@ router.post('/login', async (req, res) => {
     logEvent('user_login', {}, user.id);
 
     res.json({ user: toPublicUser(user), token: signToken(user) });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// POST /users/verify-email : valide le compte connecte avec le code recu par email.
+router.post('/verify-email', requireAuth, async (req, res) => {
+  const parsed = verifyEmailSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ status: 'error', message: 'Code invalide (6 chiffres attendus)' });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, email_verifie, verification_code_hash, verification_code_expires_at FROM users WHERE id = $1',
+      [req.user.id]
+    );
+    const info = rows[0];
+    if (!info) return res.status(404).json({ status: 'error', message: 'Utilisateur introuvable' });
+
+    if (info.email_verifie) {
+      return res.status(400).json({ status: 'error', message: 'Ce compte est deja verifie' });
+    }
+
+    if (!info.verification_code_hash || !info.verification_code_expires_at) {
+      return res.status(400).json({ status: 'error', message: 'Aucun code en attente, redemandez-en un' });
+    }
+
+    if (new Date(info.verification_code_expires_at) < new Date()) {
+      return res.status(400).json({ status: 'error', message: 'Ce code a expire, redemandez-en un' });
+    }
+
+    const codeHash = crypto.createHash('sha256').update(parsed.data.code).digest('hex');
+    if (codeHash !== info.verification_code_hash) {
+      return res.status(400).json({ status: 'error', message: 'Code incorrect' });
+    }
+
+    const { rows: updated } = await pool.query(
+      `UPDATE users
+       SET email_verifie = true, verification_code_hash = NULL, verification_code_expires_at = NULL
+       WHERE id = $1
+       RETURNING *`,
+      [req.user.id]
+    );
+
+    logEvent('email_verifie', {}, req.user.id);
+
+    res.json({ user: toPublicUser(updated[0]) });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// POST /users/resend-code : regenere et renvoie un nouveau code de verification.
+router.post('/resend-code', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT id, email, email_verifie FROM users WHERE id = $1', [req.user.id]);
+    const info = rows[0];
+    if (!info) return res.status(404).json({ status: 'error', message: 'Utilisateur introuvable' });
+    if (info.email_verifie) {
+      return res.status(400).json({ status: 'error', message: 'Ce compte est deja verifie' });
+    }
+    if (!info.email) {
+      return res.status(400).json({ status: 'error', message: 'Aucun email associe a ce compte' });
+    }
+
+    await issueAndSendVerificationCode(info.id, decrypt(info.email));
+
+    res.json({ status: 'ok', message: 'Nouveau code envoye' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// PATCH /users/me : mise a jour des champs de profil non sensibles (adresse, ville).
+router.patch('/me', requireAuth, async (req, res) => {
+  const parsed = updateMeSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ status: 'error', message: parsed.error.errors[0].message });
+  }
+
+  const { adresse, ville } = parsed.data;
+  if (adresse === undefined && ville === undefined) {
+    return res.status(400).json({ status: 'error', message: 'Aucun champ a mettre a jour' });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      `UPDATE users
+       SET adresse = COALESCE($1, adresse), ville = COALESCE($2, ville), updated_at = now()
+       WHERE id = $3
+       RETURNING *`,
+      [adresse ?? null, ville ?? null, req.user.id]
+    );
+    res.json({ user: toPublicUser(rows[0]) });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }

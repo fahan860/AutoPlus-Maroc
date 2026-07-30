@@ -18,3 +18,13 @@ export function getMonGarage() {
 export function getMesVehiculesGarage() {
   return apiClient.get('/garages/mine/vehicules').then((res) => res.data.vehicules);
 }
+
+// Creation du garage par le mecanicien lui-meme (alternative a la revendication
+// d'une fiche existante lors de l'inscription).
+export function createMonGarage(payload) {
+  return apiClient.post('/garages/mine', payload).then((res) => res.data);
+}
+
+export function updateMonGarage(payload) {
+  return apiClient.patch('/garages/mine', payload).then((res) => res.data);
+}

@@ -43,6 +43,16 @@ const createGarageSchema = z.object({
   source: z.string().default('manuel'),
 });
 
+const mecanicienGarageSchema = z.object({
+  nom: z.string().min(1),
+  categorie: z.string().optional(),
+  adresse: z.string().optional(),
+  ville: z.string().optional(),
+  telephone: z.string().optional(),
+  services: z.string().optional(),
+  horaires: z.string().optional(),
+});
+
 // GET /garages?lat=&lng=&radius_km=&ville=
 // Si lat/lng fournis : tri par distance (necessite que `geom` soit rempli via
 // geocoding - pas encore fait sur les donnees scrapees actuelles, voir
@@ -112,7 +122,7 @@ router.get('/mine', requireAuth, requireRole('mecanicien'), async (req, res) => 
     if (!garageId) return; // reponse deja envoyee par le helper
 
     const garage = await pool.query(
-      `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis,
+      `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, services, horaires,
               ST_Y(geom::geometry) AS latitude, ST_X(geom::geometry) AS longitude
        FROM garages WHERE id = $1`,
       [garageId]
@@ -128,6 +138,85 @@ router.get('/mine', requireAuth, requireRole('mecanicien'), async (req, res) => 
       garage: garage.rows[0],
       compteurs_rdv: compteurs.rows.reduce((acc, row) => ({ ...acc, [row.statut]: row.total }), {}),
     });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// POST /garages/mine : le mecanicien connecte cree son propre garage (au lieu
+// de revendiquer une fiche existante). Statut "en_attente" comme une
+// revendication classique : un admin doit valider avant l'acces au dashboard.
+router.post('/mine', requireAuth, requireRole('mecanicien'), async (req, res) => {
+  const parsed = mecanicienGarageSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ status: 'error', message: parsed.error.errors[0].message });
+  }
+
+  try {
+    const { rows: userRows } = await pool.query('SELECT garage_id FROM users WHERE id = $1', [req.user.id]);
+    if (userRows[0]?.garage_id) {
+      return res.status(409).json({
+        status: 'error',
+        message: 'Un garage est deja rattache a ce compte',
+      });
+    }
+
+    const { nom, categorie, adresse, ville, telephone, services, horaires } = parsed.data;
+
+    const { rows } = await pool.query(
+      `INSERT INTO garages (nom, categorie, adresse, ville, telephone, services, horaires, source, a_completer)
+       VALUES ($1, $2, $3, COALESCE($4, 'Casablanca'), $5, $6, $7, 'manuel', false)
+       RETURNING *`,
+      [nom, categorie || null, adresse || null, ville, telephone || null, services || null, horaires || null]
+    );
+    const garage = rows[0];
+
+    await pool.query(
+      "UPDATE users SET garage_id = $1, garage_statut = 'en_attente' WHERE id = $2",
+      [garage.id, req.user.id]
+    );
+
+    logEvent('garage_cree_par_mecanicien', { garage_id: garage.id }, req.user.id);
+
+    res.status(201).json({ garage, garage_statut: 'en_attente' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// PATCH /garages/mine : le mecanicien complete/modifie les infos de son
+// garage (que la revendication soit deja validee ou encore en attente).
+router.patch('/mine', requireAuth, requireRole('mecanicien'), async (req, res) => {
+  const parsed = mecanicienGarageSchema.partial().safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ status: 'error', message: parsed.error.errors[0].message });
+  }
+
+  try {
+    const { rows: userRows } = await pool.query('SELECT garage_id FROM users WHERE id = $1', [req.user.id]);
+    const garageId = userRows[0]?.garage_id;
+    if (!garageId) {
+      return res.status(400).json({ status: 'error', message: 'Aucun garage rattache a ce compte' });
+    }
+
+    const { nom, categorie, adresse, ville, telephone, services, horaires } = parsed.data;
+
+    const { rows } = await pool.query(
+      `UPDATE garages
+       SET nom = COALESCE($1, nom),
+           categorie = COALESCE($2, categorie),
+           adresse = COALESCE($3, adresse),
+           ville = COALESCE($4, ville),
+           telephone = COALESCE($5, telephone),
+           services = COALESCE($6, services),
+           horaires = COALESCE($7, horaires),
+           updated_at = now()
+       WHERE id = $8
+       RETURNING *`,
+      [nom, categorie, adresse, ville, telephone, services, horaires, garageId]
+    );
+
+    res.json({ garage: rows[0] });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
@@ -160,6 +249,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { rows } = await pool.query(
       `SELECT id, nom, categorie, adresse, ville, telephone, note, nb_avis, a_completer, source, scraped_at, created_at,
+              services, horaires,
               ST_Y(geom::geometry) AS latitude, ST_X(geom::geometry) AS longitude
        FROM garages WHERE id = $1`,
       [req.params.id]

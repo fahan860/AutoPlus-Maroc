@@ -54,8 +54,15 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
+  // Met a jour l'utilisateur en memoire + stockage local (ex: apres verification
+  // d'email, creation de garage, edition de profil) sans repasser par login/register.
+  async function updateUser(nextUser) {
+    await SecureStore.setItemAsync(USER_KEY, JSON.stringify(nextUser));
+    setUser(nextUser);
+  }
+
   const value = useMemo(
-    () => ({ user, isBootstrapping, login, register, logout }),
+    () => ({ user, isBootstrapping, login, register, logout, updateUser }),
     [user, isBootstrapping]
   );
 

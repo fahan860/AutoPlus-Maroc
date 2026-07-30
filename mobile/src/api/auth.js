@@ -18,3 +18,15 @@ export function login({ identifiant, motDePasse }) {
     .post('/users/login', { identifiant, mot_de_passe: motDePasse })
     .then((res) => res.data);
 }
+
+export function verifyEmail(code) {
+  return apiClient.post('/users/verify-email', { code }).then((res) => res.data);
+}
+
+export function resendVerificationCode() {
+  return apiClient.post('/users/resend-code').then((res) => res.data);
+}
+
+export function updateMe({ adresse, ville }) {
+  return apiClient.patch('/users/me', { adresse, ville }).then((res) => res.data);
+}
