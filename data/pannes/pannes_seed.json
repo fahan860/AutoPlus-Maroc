@@ -1,0 +1,1130 @@
+{
+  "_note": "Prix (cout_min_dh / cout_max_dh) et durees estimatifs, bases sur des fourchettes generiques marche marocain (pieces + main d'oeuvre garage independant, hors concession). A valider terrain avec des garages partenaires avant tout affichage utilisateur.",
+  "pannes": [
+    {
+      "code": "MOT-01",
+      "categorie": "moteur",
+      "sous_categorie": "allumage",
+      "titre": "Voyant moteur allume avec perte de puissance legere",
+      "symptomes": [
+        "le voyant moteur s'est allume sur le tableau de bord",
+        "la voiture a des ratés quand j'accelere",
+        "le moteur tourne pas rond, ca secoue un peu",
+        "voyant orange moteur allume depuis hier"
+      ],
+      "causes_possibles": [
+        "bougies d'allumage usees ou encrassees",
+        "bobine d'allumage defaillante",
+        "injecteur encrasse sur un cylindre"
+      ],
+      "diagnostic_conseil": "Brancher une valise de diagnostic OBD pour lire le code defaut exact (souvent P0300-P0304 pour un rate d'allumage) avant de remplacer une piece au hasard.",
+      "urgence": "moyenne",
+      "cout_min_dh": 300,
+      "cout_max_dh": 900,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["bougies", "bobine d'allumage", "injecteur"],
+      "marque_specifique": null
+    },
+    {
+      "code": "MOT-02",
+      "categorie": "moteur",
+      "sous_categorie": "consommation_huile",
+      "titre": "Fumee bleue a l'echappement",
+      "symptomes": [
+        "de la fumee bleue sort du pot d'echappement au demarrage",
+        "je consomme beaucoup d'huile entre deux vidanges",
+        "fumee bleutee quand j'accelere fort"
+      ],
+      "causes_possibles": [
+        "segments de piston uses",
+        "joints de queue de soupape uses",
+        "turbo qui laisse passer de l'huile"
+      ],
+      "diagnostic_conseil": "Verifier le niveau d'huile et sa frequence de baisse ; un controle de compression moteur permet de confirmer l'usure des segments.",
+      "urgence": "elevee",
+      "cout_min_dh": 1500,
+      "cout_max_dh": 6000,
+      "duree_reparation": "1-3 jours",
+      "pieces_concernees": ["segments", "joints de soupape", "turbo"],
+      "marque_specifique": null
+    },
+    {
+      "code": "MOT-03",
+      "categorie": "moteur",
+      "sous_categorie": "bruit",
+      "titre": "Bruit de cliquetis moteur au ralenti",
+      "symptomes": [
+        "ca fait un bruit de cliquetis metallique quand le moteur tourne au ralenti",
+        "bruit de tic-tic sous le capot au demarrage",
+        "cliquetis qui disparait quand j'accelere un peu"
+      ],
+      "causes_possibles": [
+        "niveau d'huile bas ou huile trop ancienne",
+        "poussoirs hydrauliques uses",
+        "chaine de distribution detendue"
+      ],
+      "diagnostic_conseil": "Verifier en priorite le niveau et la qualite de l'huile moteur (jauge), gratuit et rapide, avant d'envisager une intervention plus lourde.",
+      "urgence": "moyenne",
+      "cout_min_dh": 200,
+      "cout_max_dh": 2500,
+      "duree_reparation": "30 min a 1 jour",
+      "pieces_concernees": ["huile moteur", "poussoirs hydrauliques", "chaine de distribution"],
+      "marque_specifique": null
+    },
+    {
+      "code": "MOT-04",
+      "categorie": "moteur",
+      "sous_categorie": "refroidissement",
+      "titre": "Surchauffe moteur, voyant temperature au rouge",
+      "symptomes": [
+        "l'aiguille de temperature monte dans le rouge",
+        "de la vapeur sort du capot",
+        "le voyant temperature moteur s'est allume en roulant"
+      ],
+      "causes_possibles": [
+        "niveau de liquide de refroidissement bas",
+        "fuite dans le circuit de refroidissement",
+        "ventilateur de refroidissement en panne",
+        "thermostat bloque"
+      ],
+      "diagnostic_conseil": "Arreter le vehicule des que possible et couper le moteur ; ne jamais ouvrir le bouchon du circuit a chaud. Verifier le niveau une fois le moteur refroidi.",
+      "urgence": "critique",
+      "cout_min_dh": 150,
+      "cout_max_dh": 3000,
+      "duree_reparation": "30 min a 1 jour",
+      "pieces_concernees": ["liquide de refroidissement", "radiateur", "ventilateur", "thermostat"],
+      "marque_specifique": null
+    },
+    {
+      "code": "MOT-05",
+      "categorie": "moteur",
+      "sous_categorie": "demarrage",
+      "titre": "Demarrage difficile a froid",
+      "symptomes": [
+        "le matin la voiture met du temps a demarrer",
+        "il faut plusieurs essais pour demarrer quand il fait froid",
+        "le moteur peine a demarrer puis tourne normalement"
+      ],
+      "causes_possibles": [
+        "bougies de prechauffage defaillantes (diesel)",
+        "batterie faible",
+        "filtre a carburant encrasse"
+      ],
+      "diagnostic_conseil": "Sur diesel, verifier en premier les bougies de prechauffage (temoin qui doit s'eteindre avant le demarrage). Sur essence, tester la batterie.",
+      "urgence": "moyenne",
+      "cout_min_dh": 250,
+      "cout_max_dh": 1200,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["bougies de prechauffage", "batterie", "filtre a carburant"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "FRE-01",
+      "categorie": "freins",
+      "sous_categorie": "usure",
+      "titre": "Grincement ou sifflement au freinage",
+      "symptomes": [
+        "ca grince quand je freine",
+        "sifflement aigu au freinage",
+        "bruit metallique quand j'appuie sur la pedale de frein"
+      ],
+      "causes_possibles": [
+        "plaquettes de frein usees jusqu'a l'indicateur",
+        "disques de frein rayes"
+      ],
+      "diagnostic_conseil": "Ne pas ignorer ce bruit : faire controler l'epaisseur des plaquettes rapidement pour eviter d'endommager les disques (contact metal contre metal).",
+      "urgence": "elevee",
+      "cout_min_dh": 300,
+      "cout_max_dh": 1200,
+      "duree_reparation": "1 heure",
+      "pieces_concernees": ["plaquettes de frein", "disques de frein"],
+      "marque_specifique": null
+    },
+    {
+      "code": "FRE-02",
+      "categorie": "freins",
+      "sous_categorie": "circuit_hydraulique",
+      "titre": "Pedale de frein molle ou spongieuse",
+      "symptomes": [
+        "la pedale de frein s'enfonce plus que d'habitude",
+        "j'ai l'impression que le frein est mou",
+        "il faut appuyer fort et longtemps pour freiner"
+      ],
+      "causes_possibles": [
+        "presence d'air dans le circuit de freinage",
+        "fuite de liquide de frein",
+        "maitre-cylindre defaillant"
+      ],
+      "diagnostic_conseil": "Verifier le niveau du liquide de frein sous le capot. Si le niveau est bas ou baisse rapidement, eviter de rouler et consulter en urgence.",
+      "urgence": "critique",
+      "cout_min_dh": 200,
+      "cout_max_dh": 1500,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["liquide de frein", "maitre-cylindre", "durites de frein"],
+      "marque_specifique": null
+    },
+    {
+      "code": "FRE-03",
+      "categorie": "freins",
+      "sous_categorie": "vibration",
+      "titre": "Vibration dans le volant ou la pedale au freinage",
+      "symptomes": [
+        "le volant vibre quand je freine",
+        "ca tremble dans la pedale de frein",
+        "vibration au freinage a haute vitesse"
+      ],
+      "causes_possibles": [
+        "disques de frein voiles",
+        "usure irreguliere des plaquettes"
+      ],
+      "diagnostic_conseil": "Noter si la vibration apparait uniquement au freinage et si elle s'accentue apres un freinage prolonge en descente (surchauffe des disques).",
+      "urgence": "moyenne",
+      "cout_min_dh": 400,
+      "cout_max_dh": 1400,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["disques de frein", "plaquettes de frein"],
+      "marque_specifique": null
+    },
+    {
+      "code": "FRE-04",
+      "categorie": "freins",
+      "sous_categorie": "geometrie",
+      "titre": "La voiture tire d'un cote au freinage",
+      "symptomes": [
+        "la voiture part sur le cote quand je freine fort",
+        "au freinage ca tire a droite",
+        "j'ai l'impression que le freinage n'est pas equilibre"
+      ],
+      "causes_possibles": [
+        "etrier de frein grippe d'un cote",
+        "plaquettes usees inegalement",
+        "pression de pneu inegale entre les deux cotes"
+      ],
+      "diagnostic_conseil": "Verifier en premier la pression des pneus (gratuit, rapide) avant de faire controler les etriers de frein.",
+      "urgence": "elevee",
+      "cout_min_dh": 350,
+      "cout_max_dh": 1300,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["etrier de frein", "plaquettes de frein"],
+      "marque_specifique": null
+    },
+    {
+      "code": "FRE-05",
+      "categorie": "freins",
+      "sous_categorie": "electronique",
+      "titre": "Voyant ABS ou frein a main allume au tableau de bord",
+      "symptomes": [
+        "le voyant ABS est allume en permanence",
+        "voyant frein qui reste allume apres avoir baisse le frein a main",
+        "temoin ABS qui clignote au demarrage"
+      ],
+      "causes_possibles": [
+        "capteur de vitesse de roue (ABS) defaillant ou encrasse",
+        "niveau de liquide de frein bas",
+        "cable de frein a main mal reglé"
+      ],
+      "diagnostic_conseil": "Brancher une valise de diagnostic pour lire le code ABS exact ; ne pas rouler longtemps avec l'ABS desactive sur route mouillee.",
+      "urgence": "moyenne",
+      "cout_min_dh": 250,
+      "cout_max_dh": 1100,
+      "duree_reparation": "1 heure",
+      "pieces_concernees": ["capteur ABS", "liquide de frein", "cable de frein a main"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "CLI-01",
+      "categorie": "climatisation",
+      "sous_categorie": "refroidissement",
+      "titre": "La climatisation ne refroidit plus ou souffle de l'air tiede",
+      "symptomes": [
+        "la clim souffle de l'air tiede",
+        "la climatisation ne refroidit plus du tout",
+        "avant ca refroidissait bien et maintenant plus rien"
+      ],
+      "causes_possibles": [
+        "manque de gaz refrigerant (fuite)",
+        "compresseur de climatisation en panne",
+        "condenseur encrasse ou endommage"
+      ],
+      "diagnostic_conseil": "Faire verifier la pression du circuit de clim et rechercher une fuite (test au colorant UV) avant de simplement recharger le gaz, sinon la fuite persiste.",
+      "urgence": "faible",
+      "cout_min_dh": 200,
+      "cout_max_dh": 2500,
+      "duree_reparation": "1 heure a 1 jour",
+      "pieces_concernees": ["gaz refrigerant", "compresseur clim", "condenseur"],
+      "marque_specifique": null
+    },
+    {
+      "code": "CLI-02",
+      "categorie": "climatisation",
+      "sous_categorie": "entretien",
+      "titre": "Odeur desagreable au demarrage de la climatisation",
+      "symptomes": [
+        "ca sent le moisi quand j'allume la clim",
+        "mauvaise odeur des que la ventilation demarre",
+        "odeur de renferme dans la voiture"
+      ],
+      "causes_possibles": [
+        "moisissures dans l'evaporateur",
+        "filtre d'habitacle encrasse ou humide"
+      ],
+      "diagnostic_conseil": "Remplacer le filtre d'habitacle en premier (peu couteux) ; si l'odeur persiste, un nettoyage/desinfection de l'evaporateur est necessaire.",
+      "urgence": "faible",
+      "cout_min_dh": 100,
+      "cout_max_dh": 500,
+      "duree_reparation": "30 min a 1 heure",
+      "pieces_concernees": ["filtre d'habitacle", "evaporateur"],
+      "marque_specifique": null
+    },
+    {
+      "code": "CLI-03",
+      "categorie": "climatisation",
+      "sous_categorie": "bruit",
+      "titre": "Bruit anormal quand la climatisation est activee",
+      "symptomes": [
+        "ca fait du bruit des que j'active la clim",
+        "bruit de grincement qui s'arrete quand je coupe la clim",
+        "sifflement quand la climatisation tourne"
+      ],
+      "causes_possibles": [
+        "compresseur de climatisation use",
+        "courroie d'entrainement du compresseur detendue"
+      ],
+      "diagnostic_conseil": "Confirmer que le bruit disparait bien a la coupure de la clim (bouton A/C) pour isoler le compresseur des autres bruits moteur.",
+      "urgence": "moyenne",
+      "cout_min_dh": 150,
+      "cout_max_dh": 2000,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["compresseur clim", "courroie"],
+      "marque_specifique": null
+    },
+    {
+      "code": "CLI-04",
+      "categorie": "climatisation",
+      "sous_categorie": "ventilation",
+      "titre": "La climatisation souffle mais tres faiblement",
+      "symptomes": [
+        "l'air de la clim sort tres faiblement",
+        "la ventilation est faible meme a fond",
+        "peu d'air malgre la vitesse de ventilation au maximum"
+      ],
+      "causes_possibles": [
+        "filtre d'habitacle bouche",
+        "moteur de soufflerie defaillant"
+      ],
+      "diagnostic_conseil": "Verifier et remplacer le filtre d'habitacle en premier, c'est la cause la plus frequente et la moins chere a corriger.",
+      "urgence": "faible",
+      "cout_min_dh": 100,
+      "cout_max_dh": 900,
+      "duree_reparation": "30 min a 1 heure",
+      "pieces_concernees": ["filtre d'habitacle", "moteur de soufflerie"],
+      "marque_specifique": null
+    },
+    {
+      "code": "CLI-05",
+      "categorie": "climatisation",
+      "sous_categorie": "electrique",
+      "titre": "La climatisation s'arrete par intermittence",
+      "symptomes": [
+        "la clim se coupe toute seule de temps en temps",
+        "parfois la climatisation ne s'allume pas au premier essai",
+        "clim qui fonctionne puis s'arrete sans raison"
+      ],
+      "causes_possibles": [
+        "pressostat de climatisation defectueux",
+        "probleme electrique sur le circuit de commande clim"
+      ],
+      "diagnostic_conseil": "Faire brancher une valise de diagnostic pour verifier les pressions du circuit et les codes defaut electriques lies a la clim.",
+      "urgence": "faible",
+      "cout_min_dh": 200,
+      "cout_max_dh": 1200,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["pressostat clim", "faisceau electrique"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "TRA-01",
+      "categorie": "transmission",
+      "sous_categorie": "boite_automatique",
+      "titre": "A-coups en accelerant sur une boite automatique",
+      "symptomes": [
+        "ca secoue quand j'accelere avec la boite auto",
+        "a-coups sentis lors des changements de vitesse automatiques",
+        "la boite automatique passe les rapports brutalement"
+      ],
+      "causes_possibles": [
+        "niveau ou qualite d'huile de boite automatique degradee",
+        "capteur de vitesse defaillant"
+      ],
+      "diagnostic_conseil": "Verifier la date de la derniere vidange de boite ; observer si les a-coups apparaissent surtout a chaud ou a froid.",
+      "urgence": "moyenne",
+      "cout_min_dh": 400,
+      "cout_max_dh": 2500,
+      "duree_reparation": "2 heures a 1 jour",
+      "pieces_concernees": ["huile de boite automatique", "capteur de vitesse"],
+      "marque_specifique": null
+    },
+    {
+      "code": "TRA-02",
+      "categorie": "transmission",
+      "sous_categorie": "boite_manuelle",
+      "titre": "Difficulte a passer les vitesses sur boite manuelle",
+      "symptomes": [
+        "j'ai du mal a passer les vitesses",
+        "ca crisse quand je passe une vitesse",
+        "le levier de vitesse resiste, faut forcer"
+      ],
+      "causes_possibles": [
+        "embrayage use ou mal regle",
+        "cable ou mecanisme de selection de vitesse defectueux"
+      ],
+      "diagnostic_conseil": "Tester le point de patinage de l'embrayage ; noter si le probleme survient uniquement sur certains rapports.",
+      "urgence": "moyenne",
+      "cout_min_dh": 500,
+      "cout_max_dh": 3500,
+      "duree_reparation": "half day a 1 jour",
+      "pieces_concernees": ["embrayage", "cable de selection de vitesse"],
+      "marque_specifique": null
+    },
+    {
+      "code": "TRA-03",
+      "categorie": "transmission",
+      "sous_categorie": "bruit",
+      "titre": "Bruit metallique en roulant vitesse engagee",
+      "symptomes": [
+        "bruit qui vient de la boite de vitesse en roulant",
+        "grondement qui varie avec la vitesse de la voiture",
+        "bruit qui disparait au point mort"
+      ],
+      "causes_possibles": [
+        "roulement de boite de vitesses use",
+        "niveau d'huile de boite bas"
+      ],
+      "diagnostic_conseil": "Verifier si le bruit disparait au point mort (embrayage debraye) : si oui, cela oriente vers la boite plutot que le moteur.",
+      "urgence": "moyenne",
+      "cout_min_dh": 600,
+      "cout_max_dh": 3000,
+      "duree_reparation": "1 jour",
+      "pieces_concernees": ["roulement de boite", "huile de boite"],
+      "marque_specifique": null
+    },
+    {
+      "code": "TRA-04",
+      "categorie": "transmission",
+      "sous_categorie": "embrayage",
+      "titre": "L'embrayage patine",
+      "symptomes": [
+        "le moteur monte en tours mais la voiture n'avance pas assez vite",
+        "l'embrayage patine en cote",
+        "odeur de brule quand je demarre en cote"
+      ],
+      "causes_possibles": [
+        "disque d'embrayage use",
+        "mecanisme d'embrayage fatigue"
+      ],
+      "diagnostic_conseil": "Tester en cote, frein a main serre, en relachant doucement l'embrayage : si le moteur cale, l'embrayage n'est pas confirme use ; s'il ne cale pas, patinage confirme.",
+      "urgence": "elevee",
+      "cout_min_dh": 1200,
+      "cout_max_dh": 3500,
+      "duree_reparation": "1 jour",
+      "pieces_concernees": ["disque d'embrayage", "mecanisme d'embrayage", "butee d'embrayage"],
+      "marque_specifique": null
+    },
+    {
+      "code": "TRA-05",
+      "categorie": "transmission",
+      "sous_categorie": "embrayage",
+      "titre": "Point de patinage de l'embrayage anormalement haut ou bas",
+      "symptomes": [
+        "l'embrayage accroche tout en haut de la pedale",
+        "il faut relacher tres peu la pedale pour que ca avance",
+        "point de patinage qui a change recemment"
+      ],
+      "causes_possibles": [
+        "cable ou circuit hydraulique d'embrayage a regler",
+        "usure progressive du disque d'embrayage"
+      ],
+      "diagnostic_conseil": "Un point de patinage qui remonte progressivement dans le temps est un signe classique d'usure du disque d'embrayage a surveiller.",
+      "urgence": "faible",
+      "cout_min_dh": 150,
+      "cout_max_dh": 3000,
+      "duree_reparation": "30 min a 1 jour",
+      "pieces_concernees": ["cable d'embrayage", "disque d'embrayage"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "ELE-01",
+      "categorie": "electrique",
+      "sous_categorie": "batterie",
+      "titre": "La voiture ne demarre pas, rien ne s'allume",
+      "symptomes": [
+        "rien ne s'allume quand je tourne la cle",
+        "le tableau de bord reste noir au demarrage",
+        "aucun bruit quand j'essaie de demarrer"
+      ],
+      "causes_possibles": [
+        "batterie dechargee",
+        "cosses de batterie oxydees ou mal serrees"
+      ],
+      "diagnostic_conseil": "Verifier si les feux ou le tableau de bord s'allument faiblement, controler visuellement l'etat des cosses de batterie et l'age de la batterie (usure frequente au-dela de 4-5 ans).",
+      "urgence": "faible",
+      "cout_min_dh": 80,
+      "cout_max_dh": 900,
+      "duree_reparation": "30 min",
+      "pieces_concernees": ["batterie", "cosses de batterie"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ELE-02",
+      "categorie": "electrique",
+      "sous_categorie": "demarreur",
+      "titre": "Un clic se fait entendre au contact sans que le moteur demarre",
+      "symptomes": [
+        "j'entends un clic quand je tourne la cle mais rien ne demarre",
+        "clic repete au demarrage",
+        "le demarreur fait un bruit sec sans lancer le moteur"
+      ],
+      "causes_possibles": [
+        "demarreur defaillant",
+        "batterie trop faible pour fournir l'appel de courant necessaire"
+      ],
+      "diagnostic_conseil": "Tenter un demarrage avec cables ou batterie de secours pour distinguer une panne de batterie d'une panne de demarreur.",
+      "urgence": "moyenne",
+      "cout_min_dh": 100,
+      "cout_max_dh": 1500,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["demarreur", "batterie"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ELE-03",
+      "categorie": "electrique",
+      "sous_categorie": "charge",
+      "titre": "Voyant batterie ou alternateur allume en roulant",
+      "symptomes": [
+        "le voyant batterie s'est allume pendant que je roulais",
+        "voyant rouge en forme de batterie au tableau de bord",
+        "les phares faiblissent en roulant"
+      ],
+      "causes_possibles": [
+        "alternateur defaillant",
+        "courroie d'alternateur detendue ou cassee"
+      ],
+      "diagnostic_conseil": "Eviter les trajets longs, couper les equipements electriques non essentiels (climatisation, radio) et faire verifier rapidement : sans alternateur, le vehicule roule uniquement sur la charge residuelle de la batterie.",
+      "urgence": "elevee",
+      "cout_min_dh": 400,
+      "cout_max_dh": 2200,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["alternateur", "courroie d'alternateur"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ELE-04",
+      "categorie": "electrique",
+      "sous_categorie": "accessoires",
+      "titre": "Les vitres electriques ne fonctionnent plus",
+      "symptomes": [
+        "la vitre ne monte plus quand j'appuie sur le bouton",
+        "le leve-vitre electrique ne repond plus",
+        "une seule vitre ne fonctionne plus, les autres marchent"
+      ],
+      "causes_possibles": [
+        "fusible du leve-vitre grille",
+        "moteur du leve-vitre en panne",
+        "mecanisme du leve-vitre casse"
+      ],
+      "diagnostic_conseil": "Verifier le fusible correspondant en premier (peu couteux et rapide) avant d'envisager un remplacement de moteur ou mecanisme.",
+      "urgence": "faible",
+      "cout_min_dh": 50,
+      "cout_max_dh": 1200,
+      "duree_reparation": "30 min a 2 heures",
+      "pieces_concernees": ["fusible", "moteur de leve-vitre", "mecanisme de leve-vitre"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ELE-05",
+      "categorie": "electrique",
+      "sous_categorie": "eclairage",
+      "titre": "Phares faibles ou clignotants qui clignotent trop vite",
+      "symptomes": [
+        "les phares eclairent moins bien qu'avant",
+        "le clignotant clignote plus vite que d'habitude",
+        "une ampoule de phare est plus faible que l'autre"
+      ],
+      "causes_possibles": [
+        "ampoule usee ou en fin de vie",
+        "mauvais contact de masse electrique",
+        "ampoule de clignotant grillee (clignotement rapide typique)"
+      ],
+      "diagnostic_conseil": "Un clignotant qui clignote anormalement vite indique presque toujours une ampoule grillee de ce cote : verifier visuellement avant toute autre intervention.",
+      "urgence": "faible",
+      "cout_min_dh": 30,
+      "cout_max_dh": 400,
+      "duree_reparation": "15-30 min",
+      "pieces_concernees": ["ampoule", "connecteur electrique"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "PNE-01",
+      "categorie": "pneus_suspension",
+      "sous_categorie": "usure",
+      "titre": "Usure irreguliere des pneus",
+      "symptomes": [
+        "mes pneus s'usent plus d'un cote que de l'autre",
+        "l'interieur du pneu est plus use que l'exterieur",
+        "usure en dents de scie sur le pneu"
+      ],
+      "causes_possibles": [
+        "parallelisme desregle",
+        "pression de gonflage incorrecte",
+        "amortisseurs uses"
+      ],
+      "diagnostic_conseil": "Verifier d'abord la pression de gonflage (gratuit) avant de faire controler la geometrie (parallelisme) du vehicule.",
+      "urgence": "moyenne",
+      "cout_min_dh": 150,
+      "cout_max_dh": 800,
+      "duree_reparation": "1 heure",
+      "pieces_concernees": ["pneus", "reglage parallelisme"],
+      "marque_specifique": null
+    },
+    {
+      "code": "PNE-02",
+      "categorie": "pneus_suspension",
+      "sous_categorie": "equilibrage",
+      "titre": "Vibration dans le volant a haute vitesse sur autoroute",
+      "symptomes": [
+        "le volant vibre a partir de 100 km/h",
+        "vibration qui augmente avec la vitesse",
+        "tremblement dans le volant sur autoroute"
+      ],
+      "causes_possibles": [
+        "roues desequilibrees",
+        "pneus deformes ou uses de facon irreguliere"
+      ],
+      "diagnostic_conseil": "Verifier l'usure irreguliere des pneus, envisager un equilibrage des roues si le probleme est apparu recemment (apres un choc de trottoir par exemple).",
+      "urgence": "faible",
+      "cout_min_dh": 80,
+      "cout_max_dh": 600,
+      "duree_reparation": "30-45 min",
+      "pieces_concernees": ["equilibrage roues", "pneus"],
+      "marque_specifique": null
+    },
+    {
+      "code": "PNE-03",
+      "categorie": "pneus_suspension",
+      "sous_categorie": "amortisseurs",
+      "titre": "Bruit de claquement en passant sur un dos d'ane ou nid de poule",
+      "symptomes": [
+        "ca claque quand je passe sur une bosse",
+        "bruit sec a chaque irregularite de la route",
+        "bruit metallique en passant sur les nids de poule"
+      ],
+      "causes_possibles": [
+        "amortisseur use ou fuyant",
+        "biellette de barre stabilisatrice usee",
+        "butee de suspension endommagee"
+      ],
+      "diagnostic_conseil": "Verifier visuellement une fuite d'huile sur le corps de l'amortisseur ; faire tester le jeu des biellettes lors du prochain controle.",
+      "urgence": "moyenne",
+      "cout_min_dh": 300,
+      "cout_max_dh": 2000,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["amortisseurs", "biellette de barre stabilisatrice"],
+      "marque_specifique": null
+    },
+    {
+      "code": "PNE-04",
+      "categorie": "pneus_suspension",
+      "sous_categorie": "ressorts",
+      "titre": "La voiture penche fortement dans les virages",
+      "symptomes": [
+        "la voiture penche beaucoup quand je tourne",
+        "j'ai l'impression que la caisse roule dans les virages",
+        "sensation d'instabilite en virage a vitesse moderee"
+      ],
+      "causes_possibles": [
+        "ressorts de suspension fatigues",
+        "barre stabilisatrice ou biellettes usees"
+      ],
+      "diagnostic_conseil": "Comparer la hauteur de caisse des deux cotes du vehicule (a l'oeil, vehicule sur sol plat) pour reperer un ressort affaisse.",
+      "urgence": "moyenne",
+      "cout_min_dh": 400,
+      "cout_max_dh": 2200,
+      "duree_reparation": "half day",
+      "pieces_concernees": ["ressorts de suspension", "barre stabilisatrice"],
+      "marque_specifique": null
+    },
+    {
+      "code": "PNE-05",
+      "categorie": "pneus_suspension",
+      "sous_categorie": "gonflage",
+      "titre": "La pression d'un pneu baisse regulierement",
+      "symptomes": [
+        "je dois regonfler le meme pneu chaque semaine",
+        "un pneu perd de la pression plus vite que les autres",
+        "temoin de pression pneu qui s'allume regulierement"
+      ],
+      "causes_possibles": [
+        "fuite lente due a un clou ou objet dans le pneu",
+        "valve de gonflage defectueuse",
+        "jante legerement deformee"
+      ],
+      "diagnostic_conseil": "Faire tremper le pneu (demonte) dans l'eau chez un pneumaticien pour localiser precisement la fuite avant reparation ou remplacement.",
+      "urgence": "moyenne",
+      "cout_min_dh": 50,
+      "cout_max_dh": 900,
+      "duree_reparation": "30 min",
+      "pieces_concernees": ["pneu", "valve de gonflage"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "DIR-01",
+      "categorie": "direction",
+      "sous_categorie": "assistance",
+      "titre": "Direction dure a manoeuvrer",
+      "symptomes": [
+        "le volant est tres dur a tourner",
+        "j'ai l'impression que la direction assistee ne fonctionne plus",
+        "direction lourde surtout a basse vitesse"
+      ],
+      "causes_possibles": [
+        "niveau de liquide de direction assistee bas",
+        "pompe de direction assistee defaillante",
+        "courroie de pompe de direction cassee"
+      ],
+      "diagnostic_conseil": "Verifier le niveau du liquide de direction assistee sous le capot avant d'envisager un remplacement de pompe.",
+      "urgence": "elevee",
+      "cout_min_dh": 150,
+      "cout_max_dh": 2500,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["liquide direction assistee", "pompe de direction assistee", "courroie"],
+      "marque_specifique": null
+    },
+    {
+      "code": "DIR-02",
+      "categorie": "direction",
+      "sous_categorie": "bruit",
+      "titre": "Sifflement en tournant le volant",
+      "symptomes": [
+        "ca siffle quand je tourne le volant a fond",
+        "bruit aigu au braquage maximal",
+        "sifflement qui apparait surtout en creneau"
+      ],
+      "causes_possibles": [
+        "niveau de liquide de direction assistee bas",
+        "courroie de pompe de direction assistee usee ou detendue"
+      ],
+      "diagnostic_conseil": "Ce sifflement au braquage maximal est un signe classique de niveau bas de liquide de direction assistee : verifier avant toute autre intervention.",
+      "urgence": "faible",
+      "cout_min_dh": 80,
+      "cout_max_dh": 500,
+      "duree_reparation": "30 min",
+      "pieces_concernees": ["liquide direction assistee", "courroie"],
+      "marque_specifique": null
+    },
+    {
+      "code": "DIR-03",
+      "categorie": "direction",
+      "sous_categorie": "jeu",
+      "titre": "Jeu important ressenti dans le volant",
+      "symptomes": [
+        "le volant a du jeu avant de reagir",
+        "je dois tourner beaucoup le volant avant que la voiture ne braque",
+        "sensation de flottement dans la direction"
+      ],
+      "causes_possibles": [
+        "rotules de direction usees",
+        "cremaillere de direction usee"
+      ],
+      "diagnostic_conseil": "Faire verifier les rotules de direction et la cremaillere lors du prochain controle technique ; eviter les grandes vitesses en attendant.",
+      "urgence": "elevee",
+      "cout_min_dh": 300,
+      "cout_max_dh": 2500,
+      "duree_reparation": "half day",
+      "pieces_concernees": ["rotules de direction", "cremaillere de direction"],
+      "marque_specifique": null
+    },
+    {
+      "code": "DIR-04",
+      "categorie": "direction",
+      "sous_categorie": "vibration",
+      "titre": "Le volant vibre en roulant",
+      "symptomes": [
+        "le volant tremble en roulant tout droit",
+        "vibration dans le volant qui augmente avec la vitesse",
+        "le volant vibre surtout sur autoroute"
+      ],
+      "causes_possibles": [
+        "parallelisme desregle",
+        "roues desequilibrees",
+        "pneus uses irregulierement"
+      ],
+      "diagnostic_conseil": "Ce symptome recoupe souvent l'equilibrage des roues (PNE-02) : commencer par un equilibrage avant d'envisager la geometrie complete.",
+      "urgence": "moyenne",
+      "cout_min_dh": 150,
+      "cout_max_dh": 800,
+      "duree_reparation": "1 heure",
+      "pieces_concernees": ["reglage parallelisme", "equilibrage roues"],
+      "marque_specifique": null
+    },
+    {
+      "code": "DIR-05",
+      "categorie": "direction",
+      "sous_categorie": "geometrie",
+      "titre": "La voiture tire d'un cote en conduite normale",
+      "symptomes": [
+        "la voiture tire a gauche meme sur route plate",
+        "je dois corriger constamment pour rouler droit",
+        "le vehicule part sur le cote quand je lache le volant"
+      ],
+      "causes_possibles": [
+        "parallelisme desregle",
+        "pression de pneu inegale",
+        "usure irreguliere d'un pneu"
+      ],
+      "diagnostic_conseil": "Verifier et egaliser la pression des quatre pneus en premier (gratuit) avant de faire controler la geometrie.",
+      "urgence": "moyenne",
+      "cout_min_dh": 150,
+      "cout_max_dh": 800,
+      "duree_reparation": "1 heure",
+      "pieces_concernees": ["reglage parallelisme", "pneus"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "ECH-01",
+      "categorie": "echappement",
+      "sous_categorie": "fuite",
+      "titre": "Bruit fort ou petaradant a l'echappement",
+      "symptomes": [
+        "la voiture fait un bruit fort comme une moto",
+        "bruit petaradant surtout au demarrage",
+        "l'echappement est beaucoup plus bruyant qu'avant"
+      ],
+      "causes_possibles": [
+        "silencieux d'echappement perce ou rouille",
+        "fuite au niveau d'un joint de la ligne d'echappement"
+      ],
+      "diagnostic_conseil": "Une inspection visuelle sous le vehicule permet souvent de reperer directement le point de fuite ou la partie percee.",
+      "urgence": "moyenne",
+      "cout_min_dh": 200,
+      "cout_max_dh": 1800,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["silencieux", "ligne d'echappement", "joints d'echappement"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ECH-02",
+      "categorie": "echappement",
+      "sous_categorie": "securite",
+      "titre": "Odeur de gaz d'echappement ressentie dans l'habitacle",
+      "symptomes": [
+        "je sens l'odeur d'echappement a l'interieur de la voiture",
+        "odeur de gaz brules dans l'habitacle vitres fermees",
+        "mal de tete leger apres un long trajet, odeur suspecte"
+      ],
+      "causes_possibles": [
+        "fuite sur la ligne d'echappement pres de l'habitacle",
+        "joint d'etancheite de carrosserie defaillant"
+      ],
+      "diagnostic_conseil": "Ne pas negliger ce symptome (risque d'intoxication au monoxyde de carbone) : rouler vitres ouvertes et faire controler en urgence.",
+      "urgence": "critique",
+      "cout_min_dh": 200,
+      "cout_max_dh": 1800,
+      "duree_reparation": "1-2 heures",
+      "pieces_concernees": ["ligne d'echappement", "joints d'etancheite"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ECH-03",
+      "categorie": "echappement",
+      "sous_categorie": "antipollution",
+      "titre": "Voyant antipollution allume",
+      "symptomes": [
+        "un voyant moteur avec une forme particuliere s'est allume",
+        "voyant antipollution ou FAP allume au tableau de bord",
+        "message filtre a particules affiche sur l'ordinateur de bord"
+      ],
+      "causes_possibles": [
+        "sonde lambda defaillante",
+        "catalyseur degrade",
+        "filtre a particules (diesel) encrasse"
+      ],
+      "diagnostic_conseil": "Brancher une valise de diagnostic pour identifier le code exact ; sur diesel, un trajet prolonge sur autoroute peut parfois regenerer un FAP legerement encrasse.",
+      "urgence": "moyenne",
+      "cout_min_dh": 250,
+      "cout_max_dh": 3500,
+      "duree_reparation": "1 heure a 1 jour",
+      "pieces_concernees": ["sonde lambda", "catalyseur", "filtre a particules"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ECH-04",
+      "categorie": "echappement",
+      "sous_categorie": "combustion",
+      "titre": "Fumee noire a l'echappement",
+      "symptomes": [
+        "de la fumee noire sort quand j'accelere",
+        "fumee noire epaisse a l'echappement sur diesel",
+        "fumee sombre surtout en cote ou en charge"
+      ],
+      "causes_possibles": [
+        "melange air/carburant trop riche",
+        "filtre a air encrasse",
+        "injecteur diesel defaillant"
+      ],
+      "diagnostic_conseil": "Verifier en premier l'etat du filtre a air, cause frequente et peu couteuse, avant d'envisager les injecteurs.",
+      "urgence": "moyenne",
+      "cout_min_dh": 150,
+      "cout_max_dh": 2000,
+      "duree_reparation": "1 heure a half day",
+      "pieces_concernees": ["filtre a air", "injecteurs"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ECH-05",
+      "categorie": "echappement",
+      "sous_categorie": "fixation",
+      "titre": "L'echappement pend ou traine au sol",
+      "symptomes": [
+        "j'entends l'echappement qui traine par terre",
+        "le pot d'echappement pend d'un cote",
+        "bruit de frottement au sol a l'arriere du vehicule"
+      ],
+      "causes_possibles": [
+        "silent-bloc de fixation d'echappement casse",
+        "support d'echappement rouille et rompu"
+      ],
+      "diagnostic_conseil": "Eviter de rouler ainsi (risque d'endommager davantage la ligne ou de la perdre) : faire remettre en place ou remplacer la fixation rapidement.",
+      "urgence": "moyenne",
+      "cout_min_dh": 80,
+      "cout_max_dh": 400,
+      "duree_reparation": "30 min",
+      "pieces_concernees": ["silent-bloc d'echappement", "support d'echappement"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "ENT-01",
+      "categorie": "entretien_courant",
+      "sous_categorie": "vidange",
+      "titre": "Vidange en retard",
+      "symptomes": [
+        "je ne sais plus quand j'ai fait ma derniere vidange",
+        "ca fait plus de 15000 km ou un an que je n'ai pas vidange",
+        "l'huile parait tres sombre sur la jauge"
+      ],
+      "causes_possibles": [
+        "entretien preventif en retard"
+      ],
+      "diagnostic_conseil": "Verifier la date et le kilometrage de la derniere vidange au carnet d'entretien, controler la couleur et le niveau de l'huile sur la jauge.",
+      "urgence": "faible",
+      "cout_min_dh": 250,
+      "cout_max_dh": 700,
+      "duree_reparation": "30-45 min",
+      "pieces_concernees": ["huile moteur", "filtre a huile"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ENT-02",
+      "categorie": "entretien_courant",
+      "sous_categorie": "filtration",
+      "titre": "Filtre a air encrasse",
+      "symptomes": [
+        "je consomme un peu plus de carburant qu'avant",
+        "legere perte de puissance a l'acceleration",
+        "ca fait longtemps que je n'ai pas change le filtre a air"
+      ],
+      "causes_possibles": [
+        "filtre a air encrasse par la poussiere",
+        "filtre a air jamais remplace depuis l'achat"
+      ],
+      "diagnostic_conseil": "Le filtre a air se verifie visuellement en quelques minutes (couleur grise/noire = a changer) et se remplace facilement, sans outillage specifique.",
+      "urgence": "faible",
+      "cout_min_dh": 60,
+      "cout_max_dh": 250,
+      "duree_reparation": "15 min",
+      "pieces_concernees": ["filtre a air"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ENT-03",
+      "categorie": "entretien_courant",
+      "sous_categorie": "visibilite",
+      "titre": "Balais d'essuie-glace uses",
+      "symptomes": [
+        "les essuie-glaces laissent des traces sur le pare-brise",
+        "l'essuie-glace fait un bruit de raclement",
+        "la vue n'est pas nette quand il pleut"
+      ],
+      "causes_possibles": [
+        "caoutchouc des balais d'essuie-glace durci ou fissure"
+      ],
+      "diagnostic_conseil": "Remplacement simple et peu couteux ; a faire des les premiers signes de traces pour garder une bonne visibilite en cas de pluie.",
+      "urgence": "faible",
+      "cout_min_dh": 50,
+      "cout_max_dh": 200,
+      "duree_reparation": "10 min",
+      "pieces_concernees": ["balais d'essuie-glace"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ENT-04",
+      "categorie": "entretien_courant",
+      "sous_categorie": "batterie",
+      "titre": "Batterie ancienne a prevoir en changement preventif",
+      "symptomes": [
+        "ma batterie a plus de 4 ou 5 ans",
+        "le demarrage est un peu plus lent qu'avant sans etre en panne",
+        "je veux eviter une panne de batterie surprise"
+      ],
+      "causes_possibles": [
+        "vieillissement naturel de la batterie"
+      ],
+      "diagnostic_conseil": "Faire tester la batterie (test de charge) chez un garagiste pour anticiper le remplacement avant une panne complete, surtout avant l'hiver.",
+      "urgence": "faible",
+      "cout_min_dh": 500,
+      "cout_max_dh": 1200,
+      "duree_reparation": "30 min",
+      "pieces_concernees": ["batterie"],
+      "marque_specifique": null
+    },
+    {
+      "code": "ENT-05",
+      "categorie": "entretien_courant",
+      "sous_categorie": "distribution",
+      "titre": "Courroie de distribution a changer selon kilometrage",
+      "symptomes": [
+        "je ne sais pas si ma courroie de distribution a deja ete changee",
+        "le carnet d'entretien indique une echeance de courroie de distribution proche",
+        "j'approche des 100000 km sans avoir change la distribution"
+      ],
+      "causes_possibles": [
+        "courroie de distribution jamais remplacee depuis l'achat ou l'echeance constructeur depassee"
+      ],
+      "diagnostic_conseil": "Respecter imperativement l'intervalle constructeur (souvent 100 000-160 000 km ou 5-10 ans) : une rupture de courroie de distribution peut causer une casse moteur couteuse.",
+      "urgence": "elevee",
+      "cout_min_dh": 1500,
+      "cout_max_dh": 4000,
+      "duree_reparation": "half day a 1 jour",
+      "pieces_concernees": ["courroie de distribution", "galets tendeurs", "pompe a eau"],
+      "marque_specifique": null
+    },
+
+    {
+      "code": "CAR-01",
+      "categorie": "carrosserie",
+      "sous_categorie": "peinture",
+      "titre": "Rayure ou eclat de peinture",
+      "symptomes": [
+        "j'ai une rayure sur la portiere",
+        "un eclat de peinture apparu apres un petit choc",
+        "trace de rayure superficielle sur le pare-choc"
+      ],
+      "causes_possibles": [
+        "frottement contre un obstacle",
+        "projection de gravillon sur la route"
+      ],
+      "diagnostic_conseil": "Verifier la profondeur de la rayure (ongle qui accroche ou non) pour savoir si un simple polissage suffit ou si une retouche peinture est necessaire.",
+      "urgence": "faible",
+      "cout_min_dh": 150,
+      "cout_max_dh": 1500,
+      "duree_reparation": "1 heure a 1 jour",
+      "pieces_concernees": ["peinture", "vernis"],
+      "marque_specifique": null
+    },
+    {
+      "code": "CAR-02",
+      "categorie": "carrosserie",
+      "sous_categorie": "corrosion",
+      "titre": "Point de rouille sur bas de caisse ou passage de roue",
+      "symptomes": [
+        "il y a de la rouille qui apparait en bas de la portiere",
+        "trace orange sur le passage de roue",
+        "petit trou de rouille sur le bas de caisse"
+      ],
+      "causes_possibles": [
+        "eclat de peinture non traite expose a l'humidite",
+        "sel ou boue accumulee dans le passage de roue"
+      ],
+      "diagnostic_conseil": "Traiter la rouille des son apparition (ponçage + traitement antirouille + peinture) : elle progresse vite sous la tole si elle n'est pas stoppee.",
+      "urgence": "moyenne",
+      "cout_min_dh": 300,
+      "cout_max_dh": 2000,
+      "duree_reparation": "1 jour",
+      "pieces_concernees": ["tole", "traitement antirouille", "peinture"],
+      "marque_specifique": null
+    },
+    {
+      "code": "CAR-03",
+      "categorie": "carrosserie",
+      "sous_categorie": "vitrage",
+      "titre": "Pare-brise fissure ou impact",
+      "symptomes": [
+        "j'ai un impact de gravillon sur le pare-brise",
+        "une fissure qui s'agrandit sur le pare-brise",
+        "petit eclat blanc sur le pare-brise cote conducteur"
+      ],
+      "causes_possibles": [
+        "projection de gravillon sur autoroute",
+        "choc thermique sur un impact non traite"
+      ],
+      "diagnostic_conseil": "Un impact traite rapidement (resine) evite souvent le remplacement complet ; une fissure qui traverse le champ de vision du conducteur impose un remplacement pour le controle technique.",
+      "urgence": "moyenne",
+      "cout_min_dh": 150,
+      "cout_max_dh": 2500,
+      "duree_reparation": "30 min a 2 heures",
+      "pieces_concernees": ["pare-brise", "resine de reparation"],
+      "marque_specifique": null
+    },
+    {
+      "code": "CAR-04",
+      "categorie": "carrosserie",
+      "sous_categorie": "retroviseur",
+      "titre": "Retroviseur casse ou fele",
+      "symptomes": [
+        "mon retroviseur exterieur est casse",
+        "le boitier du retroviseur est fissure apres un choc",
+        "le miroir du retroviseur est fele"
+      ],
+      "causes_possibles": [
+        "choc avec un obstacle ou un autre vehicule (creneau, rue etroite)"
+      ],
+      "diagnostic_conseil": "Verifier si seul le miroir ou le boitier complet (avec commande electrique) doit etre remplace : cela change fortement le cout.",
+      "urgence": "faible",
+      "cout_min_dh": 100,
+      "cout_max_dh": 1500,
+      "duree_reparation": "30 min a 1 heure",
+      "pieces_concernees": ["retroviseur", "miroir"],
+      "marque_specifique": null
+    },
+    {
+      "code": "CAR-05",
+      "categorie": "carrosserie",
+      "sous_categorie": "choc",
+      "titre": "Pare-choc enfonce ou fissure apres un choc leger",
+      "symptomes": [
+        "le pare-choc avant est enfonce apres un petit accrochage",
+        "fissure sur le pare-choc arriere",
+        "le pare-choc est decolle d'un cote"
+      ],
+      "causes_possibles": [
+        "choc a faible vitesse (parking, creneau)",
+        "attache de pare-choc cassee"
+      ],
+      "diagnostic_conseil": "Un pare-choc simplement decolle (attaches cassees) peut souvent etre repose sans remplacement complet ; verifier l'etat des attaches avant de commander une piece neuve.",
+      "urgence": "faible",
+      "cout_min_dh": 200,
+      "cout_max_dh": 2500,
+      "duree_reparation": "1 heure a 1 jour",
+      "pieces_concernees": ["pare-choc", "attaches de pare-choc"],
+      "marque_specifique": null
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+sentence-transformers
+psycopg2-binary
+python-dotenv
+truststore
+requests

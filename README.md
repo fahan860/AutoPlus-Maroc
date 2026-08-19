@@ -19,7 +19,10 @@ planning de stage (voir [`docs/autoplus_planning_stage.html`](docs/autoplus_plan
 /mobile   App mobile React Native (Expo)
 /ml       Notebooks et modèles ML (Python) : pricing véhicule, recommandation garage, détection faux avis
 /data     Scraping garages (data/scraping) + Data Lake local en Parquet (data/events, non versionné)
-          + pipeline de flush Redis -> Parquet (data/pipeline)
+          + pipeline de flush Redis -> Parquet (data/pipeline) + base de connaissance pannes/OBD-II
+          pour le RAG de l'agent IA, pgvector (data/pannes)
+/ai       Agent IA de diagnostic (RAG + LLM, futur service Python/FastAPI) : cadrage, schéma et corpus
+          de la Knowledge Base (voir ai/docs/V1_SCOPE.md)
 /docs     Documents projet : cahier des charges, dossier startup, guides d'entretien terrain, planning
 ```
 
@@ -59,6 +62,55 @@ planning de stage (voir [`docs/autoplus_planning_stage.html`](docs/autoplus_plan
 - Écran Mes véhicules (liste + ajout)
 - Écran Mes RDV (suivi du statut)
 - Voir `mobile/src/` — `api/` (client HTTP), `context/AuthContext.js`, `navigation/`, `screens/`
+
+### Semaine 4 — Sécurité des comptes, vérification email, garage par mécanicien, Agent IA (RAG)
+
+- **Sécurité des comptes** : email désormais obligatoire à l'inscription (comme le téléphone), mot de
+  passe soumis à une politique stricte (8 caractères min., majuscule, minuscule, chiffre, caractère
+  spécial) avec checklist temps réel côté mobile, connexion possible par téléphone **ou** email
+  (`POST /users/login` avec `identifiant`)
+- **Vérification d'email** : code à 6 chiffres envoyé à l'inscription (`api/src/services/mailer.js`,
+  SMTP configurable, code affiché dans les logs serveur en dev si SMTP absent) ; l'app mobile bloque
+  l'accès (`VerifyEmailScreen`) tant que le compte n'est pas vérifié
+- **Chiffrement des données personnelles** : téléphone et email sont chiffrés au repos en base
+  (AES-256-GCM, `api/src/crypto.js`) avec un hash HMAC-SHA256 déterministe à côté pour permettre la
+  recherche/l'unicité sans jamais comparer la valeur en clair (voir `api/migrations/005_encrypt_pii.sql`
+  et le script de bascule `api/scripts/backfill-pii-encryption.js`)
+- **Back-office admin retiré de l'app mobile** : le rôle admin et les routes `/admin/*` restent dans
+  l'API (isolées, protégées par rôle + `ADMIN_SIGNUP_CODE`) en vue d'un outil séparé dédié, mais ne sont
+  plus accessibles ni sélectionnables depuis l'app grand public
+- **Garage créé directement par le mécanicien** (`CreateGarageScreen`), en plus de la revendication d'une
+  fiche scrapée existante ; profil enrichi (adresse, ville)
+- **Écran "Mes RDV"** : ajout d'une section "Prendre un rendez-vous" pour démarrer une réservation
+  directement depuis cet écran
+- **Agent IA — base de connaissance pannes (RAG, pgvector)** : `data/pannes/` — table `base_pannes`
+  (50 pannes automobile réalistes, marché marocain) et table `codes_obd` (3071 codes OBD-II importés,
+  catégorisés par mots-clés, reliés à `base_pannes` par similarité d'embedding quand la catégorie est
+  fiable, 967/3071 reliés). Ce chantier est mené en parallèle du cadrage plus large de l'Agent IA (`/ai`,
+  Phase 0-2 : `V1_SCOPE.md`, `KB_SCHEMA.md`, premier corpus `kb_corpus_v1.csv`) — les deux bases restent
+  à faire converger.
+- **Agent IA — base de données de la Knowledge Base (Phases 3-6)** : `ai/db/schema.sql` crée
+  `kb_documents` (1 ligne par entrée du corpus, champs conformes à `KB_SCHEMA.md`) et `kb_chunks`
+  (texte + embedding, index HNSW). `ai/scripts/load_kb_corpus.py` charge `kb_corpus_v1.csv`
+  (22 entrées validées), génère les embeddings et les upsert. `ai/scripts/query_kb.py` implémente le
+  retrieval combiné recherche vectorielle + filtres metadonnées (`systeme`, `vehicule`, `langue`,
+  `gravite`), testé et fonctionnel en CLI comme en import (`search_kb(...)`, prêt à être appelé par le
+  futur service agent).
+- **Embeddings — passage à `intfloat/multilingual-e5-large`** (1024 dims, remplace
+  `paraphrase-multilingual-MiniLM-L12-v2`, 384 dims, sur `base_pannes` et `kb_chunks`) : un test de
+  retrieval a montré que MiniLM confondait des symptômes distincts (grincement au freinage classé après
+  un cliquetis de direction sans rapport). e5-large corrige nettement le classement — vérifié sur les cas
+  qui échouaient. Contrepartie : modèle ~2 Go, un peu plus lent par requête. Convention e5 à respecter
+  partout : préfixer `"passage: "` les textes indexés, `"query: "` les requêtes utilisateur.
+- **Agent IA — langue** : décidé en équipe (18/08/2026) — français **et** darija dès la V1, mais la KB
+  et le retrieval restent 100% français ; c'est le LLM qui reformule la réponse finale en darija (voir
+  `ai/docs/V1_SCOPE.md`). Testé avec Mistral : `mistral-small-latest` mélangeait français/darija et a
+  inventé une cause hors contexte (rejeté) ; `mistral-medium-latest` produit une darija cohérente,
+  correctement ancrée sur le contexte, et refuse de répondre plutôt que d'halluciner quand le retrieval
+  ne remonte rien de pertinent — comportement à confirmer par un locuteur natif de l'équipe avant
+  arbitrage final. Gemini testé mais bloqué : facturation non configurée sur le projet Google associé.
+- Reste hors périmètre "base de données" : le service Python/FastAPI lui-même (Phase 7+), l'intégration
+  LLM en production (Phase 8), l'écran mobile de chat (Phase 14) et les tests qualité (Phase 15).
 
 ## Prérequis
 

@@ -32,11 +32,23 @@ mécanique certain — structurée, prudente et sourcée.
   piste future mais explicitement exclu de la V1.
 - Réservation de garage ou paiement déclenchés automatiquement par l'agent (l'app AUTO+ gère déjà la
   prise de RDV séparément ; l'agent peut au mieux *recommander* de contacter un garage).
-- Support multilingue complet day-1 : **recommandation** — démarrer en français uniquement pour la V1
-  (prompt système, KB, évaluation), le darija étant un problème à part entière (peu de corpus
+- Support multilingue day-1 : **décidé (18/08/2026, équipe)** — le darija est supporté dès la V1, mais
+  **uniquement en sortie** (la réponse générée à l'utilisateur). La KB et le retrieval restent en
+  français : l'utilisateur peut écrire en français ou en darija, la recherche se fait sur le corpus
+  français, et c'est le LLM qui reformule la réponse finale en darija si besoin. Implications concrètes :
+  - Le corpus `kb_corpus_v1.csv` **reste 100% français** — pas besoin d'entrées darija pour la V1 avec
+    ce découpage (pas de risque de "darija inventée" côté KB, cf. consigne déjà appliquée à
+    `data/pannes/pannes_seed.json`).
+  - Le modèle d'embedding (`paraphrase-multilingual-MiniLM-L12-v2`) doit surtout bien gérer les
+    *requêtes utilisateur* en darija contre un corpus français (retrieval cross-lingue) — a valider,
+    mais moins critique que si la KB elle-même devait être en darija.
+  - Le choix du LLM (toujours ouvert) doit être filtré par sa capacité à **générer** un darija marocain
+    naturel (pas juste le comprendre), testable directement par prompt sur les modèles candidats.
+
+  *Recommandation initiale (dépassée par la décision équipe ci-dessus, conservée pour traçabilité)* :
+  démarrer en français uniquement pour la V1, le darija étant un problème à part entière (peu de corpus
   disponible, transcription/mélange codique) à traiter comme un chantier V1.5/V2 dédié plutôt que de
-  risquer de diluer la qualité du RAG et du LLM dès la V1. À trancher explicitement avec l'équipe avant
-  la Phase 8.
+  risquer de diluer la qualité du RAG et du LLM dès la V1.
 
 ## Critères de succès (parcours de bout en bout)
 
