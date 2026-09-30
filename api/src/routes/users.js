@@ -18,6 +18,12 @@ const router = express.Router();
 
 const VERIFICATION_CODE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
+// Verification d'email a l'inscription, desactivable temporairement
+// (EMAIL_VERIFICATION_ENABLED=false dans .env) tant que l'envoi d'emails n'est
+// pas configure : les comptes sont alors crees deja verifies et aucun code
+// n'est envoye. Activee par defaut si la variable est absente.
+const EMAIL_VERIFICATION_ENABLED = process.env.EMAIL_VERIFICATION_ENABLED !== 'false';
+
 // Code a 6 chiffres + son hash SHA-256 (on ne stocke jamais le code en clair
 // en base, meme si sa duree de vie est courte).
 function generateVerificationCode() {
@@ -154,8 +160,8 @@ router.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(mot_de_passe, 10);
 
     const { rows } = await pool.query(
-      `INSERT INTO users (nom, telephone, telephone_hash, email, email_hash, mot_de_passe_hash, role, garage_id, garage_statut)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `INSERT INTO users (nom, telephone, telephone_hash, email, email_hash, mot_de_passe_hash, role, garage_id, garage_statut, email_verifie)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING *`,
       [
         nom,
@@ -167,6 +173,7 @@ router.post('/register', async (req, res) => {
         role,
         role === 'mecanicien' ? garageId : null,
         garageStatut,
+        !EMAIL_VERIFICATION_ENABLED,
       ]
     );
 
@@ -177,10 +184,12 @@ router.post('/register', async (req, res) => {
     // Envoi (best-effort) du code de verification email : une erreur SMTP ne
     // doit pas empecher la creation du compte, l'utilisateur pourra toujours
     // redemander un code via /users/resend-code.
-    try {
-      await issueAndSendVerificationCode(user.id, email);
-    } catch (mailErr) {
-      console.error('[users/register] envoi email de verification echoue :', mailErr.message);
+    if (EMAIL_VERIFICATION_ENABLED) {
+      try {
+        await issueAndSendVerificationCode(user.id, email);
+      } catch (mailErr) {
+        console.error('[users/register] envoi email de verification echoue :', mailErr.message);
+      }
     }
 
     res.status(201).json({ user: toPublicUser(user), token: signToken(user) });
@@ -219,9 +228,21 @@ router.post('/login', async (req, res) => {
       return res.status(403).json({ status: 'error', message: 'Ce compte a ete desactive' });
     }
 
+    // Verification desactivee : un compte cree pendant qu'elle etait active (et
+    // reste en attente de code) ne doit pas rester bloque a la connexion.
+    let sessionUser = user;
+    if (!EMAIL_VERIFICATION_ENABLED && !user.email_verifie) {
+      const { rows: updated } = await pool.query(
+        `UPDATE users SET email_verifie = true, verification_code_hash = NULL, verification_code_expires_at = NULL
+         WHERE id = $1 RETURNING *`,
+        [user.id]
+      );
+      sessionUser = updated[0];
+    }
+
     logEvent('user_login', {}, user.id);
 
-    res.json({ user: toPublicUser(user), token: signToken(user) });
+    res.json({ user: toPublicUser(sessionUser), token: signToken(sessionUser) });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
