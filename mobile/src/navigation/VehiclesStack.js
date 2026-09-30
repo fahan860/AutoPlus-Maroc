@@ -10,10 +10,10 @@ const Stack = createNativeStackNavigator();
 export default function VehiclesStack() {
   return (
     <Stack.Navigator screenOptions={{ headerTintColor: colors.primary }}>
-      <Stack.Screen name="VehiclesList" component={VehiclesScreen} options={{ title: 'Mes vehicules' }} />
+      <Stack.Screen name="VehiclesList" component={VehiclesScreen} options={{ title: 'Mes véhicules' }} />
       <Stack.Screen name="AddVehicle" component={AddVehicleScreen} options={{ title: 'Ajouter un vehicule' }} />
-      <Stack.Screen name="EstimateVehicle" component={EstimateVehicleScreen} options={{ title: 'Estimer mon véhicule' }} />
-      <Stack.Screen name="EstimateResult" component={EstimateResultScreen} options={{ title: 'Estimation' }} />
+      <Stack.Screen name="EstimateVehicle" component={EstimateVehicleScreen} options={{ title: 'Estimation' }} />
+      <Stack.Screen name="EstimateResult" component={EstimateResultScreen} options={{ title: 'Résultat' }} />
     </Stack.Navigator>
   );
 }

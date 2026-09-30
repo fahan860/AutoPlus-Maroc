@@ -128,8 +128,11 @@ export default function EstimateVehicleScreen({ navigation, route }) {
       <View style={[styles.flex, styles.centered]}>
         {optionsError ? (
           <>
-            <Text style={styles.errorTitle}>Service d'estimation indisponible</Text>
-            <Text style={styles.errorText}>{optionsError}</Text>
+            <Text style={styles.errorIcon}>🔌</Text>
+            <Text style={styles.errorTitle}>L'estimation n'est pas disponible</Text>
+            <Text style={styles.errorText}>
+              Le service ne répond pas pour le moment. Vérifiez votre connexion puis réessayez.
+            </Text>
             <View style={styles.retry}>
               <PrimaryButton title="Réessayer" variant="outline" onPress={loadOptions} />
             </View>
@@ -370,7 +373,8 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
   },
   missing: { fontSize: 13, color: colors.textMuted, textAlign: 'center', marginBottom: 8 },
+  errorIcon: { fontSize: 40, marginBottom: 12 },
   errorTitle: { fontSize: 18, fontWeight: '800', color: colors.text, textAlign: 'center' },
-  errorText: { color: colors.textMuted, textAlign: 'center', marginTop: 6 },
+  errorText: { color: colors.textMuted, textAlign: 'center', marginTop: 6, lineHeight: 20 },
   retry: { marginTop: 18, alignSelf: 'stretch' },
 });
