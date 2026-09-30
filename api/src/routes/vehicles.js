@@ -12,6 +12,9 @@ const { logEvent } = require('../events');
 
 const router = express.Router();
 
+const ML_API_URL = process.env.ML_API_URL || 'http://localhost:8000';
+const ML_API_TIMEOUT_MS = 5000;
+
 const createVehicleSchema = z.object({
   plaque: z.string().min(1),
   marque: z.string().optional(),
@@ -73,6 +76,62 @@ router.post('/', requireAuth, async (req, res) => {
     res.status(201).json(rows[0]);
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// POST /vehicles/estimate : estimation du prix d'un vehicule d'occasion (Modele A).
+// Relaie la demande au service ML interne (FastAPI), qui valide les champs et
+// predit ; voir ml/service/schemas.py pour le format attendu.
+router.post('/estimate', requireAuth, async (req, res) => {
+  let reponse;
+  try {
+    reponse = await fetch(`${ML_API_URL}/predict/vehicle-value`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body),
+      signal: AbortSignal.timeout(ML_API_TIMEOUT_MS),
+    });
+  } catch (err) {
+    console.error('Service ML injoignable :', err.message);
+    return res.status(503).json({ status: 'error', message: "Service d'estimation indisponible" });
+  }
+
+  const corps = await reponse.json().catch(() => ({}));
+
+  if (reponse.status === 422) {
+    // Erreur de validation FastAPI : on renvoie le premier champ fautif, au format de l'API
+    const premiere = corps.detail?.[0];
+    const champ = premiere?.loc?.slice(1).join('.') || 'requete';
+    return res.status(400).json({ status: 'error', message: `${champ} : ${premiere?.msg || 'invalide'}` });
+  }
+  if (!reponse.ok) {
+    return res.status(503).json({ status: 'error', message: "Service d'estimation indisponible" });
+  }
+
+  logEvent('estimation_prix_vehicule', {
+    marque: req.body.marque,
+    modele: req.body.modele,
+    annee: req.body.annee,
+    prix_estime: corps.prix_estime,
+    fiabilite: corps.fiabilite,
+    version_modele: corps.version_modele,
+  }, req.user.id);
+
+  res.json(corps);
+});
+
+// GET /vehicles/estimate/options : marques, modeles et villes connus du modele
+// (pour les listes deroulantes du formulaire d'estimation dans l'app)
+router.get('/estimate/options', requireAuth, async (_req, res) => {
+  try {
+    const reponse = await fetch(`${ML_API_URL}/predict/vehicle-value/options`, {
+      signal: AbortSignal.timeout(ML_API_TIMEOUT_MS),
+    });
+    if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
+    res.json(await reponse.json());
+  } catch (err) {
+    console.error('Service ML injoignable :', err.message);
+    res.status(503).json({ status: 'error', message: "Service d'estimation indisponible" });
   }
 });
 

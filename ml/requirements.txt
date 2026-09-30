@@ -7,3 +7,9 @@ faker
 python-dotenv
 pyarrow
 redis
+# Modèle A (estimation prix véhicule)
+xgboost
+catboost
+optuna
+mlflow
+joblib

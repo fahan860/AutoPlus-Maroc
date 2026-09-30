@@ -1,0 +1,103 @@
+{
+  "nom": "AUTO+ Modèle A — estimation du prix d'un véhicule d'occasion",
+  "algorithme": "XGBoost (régression sur log(prix))",
+  "version": "2026-09-30",
+  "donnees": "MUCars-2024 (DOI 10.17632/vjrbcb2rrt.2, CC BY 4.0), nettoyé par clean.py",
+  "entraine_sur": "train + validation (59,812 annonces)",
+  "parametres": {
+    "reg_lambda": 0.042601344183320476,
+    "max_cat_to_onehot": 1,
+    "min_child_weight": 3.7647718477590035,
+    "max_depth": 12,
+    "subsample": 0.9071744405642688,
+    "n_estimators": 724,
+    "learning_rate": 0.02043078427011942,
+    "reg_alpha": 0.009180493807151557,
+    "colsample_bytree": 0.9732327440788425
+  },
+  "variables": [
+    "marque",
+    "modele",
+    "boite",
+    "carburant",
+    "etat",
+    "origine",
+    "premiere_main",
+    "ville",
+    "age",
+    "kilometrage",
+    "puissance_fiscale",
+    "nb_portes",
+    "nb_equipements",
+    "km_inconnu",
+    "eq_abs",
+    "eq_airbags",
+    "eq_bluetooth",
+    "eq_camera_recul",
+    "eq_climatisation",
+    "eq_esp",
+    "eq_gps",
+    "eq_jantes_alu",
+    "eq_limiteur_vitesse",
+    "eq_ordinateur_bord",
+    "eq_radar_recul",
+    "eq_regulateur_vitesse",
+    "eq_sieges_cuir",
+    "eq_toit_ouvrant",
+    "eq_verrouillage_central",
+    "eq_vitres_electriques"
+  ],
+  "mesures_test": {
+    "MAE_DH": 11778.920977165682,
+    "erreur_mediane_DH": 5813.14453125,
+    "MAPE_pct": 10.777210031577058,
+    "R2": 0.9387924293016546,
+    "part_a_moins_de_15pct": 80.89238347859038
+  },
+  "limites": [
+    "Prix demandés dans des annonces 2024, pas des prix de transaction",
+    "Modèles/villes vus moins de 20 fois à l'entraînement traités comme 'autre'"
+  ],
+  "fourchettes": {
+    "methode": "quantiles 10 % / 90 % du rapport prix réel / prix prédit sur le jeu de test, par tranche de prix prédit",
+    "couverture_visee": 0.8,
+    "couverture_mesuree": 0.7995,
+    "tranches": [
+      {
+        "prix_predit_min": 0,
+        "prix_predit_max": 50000,
+        "facteur_bas": 0.7423,
+        "facteur_haut": 1.2234,
+        "annonces": 1620
+      },
+      {
+        "prix_predit_min": 50000,
+        "prix_predit_max": 100000,
+        "facteur_bas": 0.8395,
+        "facteur_haut": 1.1601,
+        "annonces": 3255
+      },
+      {
+        "prix_predit_min": 100000,
+        "prix_predit_max": 200000,
+        "facteur_bas": 0.8984,
+        "facteur_haut": 1.1202,
+        "annonces": 3840
+      },
+      {
+        "prix_predit_min": 200000,
+        "prix_predit_max": 400000,
+        "facteur_bas": 0.8981,
+        "facteur_haut": 1.1414,
+        "annonces": 1549
+      },
+      {
+        "prix_predit_min": 400000,
+        "prix_predit_max": null,
+        "facteur_bas": 0.8689,
+        "facteur_haut": 1.17,
+        "annonces": 292
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+# Contexte de build du service ML : n'envoyer à Docker que ce dont l'image a besoin
+venv/
+data/
+notebooks/
+reports/
+mlruns/
+mlflow.db
+**/__pycache__/
+**/*.pem
+service/tests/
