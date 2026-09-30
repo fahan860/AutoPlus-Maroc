@@ -32,7 +32,8 @@
         {
           "locationWhenInUsePermission": "AUTO+ utilise votre position pour trouver les garages les plus proches de vous."
         }
-      ]
+      ],
+      "expo-status-bar"
     ],
     "extra": {}
   }
