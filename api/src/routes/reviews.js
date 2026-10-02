@@ -98,7 +98,8 @@ router.post('/', requireAuth, requireRole('automobiliste'), async (req, res) => 
     return res.status(400).json({ status: 'error', message: parsed.error.errors[0].message });
   }
 
-  const { garage_id: garageId, intervention_id: interventionId, note, commentaire } = parsed.data;
+  const { garage_id: garageId, note, commentaire } = parsed.data;
+  let interventionId = parsed.data.intervention_id;
 
   try {
     const garage = await pool.query('SELECT id FROM garages WHERE id = $1', [garageId]);
@@ -114,6 +115,20 @@ router.post('/', requireAuth, requireRole('automobiliste'), async (req, res) => 
       if (!intervention.rows[0]) {
         return res.status(400).json({ status: 'error', message: "Cette intervention n'appartient pas a cet utilisateur/garage" });
       }
+    }
+
+    // L'app n'indique pas le RDV concerne : on rattache l'avis au dernier RDV termine du client
+    // dans ce garage, sinon a son dernier RDV quel qu'il soit. Sans ce lien, la detection de
+    // faux avis voyait tous les avis comme "sans RDV", meme ceux de vrais clients.
+    if (!interventionId) {
+      const dernier = await pool.query(
+        `SELECT id FROM interventions
+         WHERE user_id = $1 AND garage_id = $2
+         ORDER BY (statut = 'termine') DESC, updated_at DESC
+         LIMIT 1`,
+        [req.user.id, garageId]
+      );
+      interventionId = dernier.rows[0]?.id;
     }
 
     const { rows } = await pool.query(
