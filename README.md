@@ -112,6 +112,20 @@ planning de stage (voir [`docs/autoplus_planning_stage.html`](docs/autoplus_plan
 - Reste hors périmètre "base de données" : le service Python/FastAPI lui-même (Phase 7+), l'intégration
   LLM en production (Phase 8), l'écran mobile de chat (Phase 14) et les tests qualité (Phase 15).
 
+### ML — Modèle A : estimation du prix d'un véhicule d'occasion
+
+- **Données réelles** : dataset MUCars-2024 (101 896 annonces marocaines, Université Abdelmalek
+  Essaâdi, CC BY 4.0 — voir [`ml/data/README.md`](ml/data/README.md)), nettoyé par 10 règles
+  documentées → 70 368 annonces (`ml/src/model_a/clean.py`, notebook `02`)
+- **Comparaison de 5 modèles** dans les mêmes conditions (médiane par groupe, régression linéaire,
+  Random Forest, XGBoost, CatBoost) : XGBoost gagne sur toutes les mesures (`compare.py`, notebook `03`)
+- **XGBoost réglé** avec Optuna (40 essais, suivi MLflow), le plus léger retenu à précision égale.
+  **Jeu de test : erreur moyenne 11 779 DH (10,8 %), R² 0,939, 81 % des annonces à ±15 %** — ~2x plus
+  précis que l'estimation par annonces comparables (`tune.py`, notebook `04`)
+- **Service FastAPI** (`ml/service`, conteneur `ml-api`, 15 tests) derrière l'API Node :
+  `POST /vehicles/estimate` renvoie prix, fourchette (couvre 80 % des prix réels), niveau de fiabilité
+- Limites : prix *demandés* (pas de transaction), niveau de prix 2024, précision faible sous 50 000 DH
+
 ## Prérequis
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Docker + Docker Compose)
@@ -141,15 +155,22 @@ curl http://localhost:3000/health
 → Réponse attendue : `{"status":"ok","db_time":"..."}`
 
 Endpoints disponibles : `GET /garages`, `GET /garages/:id`, `POST /garages`, `POST /users/register`,
-`POST /users/login`.
+`POST /users/login`, `POST /vehicles/estimate` (estimation de prix, Modèle A).
+
+Le service ML (`ml-api`) démarre avec le reste ; sa documentation interactive, pratique pour tester
+une estimation à la main, est sur http://localhost:8000/docs (accessible depuis la machine uniquement).
 
 En cas de problème :
 
 ```powershell
 docker compose logs api
+docker compose logs ml-api
 docker compose logs db
 docker compose logs redis
 ```
+
+> Si l'API redémarre en boucle avec `Cannot find module ...` après l'ajout d'une dépendance npm,
+> le volume `node_modules` du conteneur est obsolète : `docker compose up -d --build --renew-anon-volumes api`.
 
 Arrêter les services :
 
@@ -172,6 +193,19 @@ qu'il y ait des events à flush) :
 ```powershell
 .\venv\Scripts\python ..\data\pipeline\flush_events_to_parquet.py
 ```
+
+Modèle A (estimation de prix) — le modèle entraîné est versionné dans `ml/models/model_a/` ; pour le
+reproduire depuis zéro (télécharger d'abord le dataset, voir `ml/data/README.md`) :
+
+```powershell
+.\venv\Scripts\python src\model_a\clean.py      # nettoyage (~1 min)
+.\venv\Scripts\python src\model_a\compare.py    # comparaison des 5 modèles (~6 min)
+.\venv\Scripts\python src\model_a\tune.py       # réglage Optuna + modèle final (~1 h)
+cd service; ..\venv\Scripts\python -m pytest tests -q   # tests du service
+```
+
+> Les notebooks doivent tourner avec le Python de `ml\venv` : dans VS Code, « Select Kernel » →
+> `ml\venv\Scripts\python.exe` (le noyau Jupyter par défaut de la machine utilise un autre Python).
 
 ### 3. Mobile (Expo)
 

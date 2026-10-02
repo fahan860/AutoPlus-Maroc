@@ -1,0 +1,8 @@
+# Service ML (image Docker) — versions alignées sur ml/venv, où le modèle a été entraîné
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+pydantic>=2.7,<3
+# xgboost-cpu : même bibliothèque sans les ~300 Mo de dépendances GPU NVIDIA (inutiles ici)
+xgboost-cpu==3.2.0
+pandas==2.3.3
+numpy==2.2.6

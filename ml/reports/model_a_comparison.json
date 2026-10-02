@@ -1,0 +1,87 @@
+{
+  "jeu_evaluation": "validation (15 %)",
+  "tailles": {
+    "train": 49257,
+    "validation": 10555,
+    "test": 10556
+  },
+  "critere_de_choix": "MAE_DH la plus basse sur la validation",
+  "meilleur": "XGBoost",
+  "resultats": [
+    {
+      "modele": "XGBoost",
+      "parametres": {
+        "n_estimators": 1000,
+        "learning_rate": 0.05,
+        "max_depth": 8,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8
+      },
+      "MAE_DH": 13446.011055927285,
+      "erreur_mediane_DH": 6542.3828125,
+      "MAPE_pct": 10.975385765778547,
+      "R2": 0.902934898006768,
+      "part_a_moins_de_15pct": 79.10942681193747,
+      "duree_entrainement_s": 62.8,
+      "prediction_ms_par_annonce": 0.052
+    },
+    {
+      "modele": "CatBoost",
+      "parametres": {
+        "iterations": 1500,
+        "learning_rate": 0.08,
+        "depth": 8
+      },
+      "MAE_DH": 15321.197318885994,
+      "erreur_mediane_DH": 7615.7285728861025,
+      "MAPE_pct": 11.761854097885827,
+      "R2": 0.8907211839108177,
+      "part_a_moins_de_15pct": 75.53765987683563,
+      "duree_entrainement_s": 256.2,
+      "prediction_ms_par_annonce": 0.0189
+    },
+    {
+      "modele": "Random Forest",
+      "parametres": {
+        "n_estimators": 300,
+        "max_features": 0.5,
+        "min_samples_leaf": 2
+      },
+      "MAE_DH": 16433.300619556438,
+      "erreur_mediane_DH": 7518.5444235618925,
+      "MAPE_pct": 12.688443496714052,
+      "R2": 0.8629970621666091,
+      "part_a_moins_de_15pct": 74.29654192325911,
+      "duree_entrainement_s": 22.6,
+      "prediction_ms_par_annonce": 0.0721
+    },
+    {
+      "modele": "Régression linéaire",
+      "parametres": {
+        "alpha": 1.0,
+        "encodage": "one-hot"
+      },
+      "MAE_DH": 21690.134351949633,
+      "erreur_mediane_DH": 10119.020755348916,
+      "MAPE_pct": 16.069665346476743,
+      "R2": 0.7990267397252669,
+      "part_a_moins_de_15pct": 65.09711037423023,
+      "duree_entrainement_s": 1.8,
+      "prediction_ms_par_annonce": 0.0086
+    },
+    {
+      "modele": "Médiane par groupe",
+      "parametres": {
+        "niveaux": "modele+age > modele > marque",
+        "min_groupe": 5
+      },
+      "MAE_DH": 24286.510322291022,
+      "erreur_mediane_DH": 9004.132301966427,
+      "MAPE_pct": 19.583046658493977,
+      "R2": 0.7050072362153599,
+      "part_a_moins_de_15pct": 65.99715774514449,
+      "duree_entrainement_s": 0.1,
+      "prediction_ms_par_annonce": 0.0025
+    }
+  ]
+}

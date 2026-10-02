@@ -30,3 +30,15 @@ postgres-data/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Datasets ML bruts (retelechargeables, voir ml/data/README.md)
+ml/data/raw/*
+!ml/data/raw/.gitkeep
+ml/data/processed/*
+!ml/data/processed/.gitkeep
+
+# MLflow local (historique des essais, regénérable)
+ml/mlflow.db
+ml/mlruns/
+__pycache__/
+catboost_info/

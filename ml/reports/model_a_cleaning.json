@@ -1,0 +1,79 @@
+{
+  "source": "MUCars-2024 (DOI 10.17632/vjrbcb2rrt.2, CC BY 4.0)",
+  "lignes_brutes": 101896,
+  "lignes_finales": 70368,
+  "taux_conservation": 0.6906,
+  "etapes": [
+    {
+      "regle": "dataset brut",
+      "lignes_retirees": 0,
+      "lignes_restantes": 101896
+    },
+    {
+      "regle": "doublons exacts",
+      "lignes_retirees": 2805,
+      "lignes_restantes": 99091
+    },
+    {
+      "regle": "prix manquant",
+      "lignes_retirees": 24421,
+      "lignes_restantes": 74670
+    },
+    {
+      "regle": "marque ou modèle manquant",
+      "lignes_retirees": 1,
+      "lignes_restantes": 74669
+    },
+    {
+      "regle": "marque invalide (numérique)",
+      "lignes_retirees": 116,
+      "lignes_restantes": 74553
+    },
+    {
+      "regle": "véhicule accidenté / pour pièces",
+      "lignes_retirees": 118,
+      "lignes_restantes": 74435
+    },
+    {
+      "regle": "carburant invalide",
+      "lignes_retirees": 0,
+      "lignes_restantes": 74435
+    },
+    {
+      "regle": "prix hors [15,000 ; 1,500,000] DH",
+      "lignes_retirees": 1374,
+      "lignes_restantes": 73061
+    },
+    {
+      "regle": "incohérence état neuf / kilométrage > 50 000 km",
+      "lignes_retirees": 1605,
+      "lignes_restantes": 71456
+    },
+    {
+      "regle": "prix aberrant vs annonces comparables (> 3.5 MAD)",
+      "lignes_retirees": 785,
+      "lignes_restantes": 70671
+    },
+    {
+      "regle": "doublons après normalisation",
+      "lignes_retirees": 303,
+      "lignes_restantes": 70368
+    }
+  ],
+  "valeurs_manquantes_finales": {
+    "kilometrage": 11391,
+    "puissance_fiscale": 186,
+    "nb_portes": 6948,
+    "secteur": 166
+  },
+  "prix": {
+    "count": 70368.0,
+    "mean": 135620.0,
+    "std": 114250.0,
+    "min": 15000.0,
+    "25%": 62000.0,
+    "50%": 108000.0,
+    "75%": 167000.0,
+    "max": 1450000.0
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "optuna": {
+    "essais": 40,
+    "meilleur_essai": {
+      "nom": "essai_33",
+      "MAE_validation_DH": 12676.167950245737,
+      "parametres": {
+        "reg_lambda": 0.038013731068530454,
+        "max_cat_to_onehot": 1,
+        "min_child_weight": 4.4166422913775785,
+        "max_depth": 12,
+        "subsample": 0.9166040723583021,
+        "n_estimators": 1642,
+        "learning_rate": 0.011807899474076965,
+        "reg_alpha": 0.0020033218057275005,
+        "colsample_bytree": 0.8208368718163712
+      }
+    },
+    "essai_retenu": {
+      "nom": "essai_29",
+      "MAE_validation_DH": 12679.831078187914,
+      "parametres": {
+        "reg_lambda": 0.042601344183320476,
+        "max_cat_to_onehot": 1,
+        "min_child_weight": 3.7647718477590035,
+        "max_depth": 12,
+        "subsample": 0.9071744405642688,
+        "n_estimators": 724,
+        "learning_rate": 0.02043078427011942,
+        "reg_alpha": 0.009180493807151557,
+        "colsample_bytree": 0.9732327440788425
+      }
+    },
+    "regle_de_choix": "le plus léger (arbres × 2^profondeur) parmi les essais à moins de 0.1% de la meilleure MAE de validation"
+  },
+  "test_xgboost_regle": {
+    "MAE_DH": 11778.920977165682,
+    "erreur_mediane_DH": 5813.14453125,
+    "MAPE_pct": 10.777210031577058,
+    "R2": 0.9387924293016546,
+    "part_a_moins_de_15pct": 80.89238347859038
+  },
+  "test_xgboost_non_regle": {
+    "parametres": {
+      "n_estimators": 1000,
+      "learning_rate": 0.05,
+      "max_depth": 8,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8
+    },
+    "MAE_DH": 12657.38772214114,
+    "erreur_mediane_DH": 6405.8046875,
+    "MAPE_pct": 12.156372961223646,
+    "R2": 0.9352033659512792,
+    "part_a_moins_de_15pct": 79.48086396362258
+  },
+  "erreur_par_tranche_de_prix": [
+    {
+      "tranche": "< 50k",
+      "annonces": 1866,
+      "MAE_DH": 6920.9,
+      "MAPE_pct": 23.2
+    },
+    {
+      "tranche": "50–100k",
+      "annonces": 3079,
+      "MAE_DH": 6988.6,
+      "MAPE_pct": 9.5
+    },
+    {
+      "tranche": "100–200k",
+      "annonces": 3765,
+      "MAE_DH": 9638.8,
+      "MAPE_pct": 6.8
+    },
+    {
+      "tranche": "200–400k",
+      "annonces": 1529,
+      "MAE_DH": 22236.7,
+      "MAPE_pct": 8.0
+    },
+    {
+      "tranche": "> 400k",
+      "annonces": 317,
+      "MAE_DH": 61880.4,
+      "MAPE_pct": 10.6
+    }
+  ],
+  "importance_variables_pct_gain": {
+    "boite": 64.82,
+    "age": 18.3,
+    "modele": 8.43,
+    "carburant": 1.91,
+    "marque": 1.09,
+    "puissance_fiscale": 0.67,
+    "kilometrage": 0.4,
+    "origine": 0.39,
+    "nb_portes": 0.35,
+    "eq_toit_ouvrant": 0.34,
+    "etat": 0.31,
+    "ville": 0.28,
+    "nb_equipements": 0.23,
+    "eq_regulateur_vitesse": 0.19,
+    "eq_limiteur_vitesse": 0.18,
+    "premiere_main": 0.18,
+    "km_inconnu": 0.18,
+    "eq_esp": 0.16,
+    "eq_climatisation": 0.15,
+    "eq_airbags": 0.15,
+    "eq_gps": 0.15,
+    "eq_sieges_cuir": 0.15,
+    "eq_jantes_alu": 0.13,
+    "eq_radar_recul": 0.13,
+    "eq_camera_recul": 0.13,
+    "eq_verrouillage_central": 0.13,
+    "eq_bluetooth": 0.13,
+    "eq_vitres_electriques": 0.12,
+    "eq_abs": 0.12,
+    "eq_ordinateur_bord": 0.11
+  }
+}
