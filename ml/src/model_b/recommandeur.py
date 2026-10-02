@@ -162,11 +162,18 @@ def score_specialite(garage: Garage, probas: dict[str, float]) -> float:
 
 def recommander(probas: dict[str, float], garages: list[Garage], lat: float | None, lon: float | None,
                 k: int = 5, poids: dict = POIDS) -> list[Recommandation]:
+    resultats = [r for r in scorer(probas, garages, lat, lon, poids) if r.detail["specialite"] > 0]
+    resultats.sort(key=lambda r: -r.score)
+    return resultats[:k]
+
+
+def scorer(probas: dict[str, float], garages: list[Garage], lat: float | None, lon: float | None,
+           poids: dict = POIDS) -> list[Recommandation]:
+    """Score de contenu de chaque garage (non trié, y compris ceux qui ne traitent aucune
+    des catégories probables : leur score de spécialité vaut alors 0)."""
     resultats = []
     for g in garages:
         spec = score_specialite(g, probas)
-        if spec == 0:
-            continue  # garage qui ne traite aucune des catégories probables
         if lat is not None and g.lat is not None:
             d = distance_km(lat, lon, g.lat, g.lon)
             s_dist = math.exp(-d / DISTANCE_CARACTERISTIQUE_KM)
@@ -178,5 +185,4 @@ def recommander(probas: dict[str, float], garages: list[Garage], lat: float | No
             "specialite": round(spec, 3), "distance_km": None if d is None else round(d, 1),
             "score_distance": round(s_dist, 3), "note": round(note_bayesienne(g), 2),
         }))
-    resultats.sort(key=lambda r: -r.score)
-    return resultats[:k]
+    return resultats

@@ -17,3 +17,4 @@ joblib
 sentence-transformers
 psycopg2-binary
 truststore
+scikit-surprise

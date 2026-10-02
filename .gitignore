@@ -42,3 +42,4 @@ ml/mlflow.db
 ml/mlruns/
 __pycache__/
 catboost_info/
+ml/data/simulated/
