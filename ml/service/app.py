@@ -7,6 +7,7 @@ Routes :
   GET  /predict/vehicle-value/options   marques, modèles et villes connus du modèle (listes de l'app)
   POST /recommend/garages               Modèle B : garages adaptés à une panne décrite en texte libre
   POST /moderation/review               Modèle C : un avis qui vient d'être publié est-il suspect ?
+  POST /agent/chat                      Agent IA de diagnostic : un tour de conversation (RAG + LLM)
 
 Documentation interactive : http://localhost:8000/docs
 Lancement local : cd ml/service && ../venv/Scripts/uvicorn app:app --reload --port 8000
@@ -14,14 +15,23 @@ Lancement local : cd ml/service && ../venv/Scripts/uvicorn app:app --reload --po
 """
 
 import os
+import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
+
+import truststore
+
+# Magasin de certificats du système pour les appels HTTPS sortants (LLM) : indispensable sur un
+# poste dont l'antivirus intercepte le TLS (Avast), sans effet ailleurs
+truststore.inject_into_ssl()
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src" / "agent"))
 
 from fastapi import FastAPI, HTTPException
 
 from predictor import PredicteurPrix
 from schemas import (
-    DecisionModeration, DemandeEstimation, DemandeModeration, DemandeRecommandation, Estimation, Options,
-    Recommandation,
+    DecisionModeration, DemandeAgent, DemandeEstimation, DemandeModeration, DemandeRecommandation, Estimation,
+    Options, Recommandation, ReponseAgent,
 )
 
 modeles = {}
@@ -43,6 +53,13 @@ async def cycle_de_vie(_app: FastAPI):
             modeles["garages"] = ServiceRecommandation(url_base)
         except Exception as err:  # base ou modèle e5 indisponible : le Modèle A reste servi
             print(f"Modèle B non chargé : {err}")
+        if "garages" in modeles:
+            try:
+                from agent import AgentDiagnostic  # partage e5-large et les garages du Modèle B
+
+                modeles["agent"] = AgentDiagnostic(url_base, modeles["garages"])
+            except Exception as err:  # clé du LLM absente : le reste du service fonctionne
+                print(f"Agent IA non chargé : {err}")
         try:
             from moderation import ServiceModeration
 
@@ -77,13 +94,14 @@ def service_garages():
 
 @app.get("/health")
 def health():
-    prix, garages, avis = modeles.get("prix"), modeles.get("garages"), modeles.get("avis")
+    prix, garages, avis, agent = (modeles.get(k) for k in ("prix", "garages", "avis", "agent"))
     return {
-        "status": "ok" if prix and garages and avis else "degrade",
+        "status": "ok" if prix and garages and avis and agent else "degrade",
         "modeles": {
             "vehicle_value": prix.version if prix else None,
             "garage_recommendation": garages.version if garages else None,
             "review_moderation": avis.version if avis else None,
+            "diagnostic_agent": agent.version if agent else None,
         },
     }
 
@@ -111,3 +129,19 @@ def moderer_avis(demande: DemandeModeration) -> DecisionModeration:
         return modeles["avis"].evaluer(demande.review_id)
     except LookupError as err:
         raise HTTPException(status_code=404, detail=str(err)) from err
+
+
+@app.post("/agent/chat", response_model=ReponseAgent)
+def agent_chat(demande: DemandeAgent) -> ReponseAgent:
+    if "agent" not in modeles:
+        raise HTTPException(status_code=503, detail="Agent IA non disponible")
+    vehicule = demande.vehicule.model_dump(exclude_none=True) if demande.vehicule else None
+    try:
+        sortie = modeles["agent"].repondre([m.model_dump() for m in demande.messages], vehicule, demande.lat, demande.lon)
+    except Exception as err:  # LLM indisponible, quota dépassé, réponse illisible
+        print(f"Agent IA : échec du tour de conversation : {err}")
+        raise HTTPException(status_code=503, detail="L'assistant est momentanément indisponible") from err
+    probas = sortie.pop("_probas")
+    sortie.pop("categorie", None)
+    garages = modeles["garages"].garages_pour(probas, demande.lat, demande.lon, k=3) if sortie["action"] == "diagnostic" else []
+    return ReponseAgent(**sortie, garages=garages)

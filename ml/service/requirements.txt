@@ -13,3 +13,6 @@ psycopg2-binary==2.9.12
 # Modele C (detection de faux avis) : memes versions que ml/venv (modele joblib)
 scikit-learn==1.7.2
 joblib
+# Agent IA : appels au LLM (Groq / Mistral) et certificats du systeme
+requests
+truststore

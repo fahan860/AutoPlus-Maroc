@@ -7,6 +7,7 @@ const vehiclesRouter = require('./routes/vehicles');
 const interventionsRouter = require('./routes/interventions');
 const reviewsRouter = require('./routes/reviews');
 const adminRouter = require('./routes/admin');
+const agentRouter = require('./routes/agent');
 
 const app = express();
 app.use(express.json());
@@ -27,6 +28,7 @@ app.use('/vehicles', vehiclesRouter);
 app.use('/interventions', interventionsRouter);
 app.use('/reviews', reviewsRouter);
 app.use('/admin', adminRouter);
+app.use('/agent', agentRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
