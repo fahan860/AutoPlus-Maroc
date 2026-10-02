@@ -20,6 +20,8 @@ export default function GarageDetailScreen({ route, navigation }) {
   const [commentaire, setCommentaire] = useState('');
   const [postingReview, setPostingReview] = useState(false);
   const [reviewError, setReviewError] = useState('');
+  // Retour apres publication : publie tout de suite, ou en verification (detection de faux avis)
+  const [reviewInfo, setReviewInfo] = useState(null);
 
   const loadReviews = useCallback(() => {
     listReviews(garageId).then(setReviews).catch(() => {});
@@ -37,9 +39,11 @@ export default function GarageDetailScreen({ route, navigation }) {
 
   async function handlePostReview() {
     setReviewError('');
+    setReviewInfo(null);
     setPostingReview(true);
     try {
-      await postReview({ garageId, note: noteChoisie, commentaire: commentaire.trim() || undefined });
+      const avis = await postReview({ garageId, note: noteChoisie, commentaire: commentaire.trim() || undefined });
+      setReviewInfo({ enVerification: avis.moderation_statut === 'en_verification', message: avis.message });
       setCommentaire('');
       loadReviews();
       getGarage(garageId).then(setGarage).catch(() => {});
@@ -114,6 +118,12 @@ export default function GarageDetailScreen({ route, navigation }) {
               onChangeText={setCommentaire}
             />
             {reviewError ? <Text style={styles.error}>{reviewError}</Text> : null}
+            {reviewInfo ? (
+              <Text style={[styles.reviewInfo, reviewInfo.enVerification ? styles.reviewInfoPending : styles.reviewInfoOk]}>
+                {reviewInfo.enVerification ? '⏳ ' : '✓ '}
+                {reviewInfo.message}
+              </Text>
+            ) : null}
             <PrimaryButton title="Publier l'avis" onPress={handlePostReview} loading={postingReview} />
           </View>
         ) : null}
@@ -132,6 +142,9 @@ function InfoRow({ label, value }) {
 }
 
 const styles = StyleSheet.create({
+  reviewInfo: { borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 14, lineHeight: 20, overflow: 'hidden' },
+  reviewInfoOk: { backgroundColor: '#E9F7EF', color: '#1E8449' },
+  reviewInfoPending: { backgroundColor: '#FEF5E7', color: '#7E5109' },
   flex: { flex: 1, backgroundColor: colors.background },
   content: { padding: 20 },
   title: { fontSize: 24, fontWeight: '800', color: colors.text },
