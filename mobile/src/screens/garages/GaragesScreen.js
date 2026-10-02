@@ -76,6 +76,19 @@ export default function GaragesScreen({ navigation }) {
 
   return (
     <View style={styles.flex}>
+      <Pressable
+        style={({ pressed }) => [styles.problemCard, pressed && { opacity: 0.85 }]}
+        onPress={() => navigation.navigate('DescribeProblem', { location })}
+        accessibilityRole="button"
+        accessibilityLabel="Décrire une panne pour trouver le bon garage"
+      >
+        <Text style={styles.problemIcon}>🔍</Text>
+        <View style={styles.problemBody}>
+          <Text style={styles.problemTitle}>Quel est le problème ?</Text>
+          <Text style={styles.problemText}>Décrivez la panne, on trouve le bon garage</Text>
+        </View>
+        <Text style={styles.problemChevron}>›</Text>
+      </Pressable>
       <View style={styles.toggleRow}>
         <ToggleButton label="Liste" active={viewMode === 'liste'} onPress={() => setViewMode('liste')} />
         <ToggleButton label="Carte" active={viewMode === 'carte'} onPress={() => setViewMode('carte')} />
@@ -147,6 +160,20 @@ function GarageCard({ garage, onPress }) {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.background },
   centered: { flex: 1 },
+  problemCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: 14,
+    padding: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
+  problemIcon: { fontSize: 26, marginRight: 12 },
+  problemBody: { flex: 1 },
+  problemTitle: { color: '#fff', fontSize: 16, fontWeight: '800' },
+  problemText: { color: '#D6E4F0', fontSize: 13, marginTop: 2 },
+  problemChevron: { color: '#fff', fontSize: 26, marginLeft: 8 },
   toggleRow: {
     flexDirection: 'row',
     padding: 12,

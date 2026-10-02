@@ -6,3 +6,7 @@ pydantic>=2.7,<3
 xgboost-cpu==3.2.0
 pandas==2.3.3
 numpy==2.2.6
+# Modèle B (recommandation de garages) : encodeur e5-large + lecture des garages en base.
+# torch est installé à part dans le Dockerfile, en version CPU (sans les ~2 Go CUDA).
+sentence-transformers==5.7.0
+psycopg2-binary==2.9.12

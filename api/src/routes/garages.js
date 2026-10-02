@@ -11,6 +11,10 @@ const { logEvent } = require('../events');
 
 const router = express.Router();
 
+const ML_API_URL = process.env.ML_API_URL || 'http://localhost:8000';
+// Recommandation : encodage e5-large sur CPU, plus lent que l'estimation de prix
+const ML_API_TIMEOUT_MS = 15000;
+
 // Recupere le garage valide (revendication approuvee par un admin) du
 // mecanicien connecte, ou renvoie une erreur HTTP explicite.
 async function getGarageValideDuMecanicien(req, res) {
@@ -287,6 +291,44 @@ router.post('/', async (req, res) => {
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
+});
+
+// POST /garages/recommend : garages adaptes a une panne decrite en texte libre (Modele B).
+// Relaie au service ML interne ; voir ml/service/schemas.py (DemandeRecommandation).
+router.post('/recommend', requireAuth, async (req, res) => {
+  let reponse;
+  try {
+    reponse = await fetch(`${ML_API_URL}/recommend/garages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body),
+      signal: AbortSignal.timeout(ML_API_TIMEOUT_MS),
+    });
+  } catch (err) {
+    console.error('Service ML injoignable :', err.message);
+    return res.status(503).json({ status: 'error', message: 'Service de recommandation indisponible' });
+  }
+
+  const corps = await reponse.json().catch(() => ({}));
+
+  if (reponse.status === 422) {
+    const premiere = corps.detail?.[0];
+    const champ = premiere?.loc?.slice(1).join('.') || 'requete';
+    return res.status(400).json({ status: 'error', message: `${champ} : ${premiere?.msg || 'invalide'}` });
+  }
+  if (!reponse.ok) {
+    return res.status(503).json({ status: 'error', message: 'Service de recommandation indisponible' });
+  }
+
+  // Le texte libre n'est pas journalise (donnee saisie par l'utilisateur) : seulement le resultat
+  logEvent('recommandation_garages', {
+    categorie: corps.categories_probables?.[0]?.categorie,
+    garages: corps.garages?.map((g) => g.id),
+    avec_position: req.body.lat != null,
+    version_modele: corps.version_modele,
+  }, req.user.id);
+
+  res.json(corps);
 });
 
 module.exports = router;

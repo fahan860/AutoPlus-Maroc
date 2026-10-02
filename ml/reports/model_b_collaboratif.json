@@ -1,0 +1,54 @@
+{
+  "avertissement": "Interactions simulées (simulate.py) : démonstration du mécanisme, pas une performance réelle",
+  "tailles": {
+    "train": 967,
+    "validation": 270,
+    "test": 270,
+    "garages": 91
+  },
+  "svd": {
+    "parametres": {
+      "n_factors": 5,
+      "reg_all": 0.02,
+      "n_epochs": 30,
+      "lr_all": 0.005
+    },
+    "rmse_validation": 0.6752602580475391,
+    "rmse_reference_moyenne": 0.7618715835832914
+  },
+  "poids_svd": {
+    "testes_mrr_validation": {
+      "0.0": 0.23838975192764988,
+      "0.2": 0.2509940490970638,
+      "0.5": 0.2735576016989411,
+      "0.8": 0.2770961221704326,
+      "1.2": 0.29918142128749936,
+      "2.0": 0.29329055312380437,
+      "3.0": 0.2701358819436491,
+      "5.0": 0.22526484279882455
+    },
+    "retenu": 1.2
+  },
+  "test": {
+    "Popularité": {
+      "hit_rate_top5_pct": 26.296296296296294,
+      "MRR": 0.1782561349212962,
+      "rang_median": 15.0
+    },
+    "Contenu seul (B.2)": {
+      "hit_rate_top5_pct": 31.851851851851855,
+      "MRR": 0.24138723151651198,
+      "rang_median": 10.0
+    },
+    "SVD seul": {
+      "hit_rate_top5_pct": 22.22222222222222,
+      "MRR": 0.14796369461532083,
+      "rang_median": 26.0
+    },
+    "Hybride (contenu + 1.2 × SVD)": {
+      "hit_rate_top5_pct": 45.18518518518518,
+      "MRR": 0.3281299209000659,
+      "rang_median": 7.0
+    }
+  }
+}

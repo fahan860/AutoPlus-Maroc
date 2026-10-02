@@ -1,0 +1,54 @@
+{
+  "description": "Jeu d'évaluation du Modèle B : requêtes d'automobilistes écrites à la main, avec la catégorie de panne attendue (mêmes valeurs que base_pannes.categorie). Formulations volontairement différentes des symptômes de base_pannes (pas de copier-coller), registre parlé, fautes et tournures marocaines incluses.",
+  "requetes": [
+    {"texte": "le moteur tourne mal et la voiture n'avance plus en montée", "categorie": "moteur"},
+    {"texte": "il y a de la fumée blanche qui sort du capot et l'aiguille de température monte", "categorie": "moteur"},
+    {"texte": "ma voiture cale tout le temps au feu rouge", "categorie": "moteur"},
+    {"texte": "le matin elle veut pas démarrer, il faut insister plusieurs fois", "categorie": "moteur"},
+
+    {"texte": "je dois faire la vidange, ça fait 15000 km", "categorie": "entretien_courant"},
+    {"texte": "révision complète avant de partir en vacances à Agadir", "categorie": "entretien_courant"},
+    {"texte": "changer les filtres et l'huile", "categorie": "entretien_courant"},
+    {"texte": "les essuie-glaces laissent des traces sur le pare-brise", "categorie": "entretien_courant"},
+
+    {"texte": "quand j'appuie sur le frein ça fait un bruit de fer", "categorie": "freins"},
+    {"texte": "la pédale descend jusqu'au fond, j'ai peur", "categorie": "freins"},
+    {"texte": "voyant ABS rouge allumé", "categorie": "freins"},
+    {"texte": "les plaquettes sont usées je pense", "categorie": "freins"},
+
+    {"texte": "batterie à plat, la voiture ne fait rien quand je tourne la clé", "categorie": "electrique"},
+    {"texte": "les feux avant ne marchent plus", "categorie": "electrique"},
+    {"texte": "la vitre côté conducteur est bloquée, elle ne remonte plus", "categorie": "electrique"},
+    {"texte": "le témoin de charge reste allumé en roulant", "categorie": "electrique"},
+
+    {"texte": "la clim donne de l'air chaud en plein été", "categorie": "climatisation"},
+    {"texte": "il faut recharger le gaz de la clim", "categorie": "climatisation"},
+    {"texte": "mauvaise odeur quand je mets l'air conditionné", "categorie": "climatisation"},
+    {"texte": "le climatiseur fait un bruit bizarre", "categorie": "climatisation"},
+
+    {"texte": "j'ai eu un petit accrochage, la portière est enfoncée", "categorie": "carrosserie"},
+    {"texte": "refaire la peinture du capot", "categorie": "carrosserie"},
+    {"texte": "un caillou a fêlé mon pare-brise sur l'autoroute", "categorie": "carrosserie"},
+    {"texte": "il y a de la rouille sous les portes", "categorie": "carrosserie"},
+
+    {"texte": "mes pneus sont lisses d'un seul côté", "categorie": "pneus_suspension"},
+    {"texte": "ça cogne à l'avant quand je passe les ralentisseurs", "categorie": "pneus_suspension"},
+    {"texte": "j'ai un pneu qui se dégonfle tout seul", "categorie": "pneus_suspension"},
+    {"texte": "les amortisseurs sont morts, la voiture rebondit", "categorie": "pneus_suspension"},
+
+    {"texte": "les vitesses ne passent plus bien, ça craque", "categorie": "transmission"},
+    {"texte": "l'embrayage est dur et la voiture n'accélère pas alors que le moteur monte dans les tours", "categorie": "transmission"},
+    {"texte": "ma boîte automatique donne des secousses", "categorie": "transmission"},
+    {"texte": "bruit de claquement dans les virages en braquant à fond", "categorie": "transmission"},
+
+    {"texte": "le volant est très lourd pour se garer", "categorie": "direction"},
+    {"texte": "la voiture part à gauche toute seule sur la route droite", "categorie": "direction"},
+    {"texte": "il y a du jeu dans le volant", "categorie": "direction"},
+    {"texte": "ça siffle quand je braque le volant", "categorie": "direction"},
+
+    {"texte": "le pot fait un bruit énorme depuis hier", "categorie": "echappement"},
+    {"texte": "fumée noire quand j'accélère", "categorie": "echappement"},
+    {"texte": "le silencieux traîne par terre", "categorie": "echappement"},
+    {"texte": "ça sent le gaz à l'intérieur de la voiture", "categorie": "echappement"}
+  ]
+}

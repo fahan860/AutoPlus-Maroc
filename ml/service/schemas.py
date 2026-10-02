@@ -94,3 +94,49 @@ class Options(BaseModel):
     marques: list[str]
     modeles_par_marque: dict[str, list[str]]
     villes: list[str]
+
+
+# ─── Modèle B : recommandation de garages ────────────────────────────────────
+
+
+class DemandeRecommandation(BaseModel):
+    description: str = Field(min_length=3, max_length=500, examples=["ça grince quand je freine"])
+    lat: float | None = Field(default=None, ge=-90, le=90, examples=[33.5822])
+    lon: float | None = Field(default=None, ge=-180, le=180, examples=[-7.6327])
+    nb_garages: int = Field(default=5, ge=1, le=20)
+
+
+class CategorieProbable(BaseModel):
+    categorie: str
+    probabilite: float
+
+
+class PanneProche(BaseModel):
+    code: str
+    titre: str
+    categorie: str
+    urgence: str | None
+    cout_min_dh: float | None
+    cout_max_dh: float | None
+
+
+class GarageRecommande(BaseModel):
+    id: int
+    nom: str
+    adresse: str | None
+    telephone: str | None
+    distance_km: float | None
+    note: float | None
+    nb_avis: int
+    specialites: list[str]
+    specialites_confirmees: bool = Field(description="False : spécialités supposées (mécanique générale)")
+    score: float
+    raisons: list[str] = Field(description="Pourquoi ce garage est proposé, à afficher tel quel")
+
+
+class Recommandation(BaseModel):
+    categories_probables: list[CategorieProbable]
+    pannes_proches: list[PanneProche]
+    garages: list[GarageRecommande]
+    avertissements: list[str]
+    version_modele: str
