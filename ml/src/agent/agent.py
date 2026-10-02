@@ -5,7 +5,7 @@ Agent IA de diagnostic AUTO+ (V1, cf. ai/docs/V1_SCOPE.md).
   1. repère une situation dangereuse (fumée, freins qui lâchent, odeur d'essence...) ;
   2. cherche le contexte dans les deux bases, avec le même encodeur e5-large que le Modèle B :
      la Knowledge Base (kb_documents / kb_chunks, ai/) et les 50 pannes de base_pannes ;
-  3. demande à Mistral, en JSON, de POSER UNE QUESTION si l'information manque, ou de
+  3. demande au LLM (Mistral ou Groq, voir FOURNISSEURS), en JSON, de POSER UNE QUESTION si l'information manque, ou de
      DONNER UNE ANALYSE prudente, uniquement à partir de ce contexte ;
   4. contrôle la réponse : sources citées existantes, gravité valide, au plus
      MAX_QUESTIONS questions avant de devoir répondre ;
@@ -24,9 +24,17 @@ from dataclasses import dataclass
 
 import requests
 
-MISTRAL_URL = "https://api.mistral.ai/v1/chat/completions"
-MISTRAL_MODELE = "mistral-medium-latest"  # retenu après test darija (ai/scripts/test_darija_generation.py)
-MISTRAL_TIMEOUT_S = 40
+# Fournisseurs de LLM, tous au format « chat completions » d'OpenAI : on passe de l'un à l'autre
+# avec LLM_FOURNISSEUR dans .env, sans toucher au code.
+#   mistral : retenu par l'équipe après le test darija (ai/scripts/test_darija_generation.py), API payante
+#   groq    : gratuit (avec limites), utilisé pour les tests tant que l'API Mistral n'est pas activée
+FOURNISSEURS = {
+    "mistral": {"url": "https://api.mistral.ai/v1/chat/completions", "modele": "mistral-medium-latest",
+                "cle": "MISTRAL_API_KEY"},
+    "groq": {"url": "https://api.groq.com/openai/v1/chat/completions", "modele": "llama-3.3-70b-versatile",
+             "cle": "GROQ_API_KEY"},
+}
+LLM_TIMEOUT_S = 40
 
 MAX_QUESTIONS = 2  # au-delà, l'agent doit donner son analyse avec ce qu'il sait
 NB_KB, NB_PANNES = 4, 3  # passages de contexte transmis au LLM
@@ -94,15 +102,20 @@ class AgentDiagnostic:
     """service_garages : le ServiceRecommandation du Modèle B (encodeur e5, classifieur de
     pannes, recommandation de garages), partagé pour ne charger e5-large qu'une fois."""
 
-    def __init__(self, url_base: str, service_garages, cle_mistral: str | None = None, appel_llm=None):
+    def __init__(self, url_base: str, service_garages, fournisseur: str | None = None, cle: str | None = None,
+                 appel_llm=None):
         self.url_base = url_base
         self.garages = service_garages
         self.classifieur = service_garages.classifieur
-        self.cle = cle_mistral or os.environ.get("MISTRAL_API_KEY")
-        self.appel_llm = appel_llm or self._appeler_mistral  # remplaçable dans les tests
+        nom = fournisseur or os.environ.get("LLM_FOURNISSEUR", "mistral")
+        if nom not in FOURNISSEURS:
+            raise RuntimeError(f"LLM_FOURNISSEUR inconnu : {nom} (choix : {', '.join(FOURNISSEURS)})")
+        self.llm = FOURNISSEURS[nom]
+        self.cle = cle or os.environ.get(self.llm["cle"])
+        self.appel_llm = appel_llm or self._appeler_llm  # remplaçable dans les tests
         if not self.cle and appel_llm is None:
-            raise RuntimeError("MISTRAL_API_KEY absente")
-        self.version = f"agent-v1-{MISTRAL_MODELE}"
+            raise RuntimeError(f"{self.llm['cle']} absente (LLM_FOURNISSEUR={nom})")
+        self.version = f"agent-v1-{nom}-{self.llm['modele']}"
 
     # ─── Recherche du contexte ──────────────────────────────────────────────
 
@@ -137,13 +150,13 @@ class AgentDiagnostic:
 
     # ─── LLM ────────────────────────────────────────────────────────────────
 
-    def _appeler_mistral(self, messages: list[dict]) -> str:
+    def _appeler_llm(self, messages: list[dict]) -> str:
         reponse = requests.post(
-            MISTRAL_URL,
+            self.llm["url"],
             headers={"Authorization": f"Bearer {self.cle}"},
-            json={"model": MISTRAL_MODELE, "messages": messages, "temperature": 0.2,
+            json={"model": self.llm["modele"], "messages": messages, "temperature": 0.2,
                   "response_format": {"type": "json_object"}},
-            timeout=MISTRAL_TIMEOUT_S,
+            timeout=LLM_TIMEOUT_S,
         )
         reponse.raise_for_status()
         return reponse.json()["choices"][0]["message"]["content"]
