@@ -1,0 +1,34 @@
+{
+  "nom": "AUTO+ Modèle C — détection de faux avis",
+  "algorithme": "HistGradientBoosting (scikit-learn) + règle « avis sur un RDV annulé »",
+  "version": "2026-10-02",
+  "donnees": "2980 avis SIMULÉS (simulate_avis.py) — à remplacer par les décisions de modération réelles",
+  "seuil_gradient_boosting": 0.2691082300724852,
+  "signaux": [
+    "anciennete_compte_h",
+    "rdv_termine",
+    "rdv_annule",
+    "avis_garage_48h",
+    "ecart_note",
+    "note_extreme",
+    "nb_mots",
+    "nb_exclamations",
+    "part_majuscules",
+    "nb_superlatifs",
+    "nb_details_concrets",
+    "similarite_max_30j"
+  ],
+  "mesures_test_simule": {
+    "precision_pct": 100.0,
+    "rappel_pct": 84.4155844155844,
+    "F1": 0.9154929577464789,
+    "PR_AUC": 0.9036927887715744,
+    "faux_positifs_pct_des_vrais_avis": 0.0,
+    "rappel_par_type_pct": {
+      "auto_promotion": 100.0,
+      "denigrement": 100.0,
+      "ferme_avis": 100.0,
+      "sophistique": 46.666666666666664
+    }
+  }
+}

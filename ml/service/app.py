@@ -6,6 +6,7 @@ Routes :
   POST /predict/vehicle-value           Modèle A : estimation du prix d'un véhicule d'occasion
   GET  /predict/vehicle-value/options   marques, modèles et villes connus du modèle (listes de l'app)
   POST /recommend/garages               Modèle B : garages adaptés à une panne décrite en texte libre
+  POST /moderation/review               Modèle C : un avis qui vient d'être publié est-il suspect ?
 
 Documentation interactive : http://localhost:8000/docs
 Lancement local : cd ml/service && ../venv/Scripts/uvicorn app:app --reload --port 8000
@@ -18,7 +19,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 
 from predictor import PredicteurPrix
-from schemas import DemandeEstimation, DemandeRecommandation, Estimation, Options, Recommandation
+from schemas import (
+    DecisionModeration, DemandeEstimation, DemandeModeration, DemandeRecommandation, Estimation, Options,
+    Recommandation,
+)
 
 modeles = {}
 
@@ -39,6 +43,12 @@ async def cycle_de_vie(_app: FastAPI):
             modeles["garages"] = ServiceRecommandation(url_base)
         except Exception as err:  # base ou modèle e5 indisponible : le Modèle A reste servi
             print(f"Modèle B non chargé : {err}")
+        try:
+            from moderation import ServiceModeration
+
+            modeles["avis"] = ServiceModeration(url_base)
+        except Exception as err:
+            print(f"Modèle C non chargé : {err}")
     else:
         print("Modèle B non chargé : DATABASE_URL absente")
     yield
@@ -67,12 +77,13 @@ def service_garages():
 
 @app.get("/health")
 def health():
-    prix, garages = modeles.get("prix"), modeles.get("garages")
+    prix, garages, avis = modeles.get("prix"), modeles.get("garages"), modeles.get("avis")
     return {
-        "status": "ok" if prix and garages else "degrade",
+        "status": "ok" if prix and garages and avis else "degrade",
         "modeles": {
             "vehicle_value": prix.version if prix else None,
             "garage_recommendation": garages.version if garages else None,
+            "review_moderation": avis.version if avis else None,
         },
     }
 
@@ -90,3 +101,13 @@ def options_prix() -> Options:
 @app.post("/recommend/garages", response_model=Recommandation)
 def recommander_garages(demande: DemandeRecommandation) -> Recommandation:
     return service_garages().recommander(demande)
+
+
+@app.post("/moderation/review", response_model=DecisionModeration)
+def moderer_avis(demande: DemandeModeration) -> DecisionModeration:
+    if "avis" not in modeles:
+        raise HTTPException(status_code=503, detail="Modèle de détection de faux avis non disponible")
+    try:
+        return modeles["avis"].evaluer(demande.review_id)
+    except LookupError as err:
+        raise HTTPException(status_code=404, detail=str(err)) from err

@@ -20,14 +20,49 @@ const createReviewSchema = z.object({
   commentaire: z.string().optional(),
 });
 
-// Recalcule note moyenne + nb_avis du garage a partir des reviews existantes.
+const ML_API_URL = process.env.ML_API_URL || 'http://localhost:8000';
+const ML_API_TIMEOUT_MS = 5000;
+
+// Avis visibles publiquement et comptes dans la note : ni en verification, ni rejetes
+// (voir migrations/008_moderation_avis.sql)
+const AVIS_VISIBLES = "moderation_statut IN ('publie', 'valide')";
+
+// Modele C : le service ML dit si l'avis qui vient d'etre enregistre est suspect.
+// En cas de panne du service, l'avis est publie (on prefere laisser passer un faux avis
+// que bloquer un vrai client) : retourne null.
+async function verifierAvis(reviewId) {
+  try {
+    const reponse = await fetch(`${ML_API_URL}/moderation/review`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ review_id: reviewId }),
+      signal: AbortSignal.timeout(ML_API_TIMEOUT_MS),
+    });
+    if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
+    return await reponse.json();
+  } catch (err) {
+    console.error(`[reviews] verification ML impossible pour l'avis ${reviewId} :`, err.message);
+    return null;
+  }
+}
+
+// Recalcule la note du garage : moyenne ponderee des avis externes importes (Telecontact,
+// colonnes note_externe / nb_avis_externe, migration 008) et des avis visibles de l'app.
+// Avant, seuls les avis de l'app comptaient et la note importee etait effacee.
 async function recomputeGarageNote(garageId) {
   await pool.query(
-    `UPDATE garages
-     SET note = (SELECT ROUND(AVG(note)::numeric, 1) FROM reviews WHERE garage_id = $1),
-         nb_avis = (SELECT COUNT(*) FROM reviews WHERE garage_id = $1),
+    `UPDATE garages g
+     SET note = CASE WHEN stats.total = 0 THEN NULL
+                     ELSE ROUND((stats.somme + COALESCE(g.note_externe, 0) * g.nb_avis_externe) / stats.total, 1) END,
+         nb_avis = stats.total,
          updated_at = now()
-     WHERE id = $1`,
+     FROM (
+       SELECT COALESCE(SUM(r.note), 0) AS somme,
+              COUNT(r.id) + (SELECT nb_avis_externe FROM garages WHERE id = $1) AS total
+       FROM reviews r
+       WHERE r.garage_id = $1 AND r.${AVIS_VISIBLES}
+     ) stats
+     WHERE g.id = $1`,
     [garageId]
   );
 }
@@ -45,7 +80,7 @@ router.get('/', async (req, res) => {
               users.nom AS auteur
        FROM reviews
        JOIN users ON users.id = reviews.user_id
-       WHERE reviews.garage_id = $1
+       WHERE reviews.garage_id = $1 AND reviews.${AVIS_VISIBLES}
        ORDER BY reviews.created_at DESC
        LIMIT 50`,
       [garageId]
@@ -88,14 +123,44 @@ router.post('/', requireAuth, requireRole('automobiliste'), async (req, res) => 
       [garageId, req.user.id, interventionId || null, note, commentaire || null]
     );
 
+    let avis = rows[0];
+    const verification = await verifierAvis(avis.id);
+    if (verification) {
+      const aVerifier = verification.decision === 'verifier';
+      const { rows: maj } = await pool.query(
+        `UPDATE reviews
+         SET moderation_statut = $1, suspect_faux_avis = $2, score_faux_avis = $3, raisons_moderation = $4
+         WHERE id = $5
+         RETURNING *`,
+        [aVerifier ? 'en_verification' : 'publie', aVerifier, verification.score, verification.raisons, avis.id]
+      );
+      avis = maj[0];
+    }
+
     await recomputeGarageNote(garageId);
 
-    logEvent('avis_poste', { garage_id: garageId, note }, req.user.id);
+    logEvent('avis_poste', {
+      garage_id: garageId,
+      note,
+      moderation_statut: avis.moderation_statut,
+      score_faux_avis: verification?.score ?? null,
+    }, req.user.id);
 
-    res.status(201).json(rows[0]);
+    // Les raisons sont reservees a l'admin : l'auteur sait seulement que son avis est verifie
+    const {
+      raisons_moderation: _raisons, score_faux_avis: _score, suspect_faux_avis: _suspect, ...publicAvis
+    } = avis;
+    res.status(201).json({
+      ...publicAvis,
+      message: avis.moderation_statut === 'en_verification'
+        ? 'Merci ! Votre avis sera publie apres une verification rapide.'
+        : 'Merci, votre avis est publie.',
+    });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
 module.exports = router;
+// Utilise aussi par la moderation admin (routes/admin.js)
+module.exports.recomputeGarageNote = recomputeGarageNote;

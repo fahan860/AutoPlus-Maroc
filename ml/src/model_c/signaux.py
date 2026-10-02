@@ -102,3 +102,10 @@ def calculer(avis: pd.DataFrame, vectoriseur: TfidfVectorizer | None = None) -> 
             "similarite_max_30j": similarite,
         })
     return pd.DataFrame(lignes, index=avis.index)[COLONNES], vectoriseur
+
+
+def transformer(X: pd.DataFrame) -> pd.DataFrame:
+    """L'âge du compte s'étale de 0 h à 2 ans : passage au log pour les modèles."""
+    X = X.copy()
+    X["anciennete_compte_h"] = np.log1p(X["anciennete_compte_h"])
+    return X

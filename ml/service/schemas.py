@@ -140,3 +140,18 @@ class Recommandation(BaseModel):
     garages: list[GarageRecommande]
     avertissements: list[str]
     version_modele: str
+
+
+# ─── Modèle C : détection de faux avis ───────────────────────────────────────
+
+
+class DemandeModeration(BaseModel):
+    review_id: int = Field(ge=1, description="Avis déjà enregistré en base, à vérifier")
+
+
+class DecisionModeration(BaseModel):
+    review_id: int
+    decision: Literal["publier", "verifier"]
+    score: float = Field(description="Probabilité estimée de faux avis (0-1)")
+    raisons: list[str] = Field(description="Pourquoi l'avis est à vérifier, pour l'admin")
+    version_modele: str

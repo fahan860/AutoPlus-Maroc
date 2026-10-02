@@ -34,6 +34,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
 import signaux
+from signaux import transformer
 from simulate_avis import DEBUT_TEST, ML_DIR, SORTIE
 
 GRAINE = 42
@@ -52,12 +53,6 @@ def regles(X: pd.DataFrame, avis: pd.DataFrame) -> np.ndarray:
         | (X["avis_garage_48h"] >= 3)                                                        # rafale sur le garage
     ).astype(float).to_numpy()
 
-
-def transformer(X: pd.DataFrame) -> pd.DataFrame:
-    """L'âge du compte s'étale de 0 h à 2 ans : on passe au log pour les modèles linéaires et l'IF."""
-    X = X.copy()
-    X["anciennete_compte_h"] = np.log1p(X["anciennete_compte_h"])
-    return X
 
 
 def seuil_f1(y, scores) -> float:
