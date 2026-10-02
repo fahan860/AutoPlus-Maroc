@@ -153,8 +153,8 @@ router.post('/', requireAuth, requireRole('automobiliste'), async (req, res) => 
     res.status(201).json({
       ...publicAvis,
       message: avis.moderation_statut === 'en_verification'
-        ? 'Merci ! Votre avis sera publie apres une verification rapide.'
-        : 'Merci, votre avis est publie.',
+        ? 'Merci ! Votre avis sera publié après une vérification rapide.'
+        : 'Merci, votre avis est publié.',
     });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
