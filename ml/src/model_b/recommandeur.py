@@ -28,7 +28,8 @@ MODELE_E5 = "intfloat/multilingual-e5-large"
 # fiche liste les 10 spécialités (M.I.A) sortait 1er dans 100 % des cas, même à 10 km.
 # Choix après une grille de 9 réglages (evaluate.py) : 0,4 / 0,5 / 0,1 garde 67 % de garages
 # pertinents dans le top 5 (-3 points vs 0,5 / 0,4), à 1,3 km en moyenne, et aucun garage ne
-# capte plus de 20 % des 1res places (contre 52 %).
+# capte plus de 20 % des 1res places (contre 52 %). Avec le filtre categories_retenues ajouté
+# ensuite : 93 % de garages pertinents dans le top 5, à 2,6 km en moyenne.
 POIDS = {"specialite": 0.4, "distance": 0.5, "note": 0.1}
 # Fiabilité de l'information « ce garage traite cette catégorie », selon sa source.
 # Un garage de mécanique générale est réellement compétent pour l'entretien, les freins,
@@ -42,6 +43,9 @@ NOTE_A_PRIORI, POIDS_A_PRIORI = 3.5, 5
 # Température du softmax qui transforme les similarités (très resserrées avec e5,
 # ~0,75-0,90) en probabilités de catégories
 TEMPERATURE = 0.02
+# Catégories prises en compte pour choisir les garages : celles dont la probabilité atteint
+# au moins la moitié de la plus probable (voir categories_retenues)
+SEUIL_RELATIF = 0.5
 
 
 def texte_panne(titre: str, symptomes: list[str]) -> str:
@@ -55,6 +59,9 @@ class Panne:
     categorie: str
     titre: str
     texte: str
+    urgence: str | None = None
+    cout_min_dh: float | None = None
+    cout_max_dh: float | None = None
 
 
 @dataclass
@@ -78,14 +85,22 @@ class Recommandation:
     detail: dict = field(default_factory=dict)
 
 
-def charger_depuis_base() -> tuple[list[Panne], list[Garage]]:
+def charger_depuis_base(url_base: str | None = None) -> tuple[list[Panne], list[Garage]]:
+    """Pannes et garages depuis PostgreSQL. Sans url_base : DATABASE_URL de api/.env
+    (scripts lancés depuis le dépôt) ; le service ML la reçoit de docker-compose."""
     import psycopg2
-    from dotenv import load_dotenv
 
-    load_dotenv(ROOT / "api" / ".env")
-    with psycopg2.connect(os.environ["DATABASE_URL"]) as conn, conn.cursor() as cur:
-        cur.execute("SELECT code, categorie, titre, symptomes FROM base_pannes ORDER BY code")
-        pannes = [Panne(c, cat, t, texte_panne(t, s)) for c, cat, t, s in cur.fetchall()]
+    if url_base is None:
+        from dotenv import load_dotenv
+
+        load_dotenv(ROOT / "api" / ".env")
+        url_base = os.environ["DATABASE_URL"]
+    with psycopg2.connect(url_base) as conn, conn.cursor() as cur:
+        cur.execute("SELECT code, categorie, titre, symptomes, urgence, cout_min_dh, cout_max_dh "
+                    "FROM base_pannes ORDER BY code")
+        pannes = [Panne(c, cat, t, texte_panne(t, s), u, float(cmin) if cmin is not None else None,
+                        float(cmax) if cmax is not None else None)
+                  for c, cat, t, s, u, cmin, cmax in cur.fetchall()]
         cur.execute("""
             SELECT id, nom, adresse, ST_Y(geom::geometry), ST_X(geom::geometry), note, nb_avis,
                    specialites, specialites_source, telephone
@@ -160,8 +175,20 @@ def score_specialite(garage: Garage, probas: dict[str, float]) -> float:
     return couverte * CONFIANCE_SOURCE.get(garage.specialites_source, 0.6)
 
 
+def categories_retenues(probas: dict[str, float]) -> dict[str, float]:
+    """Ne garde que les catégories crédibles (≥ SEUIL_RELATIF × la plus probable), renormalisées.
+    Sans ce filtre, pour une portière enfoncée (carrosserie 44 %, puis transmission 12 %,
+    échappement 9 %, freins 7 %...), la somme des petites probabilités donnait aux garages
+    de mécanique générale le même score qu'un carrossier."""
+    maximum = max(probas.values())
+    gardees = {c: p for c, p in probas.items() if p >= SEUIL_RELATIF * maximum}
+    total = sum(gardees.values())
+    return {c: p / total for c, p in gardees.items()}
+
+
 def recommander(probas: dict[str, float], garages: list[Garage], lat: float | None, lon: float | None,
                 k: int = 5, poids: dict = POIDS) -> list[Recommandation]:
+    probas = categories_retenues(probas)
     resultats = [r for r in scorer(probas, garages, lat, lon, poids) if r.detail["specialite"] > 0]
     resultats.sort(key=lambda r: -r.score)
     return resultats[:k]

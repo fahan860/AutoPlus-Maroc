@@ -62,14 +62,26 @@ services:
       dockerfile: service/Dockerfile
     container_name: autoplus-ml-api
     restart: unless-stopped
+    environment:
+      # Modele B : pannes et garages lus dans PostgreSQL
+      DATABASE_URL: postgres://${POSTGRES_USER:-autoplus}:${POSTGRES_PASSWORD:-autoplus}@db:5432/${POSTGRES_DB:-autoplus}
     ports:
       - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # Modele e5-large (~2,2 Go) : telecharge au 1er demarrage, conserve ensuite
+      - hf-cache:/home/appuser/.cache/huggingface
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
       timeout: 5s
       retries: 5
+      # 1er demarrage : telechargement + chargement d'e5-large
+      start_period: 300s
 
 volumes:
   postgres-data:
   redis-data:
+  hf-cache:

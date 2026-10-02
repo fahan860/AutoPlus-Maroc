@@ -73,16 +73,16 @@
   ],
   "classement_garages": {
     "Hybride (Modèle B)": {
-      "pertinence_top5_pct": 67.3,
-      "specialiste_confirme_top1_pct": 18.0,
-      "distance_moyenne_top5_km": 1.2936907846343662,
-      "garages_differents_en_1er": 10,
-      "part_du_garage_le_plus_recommande_pct": 19.5
+      "pertinence_top5_pct": 93.2,
+      "specialiste_confirme_top1_pct": 35.0,
+      "distance_moyenne_top5_km": 2.556637043737684,
+      "garages_differents_en_1er": 14,
+      "part_du_garage_le_plus_recommande_pct": 18.5
     },
     "Spécialité seule": {
-      "pertinence_top5_pct": 76.0,
+      "pertinence_top5_pct": 94.0,
       "specialiste_confirme_top1_pct": 100.0,
-      "distance_moyenne_top5_km": 6.0396113382218335,
+      "distance_moyenne_top5_km": 6.121094838953935,
       "garages_differents_en_1er": 1,
       "part_du_garage_le_plus_recommande_pct": 100.0
     },
