@@ -32,7 +32,8 @@ def service_garages():
 
 
 def agent_avec(service_garages, reponse_llm: dict):
-    """Agent dont le LLM renvoie toujours `reponse_llm` ; garde les messages reçus."""
+    """Agent dont le LLM renvoie toujours `reponse_llm` ; garde les messages reçus (le dernier appel
+    est la réponse, le premier la reformulation, ici sans description : recherche sur le texte brut)."""
     from agent import AgentDiagnostic
 
     service, url = service_garages
@@ -92,7 +93,7 @@ def test_au_plus_deux_questions(service_garages):
     ]
     r = agent.repondre(historique)
     assert r["action"] == "diagnostic"
-    assert "déjà posé 2 questions" in recus[0][0]["content"]
+    assert "déjà posé 2 questions" in recus[-1][0]["content"]
 
 
 def test_alerte_securite(service_garages):
@@ -102,7 +103,7 @@ def test_alerte_securite(service_garages):
     r = agent.repondre([{"role": "user", "content": "il y a de la fumée qui sort du capot"}])
     assert r["alerte_securite"]
     assert r["action"] == "diagnostic" and r["gravite"] == "critique"
-    assert "SITUATION POTENTIELLEMENT DANGEREUSE" in recus[0][0]["content"]
+    assert "SITUATION POTENTIELLEMENT DANGEREUSE" in recus[-1][0]["content"]
 
 
 def test_alerte_securite_en_darija(service_garages):
@@ -116,13 +117,13 @@ def test_hors_sujet_sans_contexte(service_garages):
         "action": "diagnostic", "langue": "fr", "message": "Rabat.", "causes": [], "gravite": "faible"})
     r = agent.repondre([{"role": "user", "content": "quelle est la capitale du Maroc ?"}])
     assert r["action"] == "hors_sujet"
-    assert "AUCUN CONTEXTE FIABLE" in recus[0][0]["content"]
+    assert "AUCUN CONTEXTE FIABLE" in recus[-1][0]["content"]
 
 
 def test_contexte_transmis_au_llm(service_garages):
     agent, recus = agent_avec(service_garages, {"action": "question", "langue": "fr", "message": "?",
                                                 "suggestions": ["a"]})
     agent.repondre(FREINS, vehicule={"marque": "Dacia", "modele": "Logan", "annee": 2019})
-    systeme = recus[0][0]["content"]
+    systeme = recus[-1][0]["content"]
     assert "[FRE-01]" in systeme
     assert "VÉHICULE : marque : Dacia" in systeme

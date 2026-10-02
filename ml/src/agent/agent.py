@@ -31,7 +31,7 @@ import requests
 FOURNISSEURS = {
     "mistral": {"url": "https://api.mistral.ai/v1/chat/completions", "modele": "mistral-medium-latest",
                 "cle": "MISTRAL_API_KEY"},
-    "groq": {"url": "https://api.groq.com/openai/v1/chat/completions", "modele": "llama-3.3-70b-versatile",
+    "groq": {"url": "https://api.groq.com/openai/v1/chat/completions", "modele": "openai/gpt-oss-120b",
              "cle": "GROQ_API_KEY"},
 }
 LLM_TIMEOUT_S = 40
@@ -54,6 +54,15 @@ DANGERS = [
     r"\bdkhan\b", r"\bl3afia\b", r"fran.{0,15}ma\s?(kaychd|kayhbs|khdamch)", r"riht? (l)?(essence|lisans)",
 ]
 
+# Étape 1 : reformuler la conversation en une phrase française avant la recherche. La base est en
+# français : chercher directement avec un message en darija trouvait de mauvais contextes
+# (« tomobil dyali katsfer mli kanfrani », un sifflement au freinage, donnait « filtre à air »).
+PROMPT_REFORMULATION = """Tu reçois une conversation entre un automobiliste au Maroc (en français ou en darija, écrite en lettres latines ou arabes) et un assistant.
+Réécris le problème de la voiture en UNE phrase en français simple, avec les symptômes décrits (bruit, voyant, odeur, fumée, moment où ça arrive...). N'ajoute aucune cause ni interprétation.
+Aide darija : tomobil / tonobil / karhba = voiture ; frana / kanfrani = frein / je freine ; katsfer = siffle ; katzgi / kat3yet = grince ; lmotor = le moteur ; kaysakhn = chauffe ; dkhan = fumée ; ma bghatch tkhdem / ma katdemarrich = ne démarre pas ; batri = batterie ; dwaw = voyant / phares ; lclim = la climatisation ; kat9tel / katmout = cale ; bzaf = beaucoup.
+Réponds UNIQUEMENT en JSON : {"description_fr": "...", "langue": "fr" ou "darija", "hors_sujet": true ou false}
+langue = la langue dans laquelle l'automobiliste écrit. hors_sujet = true si la demande ne concerne pas une voiture."""
+
 PROMPT_SYSTEME = """Tu es l'assistant de diagnostic automobile de l'application AUTO+, pour des automobilistes au Maroc.
 
 LANGUE : réponds dans la langue de l'utilisateur. S'il écrit en darija (lettres latines ou arabes), réponds en darija marocaine naturelle écrite en lettres latines, comme sur WhatsApp. Sinon, réponds en français simple.
@@ -64,6 +73,7 @@ RÈGLES :
 - Si la description est trop vague pour choisir entre les pistes du contexte, pose UNE seule question courte et utile (bruit ? voyant ? quand ça arrive ?), avec 2 à 4 réponses courtes proposées.
 - Si le contexte ne correspond pas à la demande, ou si la demande ne concerne pas une voiture, réponds avec l'action "hors_sujet" et un message bref.
 - Ton calme et rassurant, sans minimiser un problème grave. Phrases courtes.
+- Les vérifications proposées doivent être sans danger : jamais sous le capot moteur chaud, jamais ouvrir le bouchon du radiateur ou du vase d'expansion à chaud, jamais rouler pour « tester » un frein ou une direction douteux.
 
 FORMAT : réponds UNIQUEMENT avec un objet JSON :
 {
@@ -168,8 +178,11 @@ class AgentDiagnostic:
         debut = time.monotonic()
         messages_user = [m["content"] for m in historique if m["role"] == "user"]
         nb_questions = sum(1 for m in historique if m["role"] == "assistant" and m.get("action") == "question")
-        texte_recherche = " ".join(messages_user[-3:])  # les derniers messages précisent les premiers
-        alerte = danger(" ".join(messages_user))
+        reformulation = self._reformuler(historique)
+        description = str(reformulation.get("description_fr") or "").strip()
+        texte_recherche = description or " ".join(messages_user[-3:])
+        langue = "darija" if reformulation.get("langue") == "darija" else "fr"
+        alerte = danger(" ".join(messages_user)) or danger(description)
 
         vecteur = self.classifieur.encodeur.requetes([texte_recherche])[0]
         kb, pannes = self._kb(vecteur), self._pannes(vecteur)
@@ -177,12 +190,14 @@ class AgentDiagnostic:
         fiables = [p for p in passages if p.similarite >= SEUIL_PERTINENCE]
 
         contexte = "\n".join(f"[{p.id}] {p.texte}" for p in fiables) or "AUCUN CONTEXTE FIABLE TROUVÉ."
-        consignes = [f"CONTEXTE :\n{contexte}"]
+        consignes = [f"CONTEXTE :\n{contexte}", f"PROBLÈME DÉCRIT (reformulé) : {texte_recherche}",
+                     "LANGUE DE LA RÉPONSE : " + ("darija marocaine en lettres latines" if langue == "darija" else "français")]
         if vehicule:
             consignes.append("VÉHICULE : " + ", ".join(f"{k} : {v}" for k, v in vehicule.items() if v))
         if alerte:
             consignes.append("ATTENTION : SITUATION POTENTIELLEMENT DANGEREUSE. Commence le message par dire de "
                              "s'arrêter dès que possible en sécurité et de ne pas continuer à rouler. "
+                             "Ne propose aucune vérification sous le capot avant que le moteur ait refroidi, et dis-le. "
                              "Gravité \"critique\". Ne pose pas de question.")
         if nb_questions >= MAX_QUESTIONS:
             consignes.append(f"Tu as déjà posé {nb_questions} questions : donne maintenant ton analyse (action "
@@ -202,8 +217,21 @@ class AgentDiagnostic:
             sortie["categorie"] = next((p.categorie for p in fiables if p.categorie), None)
         sortie["duree_ms"] = int((time.monotonic() - debut) * 1000)
         sortie["version_modele"] = self.version
+        sortie["description_reformulee"] = texte_recherche
         sortie["_probas"] = self.classifieur.probabilites(vecteur)  # pour la recommandation de garages
         return sortie
+
+    def _reformuler(self, historique: list[dict]) -> dict:
+        """Une phrase française décrivant le problème, pour la recherche. En cas d'échec, {} :
+        la recherche se fait alors sur les messages bruts."""
+        transcription = "\n".join(f"{'Automobiliste' if m['role'] == 'user' else 'Assistant'} : {m['content']}"
+                                  for m in historique[-8:])
+        try:
+            reponse = json.loads(self.appel_llm([{"role": "system", "content": PROMPT_REFORMULATION},
+                                                 {"role": "user", "content": transcription}]))
+            return reponse if isinstance(reponse, dict) else {}
+        except (ValueError, requests.RequestException):
+            return {}
 
     @staticmethod
     def _controler(brut: dict, fiables: list[Passage], alerte: bool, nb_questions: int) -> dict:
