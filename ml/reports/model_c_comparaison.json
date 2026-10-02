@@ -1,0 +1,111 @@
+{
+  "avertissement": "Avis simulés (simulate_avis.py) : comparaison des méthodes, pas une performance réelle",
+  "tailles": {
+    "entrainement": 2177,
+    "test": 803,
+    "part_faux_test": 0.1917808219178082
+  },
+  "resultats_test": {
+    "Règles (planning)": {
+      "precision_pct": 58.666666666666664,
+      "rappel_pct": 57.14285714285714,
+      "F1": 0.5789473684210527,
+      "PR_AUC": 0.417429876060013,
+      "faux_positifs_pct_des_vrais_avis": 9.553158705701078,
+      "rappel_par_type_pct": {
+        "auto_promotion": 79.41176470588235,
+        "denigrement": 51.61290322580645,
+        "ferme_avis": 100.0,
+        "sophistique": 2.2222222222222223
+      }
+    },
+    "Isolation Forest": {
+      "precision_pct": 73.19587628865979,
+      "rappel_pct": 46.103896103896105,
+      "F1": 0.5657370517928287,
+      "PR_AUC": 0.6989193440462323,
+      "faux_positifs_pct_des_vrais_avis": 4.006163328197227,
+      "rappel_par_type_pct": {
+        "auto_promotion": 97.05882352941177,
+        "denigrement": 80.64516129032258,
+        "ferme_avis": 13.636363636363635,
+        "sophistique": 15.555555555555555
+      }
+    },
+    "Régression logistique": {
+      "precision_pct": 99.0909090909091,
+      "rappel_pct": 70.77922077922078,
+      "F1": 0.8257575757575758,
+      "PR_AUC": 0.7658921008301642,
+      "faux_positifs_pct_des_vrais_avis": 0.15408320493066258,
+      "rappel_par_type_pct": {
+        "auto_promotion": 100.0,
+        "denigrement": 100.0,
+        "ferme_avis": 100.0,
+        "sophistique": 0.0
+      },
+      "seuil": 0.34049704989626384
+    },
+    "Gradient boosting": {
+      "precision_pct": 100.0,
+      "rappel_pct": 70.77922077922078,
+      "F1": 0.8288973384030418,
+      "PR_AUC": 0.8224269613155621,
+      "faux_positifs_pct_des_vrais_avis": 0.0,
+      "rappel_par_type_pct": {
+        "auto_promotion": 100.0,
+        "denigrement": 100.0,
+        "ferme_avis": 100.0,
+        "sophistique": 0.0
+      },
+      "seuil": 0.2691082300724852
+    },
+    "Retenu : masqué (GB + RDV annulé)": {
+      "precision_pct": 100.0,
+      "rappel_pct": 84.4155844155844,
+      "F1": 0.9154929577464789,
+      "PR_AUC": 0.9036927887715744,
+      "faux_positifs_pct_des_vrais_avis": 0.0,
+      "rappel_par_type_pct": {
+        "auto_promotion": 100.0,
+        "denigrement": 100.0,
+        "ferme_avis": 100.0,
+        "sophistique": 46.666666666666664
+      }
+    },
+    "Retenu : masqué + surveillé": {
+      "precision_pct": 93.5251798561151,
+      "rappel_pct": 84.4155844155844,
+      "F1": 0.8873720136518771,
+      "PR_AUC": 0.9036927887715744,
+      "faux_positifs_pct_des_vrais_avis": 1.386748844375963,
+      "rappel_par_type_pct": {
+        "auto_promotion": 100.0,
+        "denigrement": 100.0,
+        "ferme_avis": 100.0,
+        "sophistique": 46.666666666666664
+      }
+    }
+  },
+  "systeme_retenu": {
+    "seuil_gradient_boosting": 0.2691082300724852,
+    "seuil_surveillance_isolation_forest": 0.16383762250217404,
+    "avis_masques_test": 130,
+    "avis_surveilles_test": 9,
+    "faux_parmi_surveilles": 0
+  },
+  "coefficients_regression_logistique": {
+    "part_majuscules": -2.57,
+    "nb_details_concrets": -2.5,
+    "rdv_termine": -1.704,
+    "anciennete_compte_h": -1.409,
+    "nb_mots": -1.358,
+    "rdv_annule": 0.0,
+    "ecart_note": 0.136,
+    "avis_garage_48h": 0.195,
+    "note_extreme": 1.026,
+    "similarite_max_30j": 1.333,
+    "nb_exclamations": 1.451,
+    "nb_superlatifs": 2.004
+  }
+}
