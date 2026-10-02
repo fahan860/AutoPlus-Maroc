@@ -28,3 +28,11 @@ export function createMonGarage(payload) {
 export function updateMonGarage(payload) {
   return apiClient.patch('/garages/mine', payload).then((res) => res.data);
 }
+
+// Recommandation de garages a partir d'une panne decrite en texte libre (Modele B).
+// Voir ml/service/schemas.py pour le format de la reponse.
+export function recommendGarages({ description, lat, lon, nbGarages = 5 }) {
+  return apiClient
+    .post('/garages/recommend', { description, lat, lon, nb_garages: nbGarages })
+    .then((res) => res.data);
+}
