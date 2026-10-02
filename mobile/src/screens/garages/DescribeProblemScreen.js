@@ -29,15 +29,26 @@ const EXEMPLES = [
   'La voiture ne démarre pas',
 ];
 
+const DELAI_POSITION_MS = 8000;
+const AGE_MAX_POSITION_CONNUE_MS = 10 * 60 * 1000;
+
+// Position de l'utilisateur, la plus rapide possible : derniere position connue si elle
+// est recente, sinon position actuelle (abandon apres 8 s, frequent en interieur).
+// Retourne { coords, refusee } : coords null si indisponible, refusee si l'acces est refuse.
 async function positionActuelle(positionConnue) {
-  if (positionConnue) return positionConnue;
+  if (positionConnue) return { coords: positionConnue, refusee: false };
   try {
     const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') return null;
-    const { coords } = await Location.getCurrentPositionAsync({});
-    return { latitude: coords.latitude, longitude: coords.longitude };
+    if (status !== 'granted') return { coords: null, refusee: true };
+    const derniere = await Location.getLastKnownPositionAsync({ maxAge: AGE_MAX_POSITION_CONNUE_MS });
+    if (derniere) return { coords: derniere.coords, refusee: false };
+    const actuelle = await Promise.race([
+      Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }),
+      new Promise((resolve) => setTimeout(() => resolve(null), DELAI_POSITION_MS)),
+    ]);
+    return { coords: actuelle?.coords ?? null, refusee: false };
   } catch {
-    return null; // sans position, le service classe les garages sans la distance
+    return { coords: null, refusee: false }; // sans position, le service classe sans la distance
   }
 }
 
@@ -56,13 +67,13 @@ export default function DescribeProblemScreen({ navigation, route }) {
     setError('');
     setLoading(true);
     try {
-      const position = await positionActuelle(route.params?.location);
+      const { coords, refusee } = await positionActuelle(route.params?.location);
       const resultat = await recommendGarages({
         description: texte,
-        lat: position?.latitude,
-        lon: position?.longitude,
+        lat: coords?.latitude,
+        lon: coords?.longitude,
       });
-      navigation.navigate('RecommendedGarages', { resultat, description: texte });
+      navigation.navigate('RecommendedGarages', { resultat, description: texte, positionRefusee: refusee });
     } catch (err) {
       setError(extractErrorMessage(err));
     } finally {

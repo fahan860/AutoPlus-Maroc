@@ -24,7 +24,10 @@ from schemas import (  # noqa: E402
 )
 
 RAFRAICHISSEMENT_GARAGES_S = 600  # nouveaux garages créés par les mécaniciens pris en compte sous 10 min
-SEUIL_AMBIGUITE = 0.5  # en dessous, la catégorie la plus probable n'est pas assez sûre
+# En dessous, la catégorie la plus probable n'est pas assez sûre. Mesuré sur les 40 requêtes
+# d'évaluation : à 0,5 l'avertissement s'affichait pour 63 % des requêtes (dont « voyant moteur
+# allumé », bien classée) ; à 0,35 il garde 4 des 5 erreurs pour 37 % des requêtes.
+SEUIL_AMBIGUITE = 0.35
 SEUIL_CATEGORIES_AFFICHEES = 0.1
 
 LIBELLES = {

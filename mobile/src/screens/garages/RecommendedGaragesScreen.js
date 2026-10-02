@@ -92,7 +92,7 @@ function GarageRecoCard({ garage, rang, onOpen }) {
 
 export default function RecommendedGaragesScreen({ navigation, route }) {
   const insets = useSafeAreaInsets();
-  const { resultat, description } = route.params;
+  const { resultat, description, positionRefusee } = route.params;
   const { categories_probables: categories, pannes_proches: pannes, garages, avertissements } = resultat;
 
   return (
@@ -107,6 +107,15 @@ export default function RecommendedGaragesScreen({ navigation, route }) {
       {avertissements.map((a) => (
         <View key={a} style={styles.warning}>
           <Text style={styles.warningText}>ⓘ {a}</Text>
+          {positionRefusee && a.startsWith('Position inconnue') ? (
+            <Pressable
+              style={({ pressed }) => [styles.warningAction, pressed && styles.pressed]}
+              onPress={() => Linking.openSettings()}
+              accessibilityRole="button"
+            >
+              <Text style={styles.warningActionText}>Autoriser la localisation dans les réglages ›</Text>
+            </Pressable>
+          ) : null}
         </View>
       ))}
 
@@ -155,6 +164,8 @@ const styles = StyleSheet.create({
   diagDisclaimer: { color: '#AFC6DB', fontSize: 12, marginTop: 8, fontStyle: 'italic' },
   warning: { backgroundColor: '#FEF5E7', borderColor: '#F8C471', borderWidth: 1, borderRadius: 12, padding: 12, marginBottom: 10 },
   warningText: { color: colors.text, fontSize: 13, lineHeight: 19 },
+  warningAction: { marginTop: 8, alignSelf: 'flex-start', minHeight: 32, justifyContent: 'center' },
+  warningActionText: { color: colors.primary, fontWeight: '700', fontSize: 14 },
   sectionTitle: { fontSize: 18, fontWeight: '800', color: colors.text, marginTop: 6, marginBottom: 10 },
   empty: { color: colors.textMuted, lineHeight: 20, marginBottom: 12 },
   card: {
