@@ -13,3 +13,7 @@ catboost
 optuna
 mlflow
 joblib
+# Modele B (recommandation de garages)
+sentence-transformers
+psycopg2-binary
+truststore

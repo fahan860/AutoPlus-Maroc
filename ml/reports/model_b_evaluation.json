@@ -1,0 +1,109 @@
+{
+  "requetes": 40,
+  "positions": {
+    "Maârif": [
+      33.5822,
+      -7.6327
+    ],
+    "Aïn Sebaâ": [
+      33.605,
+      -7.533
+    ],
+    "Hay Hassani": [
+      33.556,
+      -7.675
+    ],
+    "Sidi Maârouf": [
+      33.533,
+      -7.645
+    ],
+    "Centre (Mers Sultan)": [
+      33.587,
+      -7.611
+    ]
+  },
+  "poids": {
+    "specialite": 0.4,
+    "distance": 0.5,
+    "note": 0.1
+  },
+  "classification_pannes": {
+    "e5-large (retenu)": {
+      "top1_pct": 87.5,
+      "top3_pct": 87.5,
+      "MRR": 0.9029166666666667
+    },
+    "MiniLM multilingue": {
+      "top1_pct": 67.5,
+      "top3_pct": 80.0,
+      "MRR": 0.7650297619047619
+    },
+    "Mots-clés": {
+      "top1_pct": 40.0,
+      "top3_pct": 42.5,
+      "MRR": 0.4125
+    }
+  },
+  "erreurs_e5": [
+    {
+      "texte": "le moteur tourne mal et la voiture n'avance plus en montée",
+      "attendue": "moteur",
+      "predite": "transmission"
+    },
+    {
+      "texte": "les plaquettes sont usées je pense",
+      "attendue": "freins",
+      "predite": "carrosserie"
+    },
+    {
+      "texte": "ça cogne à l'avant quand je passe les ralentisseurs",
+      "attendue": "pneus_suspension",
+      "predite": "transmission"
+    },
+    {
+      "texte": "les amortisseurs sont morts, la voiture rebondit",
+      "attendue": "pneus_suspension",
+      "predite": "carrosserie"
+    },
+    {
+      "texte": "bruit de claquement dans les virages en braquant à fond",
+      "attendue": "transmission",
+      "predite": "direction"
+    }
+  ],
+  "classement_garages": {
+    "Hybride (Modèle B)": {
+      "pertinence_top5_pct": 67.3,
+      "specialiste_confirme_top1_pct": 18.0,
+      "distance_moyenne_top5_km": 1.2936907846343662,
+      "garages_differents_en_1er": 10,
+      "part_du_garage_le_plus_recommande_pct": 19.5
+    },
+    "Spécialité seule": {
+      "pertinence_top5_pct": 76.0,
+      "specialiste_confirme_top1_pct": 100.0,
+      "distance_moyenne_top5_km": 6.0396113382218335,
+      "garages_differents_en_1er": 1,
+      "part_du_garage_le_plus_recommande_pct": 100.0
+    },
+    "Plus proche": {
+      "pertinence_top5_pct": 52.0,
+      "specialiste_confirme_top1_pct": 0.0,
+      "distance_moyenne_top5_km": 0.8190549031409147,
+      "garages_differents_en_1er": 5,
+      "part_du_garage_le_plus_recommande_pct": 20.0
+    }
+  },
+  "categories_avec_specialiste_confirme": [
+    "carrosserie",
+    "climatisation",
+    "direction",
+    "echappement",
+    "electrique",
+    "entretien_courant",
+    "freins",
+    "moteur",
+    "pneus_suspension",
+    "transmission"
+  ]
+}
