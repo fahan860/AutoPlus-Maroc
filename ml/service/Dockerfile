@@ -18,6 +18,7 @@ RUN pip install --no-cache-dir -r service/requirements.txt
 COPY src/model_a/features.py src/model_a/features.py
 COPY src/model_b/recommandeur.py src/model_b/recommandeur.py
 COPY src/model_c/signaux.py src/model_c/signaux.py
+COPY src/agent/agent.py src/agent/agent.py
 COPY models/model_a models/model_a
 COPY models/model_c models/model_c
 COPY service service

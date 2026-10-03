@@ -155,3 +155,63 @@ class DecisionModeration(BaseModel):
     score: float = Field(description="Probabilité estimée de faux avis (0-1)")
     raisons: list[str] = Field(description="Pourquoi l'avis est à vérifier, pour l'admin")
     version_modele: str
+
+
+# ─── Agent IA de diagnostic ──────────────────────────────────────────────────
+
+
+class MessageConversation(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=1000)
+    action: Literal["question", "diagnostic", "hors_sujet"] | None = Field(
+        default=None, description="Pour les messages de l'assistant : sert à compter les questions déjà posées")
+
+
+class VehiculeConversation(BaseModel):
+    marque: str | None = Field(default=None, max_length=50)
+    modele: str | None = Field(default=None, max_length=80)
+    annee: int | None = Field(default=None, ge=1950, le=2100)
+    kilometrage: int | None = Field(default=None, ge=0, le=2_000_000)
+
+
+class DemandeAgent(BaseModel):
+    messages: list[MessageConversation] = Field(min_length=1, max_length=20,
+                                                description="Historique complet, le dernier message vient de l'utilisateur")
+    vehicule: VehiculeConversation | None = None
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lon: float | None = Field(default=None, ge=-180, le=180)
+
+    @field_validator("messages")
+    @classmethod
+    def dernier_message_utilisateur(cls, messages):
+        if messages[-1].role != "user":
+            raise ValueError("le dernier message doit venir de l'utilisateur")
+        return messages
+
+
+class CauseAgent(BaseModel):
+    titre: str
+    explication: str
+    source: str
+
+
+class SourceAgent(BaseModel):
+    id: str
+    titre: str
+
+
+class ReponseAgent(BaseModel):
+    action: Literal["question", "diagnostic", "hors_sujet"]
+    langue: Literal["fr", "darija"]
+    message: str
+    suggestions: list[str] = Field(description="Réponses courtes proposées quand l'agent pose une question")
+    causes: list[CauseAgent]
+    verifications: list[str]
+    gravite: Literal["faible", "moyenne", "elevee", "critique"] | None
+    alerte_securite: bool
+    consulter_garage: bool
+    sources: list[SourceAgent]
+    garages: list[GarageRecommande] = Field(description="Garages adaptés, après une analyse")
+    description_reformulee: str
+    duree_ms: int
+    version_modele: str

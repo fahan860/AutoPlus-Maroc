@@ -62,6 +62,11 @@ services:
       dockerfile: service/Dockerfile
     container_name: autoplus-ml-api
     restart: unless-stopped
+    # Cles du LLM de l'agent IA (GROQ_API_KEY / MISTRAL_API_KEY, LLM_FOURNISSEUR) ; sans ce fichier,
+    # l'agent est simplement desactive. DATABASE_URL ci-dessous remplace celle du fichier.
+    env_file:
+      - path: ./api/.env
+        required: false
     environment:
       # Modele B : pannes et garages lus dans PostgreSQL
       DATABASE_URL: postgres://${POSTGRES_USER:-autoplus}:${POSTGRES_PASSWORD:-autoplus}@db:5432/${POSTGRES_DB:-autoplus}

@@ -74,6 +74,19 @@ class ServiceRecommandation:
             raisons.append(f"Noté {g.note:.1f}/5 ({g.nb_avis} avis)".replace(".", ",", 1))
         return raisons
 
+    def _garage(self, r, probas) -> GarageRecommande:
+        return GarageRecommande(
+            id=r.garage.id, nom=r.garage.nom, adresse=r.garage.adresse, telephone=r.garage.telephone,
+            distance_km=r.detail["distance_km"], note=r.garage.note, nb_avis=r.garage.nb_avis,
+            specialites=r.garage.specialites,
+            specialites_confirmees=r.garage.specialites_source != "hypothese_generaliste",
+            score=round(r.score, 3), raisons=self._raisons(r, probas),
+        )
+
+    def garages_pour(self, probas: dict, lat: float | None, lon: float | None, k: int = 3) -> list[GarageRecommande]:
+        """Garages pour des probabilités de catégories déjà calculées (utilisé par l'agent IA)."""
+        return [self._garage(r, probas) for r in recommander(probas, self._garages_a_jour(), lat, lon, k=k)]
+
     def recommander(self, demande: DemandeRecommandation) -> Recommandation:
         probas = self.classifieur.classer(demande.description)
         garages = self._garages_a_jour()
@@ -99,16 +112,7 @@ class ServiceRecommandation:
                             cout_min_dh=p.cout_min_dh, cout_max_dh=p.cout_max_dh)
                 for p, _sim in self.classifieur.pannes_proches(demande.description, k=2)
             ],
-            garages=[
-                GarageRecommande(
-                    id=r.garage.id, nom=r.garage.nom, adresse=r.garage.adresse, telephone=r.garage.telephone,
-                    distance_km=r.detail["distance_km"], note=r.garage.note, nb_avis=r.garage.nb_avis,
-                    specialites=r.garage.specialites,
-                    specialites_confirmees=r.garage.specialites_source != "hypothese_generaliste",
-                    score=round(r.score, 3), raisons=self._raisons(r, probas),
-                )
-                for r in recos
-            ],
+            garages=[self._garage(r, probas) for r in recos],
             avertissements=avertissements,
             version_modele=self.version,
         )
