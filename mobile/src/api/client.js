@@ -71,6 +71,7 @@ export const apiClient = {
   get: (path, config) => request('GET', path, config),
   post: (path, data) => request('POST', path, { data }),
   patch: (path, data) => request('PATCH', path, { data }),
+  delete: (path) => request('DELETE', path),
 };
 
 // Normalise les erreurs API en un message affichable directement dans l'UI

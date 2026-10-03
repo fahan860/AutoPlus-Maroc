@@ -4,7 +4,7 @@ import GaragesStack from './GaragesStack';
 import VehiclesStack from './VehiclesStack';
 import MyInterventionsScreen from '../screens/interventions/MyInterventionsScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
-import AssistantScreen from '../screens/assistant/AssistantScreen';
+import AssistantStack from './AssistantStack';
 import { colors } from '../theme/colors';
 
 const Tab = createBottomTabNavigator();
@@ -34,8 +34,7 @@ export default function AppTabs() {
       <Tab.Screen name="Garages" component={GaragesStack} />
       <Tab.Screen
         name="Assistant"
-        component={AssistantScreen}
-        options={{ headerShown: true, headerTintColor: colors.primary, title: 'Assistant AUTO+' }}
+        component={AssistantStack}
       />
       <Tab.Screen name="Vehicules" component={VehiclesStack} options={{ title: 'Véhicules' }} />
       <Tab.Screen

@@ -12,7 +12,7 @@ import {
   Linking,
 } from 'react-native';
 import * as Location from 'expo-location';
-import { sendAgentMessage } from '../../api/agent';
+import { sendAgentMessage, getConversation } from '../../api/agent';
 import { listVehicles } from '../../api/vehicles';
 import { extractErrorMessage } from '../../api/client';
 import { URGENCES } from '../../utils/pannes';
@@ -123,8 +123,10 @@ function Analyse({ reponse, onGarage }) {
 
 // Assistant IA de diagnostic : conversation libre (francais ou darija), questions de precision,
 // analyse prudente avec sources, puis garages conseilles (Modele B).
-export default function AssistantScreen({ navigation }) {
+export default function AssistantScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]); // { role, content, action?, reponse? }
+  // Conversation enregistree cote serveur (historique) ; null = nouvelle conversation
+  const [conversationId, setConversationId] = useState(null);
   const [texte, setTexte] = useState('');
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState('');
@@ -140,21 +142,45 @@ export default function AssistantScreen({ navigation }) {
     });
   }, []);
 
+  // Rouvrir une conversation depuis l'historique
+  const idDemande = route.params?.conversationId;
+  useEffect(() => {
+    if (!idDemande || idDemande === conversationId) return;
+    setChargement(true);
+    setErreur('');
+    getConversation(idDemande)
+      .then((c) => {
+        setMessages(c.messages);
+        setConversationId(c.id);
+      })
+      .catch((err) => setErreur(extractErrorMessage(err)))
+      .finally(() => setChargement(false));
+  }, [idDemande]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // La conversation en cours reste dans l'historique : on en commence simplement une autre
   function nouvelleConversation() {
     setMessages([]);
+    setConversationId(null);
     setErreur('');
     setTexte('');
+    navigation.setParams({ conversationId: undefined });
   }
 
-  // A gauche : a droite, le bouton etait cache par celui de developpement d'Expo Go sur iPhone
+  // A gauche : a droite, les boutons etaient caches par celui de developpement d'Expo Go sur iPhone
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerLeft: () =>
-        messages.length > 0 ? (
-          <Pressable onPress={nouvelleConversation} hitSlop={10} style={styles.headerBouton} accessibilityRole="button">
-            <Text style={styles.headerBoutonTexte}>Nouvelle</Text>
+      headerLeft: () => (
+        <View style={styles.headerBoutons}>
+          <Pressable onPress={() => navigation.navigate('Conversations')} hitSlop={10} accessibilityRole="button">
+            <Text style={styles.headerBoutonTexte}>Historique</Text>
           </Pressable>
-        ) : null,
+          {messages.length > 0 ? (
+            <Pressable onPress={nouvelleConversation} hitSlop={10} accessibilityRole="button">
+              <Text style={styles.headerBoutonTexte}>+ Nouvelle</Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ),
     });
   }, [navigation, messages.length]);
 
@@ -170,12 +196,14 @@ export default function AssistantScreen({ navigation }) {
     const vehicule = vehicules.find((v) => v.id === vehiculeId);
     try {
       const reponse = await sendAgentMessage({
+        conversationId,
         messages: historique,
         vehicule: vehicule ? { marque: vehicule.marque, modele: vehicule.modele, annee: vehicule.annee } : null,
         lat: position.current?.latitude,
         lon: position.current?.longitude,
       });
       setMessages([...historique, { role: 'assistant', content: reponse.message, action: reponse.action, reponse }]);
+      if (reponse.conversation_id) setConversationId(reponse.conversation_id);
     } catch (err) {
       setErreur(extractErrorMessage(err));
     } finally {
@@ -326,7 +354,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.background },
   contenu: { padding: 16, paddingBottom: 24 },
   presse: { opacity: 0.8 },
-  headerBouton: { paddingHorizontal: 12 },
+  headerBoutons: { flexDirection: 'row', gap: 18, paddingHorizontal: 4 },
   headerBoutonTexte: { color: colors.primary, fontWeight: '700', fontSize: 15 },
   accueil: { alignItems: 'stretch', marginTop: 8 },
   accueilIcone: { fontSize: 40, textAlign: 'center' },
