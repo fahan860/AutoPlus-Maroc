@@ -146,9 +146,10 @@ export default function AssistantScreen({ navigation }) {
     setTexte('');
   }
 
+  // A gauche : a droite, le bouton etait cache par celui de developpement d'Expo Go sur iPhone
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () =>
+      headerLeft: () =>
         messages.length > 0 ? (
           <Pressable onPress={nouvelleConversation} hitSlop={10} style={styles.headerBouton} accessibilityRole="button">
             <Text style={styles.headerBoutonTexte}>Nouvelle</Text>
@@ -252,10 +253,18 @@ export default function AssistantScreen({ navigation }) {
           <View key={i}>
             <Bulle message={m} />
             {m.reponse?.action === 'diagnostic' ? (
-              <Analyse
-                reponse={m.reponse}
-                onGarage={(garageId) => navigation.navigate('Garages', { screen: 'GarageDetail', params: { garageId } })}
-              />
+              <>
+                <Analyse
+                  reponse={m.reponse}
+                  onGarage={(garageId) => navigation.navigate('Garages', { screen: 'GarageDetail', params: { garageId } })}
+                />
+                {i === messages.length - 1 ? (
+                  // Un autre probleme = une nouvelle conversation : sinon l'agent melange les symptomes
+                  <Pressable onPress={nouvelleConversation} style={styles.nouveau} accessibilityRole="button">
+                    <Text style={styles.nouveauTexte}>+ Décrire un autre problème</Text>
+                  </Pressable>
+                ) : null}
+              </>
             ) : null}
           </View>
         ))}
@@ -342,6 +351,11 @@ const styles = StyleSheet.create({
   bulleTexteUser: { color: '#fff' },
   reflexion: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   reflexionTexte: { color: colors.textMuted, fontStyle: 'italic' },
+  nouveau: {
+    alignSelf: 'center', paddingHorizontal: 18, paddingVertical: 10, borderRadius: 20, borderWidth: 1.5,
+    borderColor: colors.primary, marginBottom: 14,
+  },
+  nouveauTexte: { color: colors.primary, fontWeight: '700' },
   analyse: {
     backgroundColor: colors.surface, borderRadius: 14, borderWidth: 1, borderColor: colors.border,
     padding: 14, marginBottom: 14, gap: 12,

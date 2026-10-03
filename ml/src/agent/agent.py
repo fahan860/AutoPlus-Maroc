@@ -45,6 +45,7 @@ NB_KB, NB_PANNES = 4, 3  # passages de contexte transmis au LLM
 # passent (4/10) sont écartés par la consigne « hors_sujet » donnée au LLM.
 SEUIL_PERTINENCE = 0.79
 GRAVITES = ["faible", "moyenne", "elevee", "critique"]
+ARABE = re.compile(r"[؀-ۿ]")  # alphabet arabe
 
 # Situations où l'on dit d'abord de s'arrêter, avant toute analyse (français + darija)
 DANGERS = [
@@ -59,13 +60,13 @@ DANGERS = [
 # (« tomobil dyali katsfer mli kanfrani », un sifflement au freinage, donnait « filtre à air »).
 PROMPT_REFORMULATION = """Tu reçois une conversation entre un automobiliste au Maroc (en français ou en darija, écrite en lettres latines ou arabes) et un assistant.
 Réécris le problème de la voiture en UNE phrase en français simple, avec les symptômes décrits (bruit, voyant, odeur, fumée, moment où ça arrive...). N'ajoute aucune cause ni interprétation.
-Aide darija : tomobil / tonobil / karhba = voiture ; frana / kanfrani = frein / je freine ; katsfer = siffle ; katzgi / kat3yet = grince ; lmotor = le moteur ; kaysakhn = chauffe ; dkhan = fumée ; ma bghatch tkhdem / ma katdemarrich = ne démarre pas ; batri = batterie ; dwaw = voyant / phares ; lclim = la climatisation ; kat9tel / katmout = cale ; bzaf = beaucoup.
+Aide darija : tomobil / tonobil / karhba = voiture ; frana / kanfrani / kanfreni = frein / je freine ; katsfer / katsafr / katsaffar / kaysaffar / katsoffer = siffle (rien à voir avec « safar », voyager) ; katzgi / kat3yet = grince ; lmotor = le moteur ; kaysakhn = chauffe ; dkhan = fumée ; ma bghatch tkhdem / ma katdemarrich = ne démarre pas ; batri = batterie ; dwaw = voyant / phares ; lclim = la climatisation ; kat9tel / katmout = cale ; bzaf = beaucoup.
 Réponds UNIQUEMENT en JSON : {"description_fr": "...", "langue": "fr" ou "darija", "hors_sujet": true ou false}
 langue = la langue dans laquelle l'automobiliste écrit. hors_sujet = true si la demande ne concerne pas une voiture."""
 
 PROMPT_SYSTEME = """Tu es l'assistant de diagnostic automobile de l'application AUTO+, pour des automobilistes au Maroc.
 
-LANGUE : réponds dans la langue de l'utilisateur. S'il écrit en darija (lettres latines ou arabes), réponds en darija marocaine naturelle écrite en lettres latines, comme sur WhatsApp. Sinon, réponds en français simple.
+LANGUE : réponds dans la langue de l'utilisateur. S'il écrit en darija (lettres latines ou arabes), réponds en darija marocaine naturelle écrite UNIQUEMENT en lettres latines, comme sur WhatsApp (jamais de caractères arabes, jamais d'arabe classique). Les termes techniques peuvent rester en français (plaquettes, disques, liquide de frein). Sinon, réponds en français simple.
 
 RÈGLES :
 - Base-toi UNIQUEMENT sur le CONTEXTE fourni (base de connaissance vérifiée). N'invente jamais une cause, un prix ou un conseil absent du contexte.
@@ -211,6 +212,13 @@ class AgentDiagnostic:
             messages.append({"role": m["role"], "content": m["content"]})
 
         brut = json.loads(self.appel_llm(messages))
+        if langue == "darija" and ARABE.search(json.dumps(brut, ensure_ascii=False)):
+            # Le modèle mélange parfois l'alphabet arabe dans la darija latine : une seconde chance
+            messages.append({"role": "assistant", "content": json.dumps(brut, ensure_ascii=False)})
+            messages.append({"role": "user", "content": "Ta réponse contient des caractères arabes. Réécris exactement "
+                             "le même JSON en darija écrite UNIQUEMENT en lettres latines (comme sur WhatsApp), "
+                             "sans aucun caractère arabe ni mot répété."})
+            brut = json.loads(self.appel_llm(messages))
         sortie = self._controler(brut, fiables, alerte, nb_questions)
 
         if sortie["action"] == "diagnostic" and fiables:
