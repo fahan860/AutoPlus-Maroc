@@ -1,5 +1,9 @@
 # AUTO+ (AutoPlus Maroc)
 
+[![Démo en ligne](https://img.shields.io/badge/D%C3%A9mo%20en%20ligne-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://fahan-autoplus.streamlit.app) [![Portfolio](https://img.shields.io/badge/Portfolio-%C3%A9tude%20de%20cas-0ea5e9)](https://fatima-zahrae-ahannuk.vercel.app/projects/autoplus)
+
+> 👉 **Démo en ligne** (estimation du prix d’une voiture d’occasion, modèle XGBoost) : https://fahan-autoplus.streamlit.app · **Étude de cas** : https://fatima-zahrae-ahannuk.vercel.app/projects/autoplus
+
 Plateforme intelligente des services automobile au Maroc — mise en relation automobilistes ↔ garages,
 diagnostic assisté par IA (darija/français), SaaS garage et marketplace pièces.
 
