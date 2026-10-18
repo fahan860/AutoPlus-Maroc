@@ -136,6 +136,10 @@ planning de stage (voir [`docs/autoplus_planning_stage.html`](docs/autoplus_plan
 - Node.js 20+
 - Python 3.10+ (`py -0p` pour lister les versions installées sur Windows)
 - Un téléphone avec l'app **Expo Go** (Android/iOS) pour tester le mobile, ou un émulateur
+- ~5 Go d'espace disque libre pour Docker (le modèle d'embeddings e5-large pèse à lui seul 2,24 Go,
+  téléchargé une seule fois au 1er lancement — compter ~1 h sur une connexion lente)
+- Une clé API **Groq** gratuite pour l'Assistant IA : https://console.groq.com/keys (sans carte bancaire).
+  Sans clé, tout fonctionne sauf l'onglet Assistant.
 
 > **Note environnement Windows avec Avast** : si `pip install` échoue avec une erreur
 > `CERTIFICATE_VERIFY_FAILED`, voir la solution documentée dans [`ml/README.md`](ml/README.md)
@@ -173,10 +177,39 @@ copy .env.example .env
 docker compose up -d --build
 ```
 
+Les migrations ne sont **pas** appliquées automatiquement : à faire une fois (puis après chaque
+nouvelle migration ; elles sont idempotentes, on peut toutes les rejouer) :
+
+```powershell
+Get-ChildItem api\migrations\*.sql | Sort-Object Name | ForEach-Object {
+  Get-Content $_.FullName -Raw | docker exec -i autoplus-db psql -q -U autoplus -d autoplus
+}
+```
+
+Importer les garages (sinon l'écran Garages est vide) :
+
+```powershell
+cd api
+npm install
+$env:DATABASE_URL="postgres://autoplus:autoplus@localhost:5432/autoplus"
+node scripts/import_garages_csv.js ../data/scraping/garages_clean.csv
+cd ..
+```
+
+Données de l'IA (recommandation « Trouver un garage » + Assistant) : tables pgvector, 50 pannes,
+spécialités des garages, base de connaissance, clé Groq dans **`api/.env`** (c'est ce fichier que
+lit `ml-api`, pas le `.env` racine). Le plus simple est le script, qui fait tout dans le conteneur
+`ml-api` (rien à installer en local) :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\activer-ia.ps1
+```
+
 Tester que tout fonctionne :
 
 ```powershell
-curl http://localhost:3000/health
+curl http://localhost:3000/health   # API
+curl http://localhost:8000/health   # ML : "status": "ok" si les 4 modèles sont chargés
 ```
 
 → Réponse attendue : `{"status":"ok","db_time":"..."}`
@@ -248,6 +281,29 @@ npx expo start
 l'API (`docker compose up`). L'app détecte automatiquement l'IP locale de la machine de dev via Expo
 (`hostUri`) — pas de configuration manuelle nécessaire. Pour forcer une autre URL (API déployée, etc.),
 renseigner `expo.extra.apiUrl` dans `mobile/app.json`.
+
+Si l'app affiche « Network request failed », ouvrir `http://<IP-du-PC>:3000/health` dans le navigateur
+du téléphone : si ça ne répond pas, c'est le pare-feu Windows (réseau Wi-Fi à passer en **Privé**, puis
+en PowerShell administrateur) :
+
+```powershell
+New-NetFirewallRule -DisplayName "AutoPlus API 3000" -Direction Inbound -Protocol TCP -LocalPort 3000 -Action Allow -Profile Private
+```
+
+Les garages importés sont tous à **Casablanca** : depuis une autre ville, la liste n'en trouve aucun à
+moins de 30 km et affiche la liste complète, et la carte cadre automatiquement l'ensemble des garages.
+
+#### Dépannage
+
+| Symptôme | Cause / solution |
+|---|---|
+| API en boucle `Cannot find module ...` | `docker compose up -d --build --renew-anon-volumes api` |
+| `relation "users" does not exist` (logs api) | Migrations non appliquées (voir section 1) |
+| « Service de recommandation indisponible » | Données IA absentes : `activer-ia.ps1` ; vérifier http://localhost:8000/health |
+| « L'assistant est momentanément indisponible » | Pas de clé Groq dans `api/.env` → `activer-ia.ps1`, ou quota Groq dépassé |
+| `extension "vector" is not available` | Base lancée avec l'ancienne image : `docker compose up -d --build db` |
+| `Permission denied: .../huggingface/hub` | Ancien volume `hf-cache` : relancer `activer-ia.ps1` (corrige les droits) |
+| Expo Go : « SDK incompatible » | Mettre à jour Expo Go (le projet est en SDK 57) |
 
 #### Tester sur un émulateur Android (au lieu d'un téléphone)
 
