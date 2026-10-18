@@ -143,6 +143,29 @@ planning de stage (voir [`docs/autoplus_planning_stage.html`](docs/autoplus_plan
 
 ## Lancer le projet
 
+### Premier lancement en une commande (Windows)
+
+GitHub ne contient que le code : la base PostgreSQL (tables, pannes, embeddings, base de
+connaissance de l'agent) vit dans un volume Docker local et doit être remplie sur chaque machine.
+Le script suivant fait tout, dans l'ordre, et peut être relancé sans risque :
+
+```powershell
+# Docker Desktop lancé ; 1re fois : PowerShell en administrateur (règle pare-feu du port 3000)
+powershell -ExecutionPolicy Bypass -File .\lancer-tlf.ps1
+```
+
+1. `git pull`, puis `docker compose up -d --build` (base PostGIS + **pgvector**, voir `db/Dockerfile`)
+2. Migrations `api/migrations/*.sql` (toutes idempotentes)
+3. Import des garages (`data/scraping/garages_clean.csv`)
+4. `activer-ia.ps1` : tables `base_pannes` / `kb_documents` / `kb_chunks`, embeddings des pannes,
+   spécialités des garages, corpus de la Knowledge Base (exécutés dans le conteneur `ml-api`,
+   rien à installer en local), clé Groq demandée et enregistrée dans `api/.env`, redémarrage de `ml-api`
+5. `npx expo start` : scanner le QR code avec Expo Go
+
+Vérifier les modèles ML : http://localhost:8000/health doit renvoyer `"status": "ok"`.
+Options : `-SkipPull`, `-SkipBuild`. Les sections ci-dessous détaillent chaque étape à la main.
+
+
 ### 1. API + Base de données + Redis (Docker)
 
 ```powershell
