@@ -26,6 +26,9 @@ COPY service service
 WORKDIR /app/service
 RUN useradd --create-home appuser
 USER appuser
+# Le dossier du cache doit exister (et appartenir a appuser) AVANT le montage du volume hf-cache :
+# sinon Docker le cree en root et le telechargement d'e5-large echoue (Permission denied).
+RUN mkdir -p /home/appuser/.cache/huggingface
 # Modèle e5-large (~2,2 Go) : téléchargé au 1er démarrage dans le volume hf-cache, puis réutilisé
 ENV HF_HOME=/home/appuser/.cache/huggingface
 

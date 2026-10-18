@@ -74,6 +74,11 @@ export default function GaragesScreen({ navigation }) {
 
   const garagesWithCoords = garages.filter((g) => g.latitude != null && g.longitude != null);
 
+  // Cadrage initial de la carte : centre sur l'utilisateur s'il y a des garages a moins de
+  // ~30 km, sinon cadre l'ensemble des garages (ex. utilisateur a Tetouan, garages a Casablanca :
+  // sans ca la carte s'ouvre vide, les marqueurs etant hors du cadre).
+  const mapRegion = computeMapRegion(location, garagesWithCoords);
+
   return (
     <View style={styles.flex}>
       <Pressable
@@ -112,11 +117,8 @@ export default function GaragesScreen({ navigation }) {
       ) : (
         <MapView
           style={styles.flex}
-          initialRegion={
-            location
-              ? { latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.1, longitudeDelta: 0.1 }
-              : CASABLANCA_REGION
-          }
+          initialRegion={mapRegion}
+          showsUserLocation
         >
           {garagesWithCoords.map((garage) => (
             <Marker
@@ -211,3 +213,30 @@ const styles = StyleSheet.create({
   empty: { textAlign: 'center', marginTop: 40, color: colors.textMuted },
   error: { color: colors.danger, textAlign: 'center', marginTop: 40 },
 });
+
+const NEARBY_DEG = 0.27; // ~30 km, meme rayon que la recherche par proximite
+
+function computeMapRegion(location, garages) {
+  const userRegion = location
+    ? { latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.1, longitudeDelta: 0.1 }
+    : null;
+  if (garages.length === 0) return userRegion || CASABLANCA_REGION;
+  if (location) {
+    const hasNearby = garages.some(
+      (g) => Math.abs(g.latitude - location.latitude) < NEARBY_DEG && Math.abs(g.longitude - location.longitude) < NEARBY_DEG
+    );
+    if (hasNearby) return userRegion;
+  }
+  const lats = garages.map((g) => g.latitude);
+  const lngs = garages.map((g) => g.longitude);
+  const minLat = Math.min(...lats);
+  const maxLat = Math.max(...lats);
+  const minLng = Math.min(...lngs);
+  const maxLng = Math.max(...lngs);
+  return {
+    latitude: (minLat + maxLat) / 2,
+    longitude: (minLng + maxLng) / 2,
+    latitudeDelta: Math.max((maxLat - minLat) * 1.3, 0.05),
+    longitudeDelta: Math.max((maxLng - minLng) * 1.3, 0.05),
+  };
+}

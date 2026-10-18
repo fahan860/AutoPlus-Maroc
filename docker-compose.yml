@@ -1,6 +1,8 @@
 services:
   db:
-    image: postgis/postgis:16-3.4
+    # PostgreSQL 16 + pgvector + PostGIS (voir db/Dockerfile)
+    build: ./db
+    image: autoplus-db:16-pgvector-postgis
     container_name: autoplus-db
     restart: unless-stopped
     environment:
@@ -68,6 +70,9 @@ services:
       - path: ./api/.env
         required: false
     environment:
+      # Telechargement classique d'e5-large (le mode "Xet" de Hugging Face se fige sur les connexions lentes)
+      HF_HUB_DISABLE_XET: "1"
+      HF_HUB_DOWNLOAD_TIMEOUT: "60"
       # Modele B : pannes et garages lus dans PostgreSQL
       DATABASE_URL: postgres://${POSTGRES_USER:-autoplus}:${POSTGRES_PASSWORD:-autoplus}@db:5432/${POSTGRES_DB:-autoplus}
     ports:
