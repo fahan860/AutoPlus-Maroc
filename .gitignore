@@ -43,3 +43,9 @@ ml/mlruns/
 __pycache__/
 catboost_info/
 ml/data/simulated/
+
+# Documents gardés en local uniquement (dépôt public)
+# - études de marché en PDF : documents tiers et fichiers lourds (~30 Mo)
+# - listes d'ateliers pour les interviews : numéros de téléphone des mécaniciens
+docs/marche/*.pdf
+docs/terrain/
