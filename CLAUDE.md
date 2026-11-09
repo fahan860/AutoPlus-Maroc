@@ -19,7 +19,7 @@ Pilote limité à Casablanca : les 123 garages en base y sont tous (91 géolocal
 | `mobile/` | App mobile | Expo SDK 57, React Native, React Navigation |
 | `data/` | Scraping garages, pipeline events Redis → Parquet (`data/events/`, non versionné), base de pannes | Python |
 | `ai/` | Cadrage et corpus de la base de connaissance de l'agent | — |
-| `docs/` | Dossier startup, BMC, guides d'interview, planning, rapports | — |
+| `docs/` | Dossier startup, BMC, guides d'interview, planning, rapports ; `cahier-des-charges/`, `marche/` (CSV et notes, PDF en local), `diagrammes/`, `terrain/` (local uniquement : contient des numéros) | — |
 
 ## Commandes
 
@@ -56,7 +56,8 @@ cd mobile; npx expo start                                                       
 - `extension "vector" is not available` → `docker compose up -d --build db`.
 - Le premier démarrage de `ml-api` télécharge e5-large (~2,2 Go, jusqu'à 5 min).
 - Vérification d'e-mail désactivée (`EMAIL_VERIFICATION_ENABLED=false`) tant que le SMTP n'est pas configuré.
-- Le dossier `AutoPlus-Maroc/` imbriqué à la racine est une ancienne copie non versionnée : ne pas y travailler.
+- La refonte UI d'août (15 écrans mobiles) est sur la branche locale `refonte-ui-mobile-aout`, basée sur une ancienne version : la fusionner fichier par fichier, pas en bloc.
+- Le dépôt est public : jamais de numéro de téléphone, de nom de mécanicien ou de document tiers sous licence dans un fichier versionné.
 
 ## Priorités restantes (novembre–décembre 2026)
 
@@ -73,3 +74,21 @@ cd mobile; npx expo start                                                       
 - `market-researcher` : concurrents, prix, tendances du marché marocain, avec sources.
 - `content-creator` : posts, scripts vidéo, messages WhatsApp/Facebook en français et darija.
 - `code-reviewer` : relecture d'une PR (sécurité, migrations, tests, données personnelles).
+- `ml-engineer` : entraîner, évaluer et comparer les modèles A, B, C ; chiffres mesurés uniquement.
+- `deploy-engineer` : mise en ligne (Render/Railway), migrations automatiques, CI/CD, build Android.
+- `terrain-analyst` : guides d'interview FR/darija, disposition à payer, synthèse, garages pilotes.
+- `academic-writer` : rapport PFA, rapport d'avancement, soutenance et questions du jury.
+
+## Skills du projet (`.claude/skills/`, appelables en `/nom`)
+
+- `/livrer-tache` : une tâche = une branche = une PR, de bout en bout.
+- `/nouvelle-migration` : migration SQL numérotée, idempotente, testée deux fois.
+- `/point-hebdo` : bilan de la semaine depuis git et les PR, entrées pour le journal du cockpit.
+- `/evaluer-agent-ia` : évaluation chiffrée de l'agent sur ~20 conversations FR/darija.
+- `autoplus-brand-voice` : ton et règles de tout texte destiné aux utilisateurs.
+
+## Suivi du projet
+
+- Cockpit (tâches, planning, risques, journal) : https://claude.ai/artifact/Apdhu5U4y9gKXhhAzHTqXb
+- Affiche « Fonctionnement d'AUTO+ » : https://claude.ai/artifact/2Y3YWr8G7GvssodXuoxUgo
+- Modèle de PR : `.github/pull_request_template.md`.
