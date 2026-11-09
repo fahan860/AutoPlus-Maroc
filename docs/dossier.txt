@@ -1,0 +1,624 @@
+                                       AUTO+
+   La Plateforme Intelligente des Services Automobile au Maroc
+                Dossier Stratégique & Analyse de Marché — Mai 2026
+
+
+
+
+   4,95 M                                    235 372                                         60 %
+véhicules en circulation                   ventes neuves en 2025                      du marché encore informel
+
+
+
+
+       Sources : AIVAM 2026 · HCP 2025 · ANRT 2026 · DataReportal · AutoActu · GIPAM · Office des Changes
+ Table des matières
+ 1.         Contexte & Opportunité de marché
+
+ 2.         Analyse du marché automobile marocain
+
+ 3.         L'écosystème des garages & mécaniciens
+
+ 4.         Comportement digital des utilisateurs
+
+ 5.         Analyse de la demande en ligne (Google Trends)
+
+ 6.         Analyse concurrentielle
+
+ 7.         La solution Auto+ — Concept & valeur
+
+ 8.         Modèle économique
+
+ 9.         Taille du marché (TAM/SAM/SOM)
+
+ 10.        Roadmap & Go-to-Market
+
+ 11.        Données macro-digitales du Maroc
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026       Page 2
+ 1. Contexte & Opportunité de marché
+ Le Maroc traverse en 2026 une accélération inédite de son secteur automobile, combinée à une digitalisation
+ massive de sa population. Cette convergence crée une opportunité rare : le marché de l'entretien et de la
+ réparation automobile reste à 60–70 % informel et non digitalisé, alors que les automobilistes sont
+ ultra-connectés (93 % de taux smartphone). Auto+ se positionne pour capter cette transformation.
+
+
+
+        18 000                              95 %                    4,95 M                       93 %
+       besoins/jour                      non digitalisées              véhicules              taux smartphone
+ Demandes atelier estimées         Part du marché hors ligne   Parc automobile national   Pénétration mobile Maroc
+
+
+
+     Insight — 95 % des besoins mécaniques quotidiens ne passent pas par internet. Le problème n'est pas la
+     demande — elle est massive — mais l'accès, la confiance et la rapidité. C'est exactement ce qu'Auto+
+     résout.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                        Page 3
+ 2. Analyse du marché automobile marocain
+ 2.1 Volumes de ventes neuves (AIVAM)
+           Année               Total véhicules            dont VP               dont VUL                    Croissance
+
+            2022                  161 410                    N/D                     N/D                      +0,06 %
+
+            2023                  161 504                 145 292                   16 212                    +0,1 %
+
+            2024                  176 401                 157 139                   19 262                    +9,22 %
+
+            2025                  235 372                 208 848                   26 524                   +33,43 %
+
+          T1 2026                  58 901                 ~52 000                   ~6 900               +22,3 % vs T1 2025
+ Source : AIVAM — Bilan annuel 2025 (janvier 2026) / Rapport T1 2026 (avril 2026)
+
+
+
+ 2.2 Parts de marché VP 2024 (AIVAM)
+                     Marque                              Unités VP 2024                               Part de marché
+
+                      Dacia                                  39 331                                      25,03 %
+
+                     Renault                                 23 697                                      15,08 %
+
+                     Hyundai                                 11 898                                       7,57 %
+
+                     Peugeot                                 10 517                                       6,69 %
+
+                   Volkswagen                                10 336                                       6,58 %
+
+                      Autres                                ~61 360                                       38 %
+
+
+
+ 2.3 Parc automobile total en circulation
+                       Catégorie                                Nombre                                   Source
+
+              Voitures de tourisme (VP)                       ~3,2 millions                          HCP / NARSA 2026
+
+                   Véhicules utilitaires                      ~1,3 million                           HCP / NARSA 2026
+
+                 Motos immatriculées                           ~340 000                                 HCP 2026
+
+                     TOTAL estimé                            ~4,95 millions                          AIVAM / HCP 2026
+ Note : Casablanca-Settat concentre ~37 % du parc national (HCP).
+
+
+
+ 2.4 Électrification & tendances 2025–2026
+                           Indicateur                                 Valeur                 Année               Source
+
+                Croissance ventes VE (BEV)                          +143 %                   2024              AutoActu
+
+         Croissance PHEV hybrides rechargeables                     +224 %                   2024              AutoActu
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                                        Page 4
+                    Croissance VE 2025                    +77,3 %             2025             AutoActu
+
+                 Ventes VE attendues 2026                7 237 unités         2026             AutoActu
+
+                Croissance VE 2026 vs 2025                +36,3 %             2026             AutoActu
+
+            Bornes de charge installées fin 2024           ~1 000             2024             AutoActu
+
+                    Objectif bornes 2028                    5 000             2028             AutoActu
+
+                Part marques chinoises 2025               ~12 %               2025             AutoActu
+
+
+     Insight — L'électrification crée un besoin critique de mécaniciens certifiés EV. Les garages traditionnels
+     ne sont pas encore équipés pour ces véhicules : Auto+ peut intégrer un filtre "garage compatible
+     hybride/électrique" dès le lancement.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                            Page 5
+ 3. L'écosystème des garages & mécaniciens au Maroc
+
+
+       ~16 000                          55 000+                        120 000+                     60–70 %
+                                                                            personnes
+       établissements                    salariés déclarés                                           des interventions
+                                                                        Écosystème total
+   Garages déclarés (2026)               Emplois formels                                         Part du secteur informel
+                                                                        (formel+informel)
+
+
+
+ 3.1 Structure du secteur de la réparation
+                                  Segment                                      Nombre                 Source
+
+      Garages indépendants structurés (registre commerce + CNSS)                ~4 000          AIVAM / GIPAM 2026
+
+                 Concessionnaires / réseaux constructeurs                   500–600 points          AIVAM 2026
+
+               Centres fast-fit (Midas, Bosch Car Service…)                300–400 centres          AIVAM 2026
+
+                      TOTAL établissements déclarés                             ~16 000         OMPIC / AIVAM 2026
+
+                        Unités informelles estimées                         25 000–30 000          GIPAM / HCP
+
+                   Interventions informelles (% du total)                      60–70 %             GIPAM 2026
+ Source : GIPAM (Groupement Interprofessionnel de l'Automobile au Maroc), OMPIC, AIVAM.
+
+
+
+ 3.2 Données HCP sur le secteur (données officielles disponibles)
+                               Indicateur                                     Valeur                  Source
+
+              Établissements économiques totaux Maroc                       1,13 million             HCP 2024
+
+               Part commerce+réparation auto dans total                        ~10 %            HCP / Ministère 2024
+
+                 Estimation garages + commerce auto                      ~113 000 acteurs           HCP (calcul)
+
+                         Parc véhicules (2023)                               4 518 116               HCP 2024
+
+                         Parc véhicules (2022)                               4 274 337               HCP 2023
+
+                    Emploi entretien/réparation auto                   9,8 % de l'emploi auto       HCP/CNSS
+
+               Mécaniciens formés OFPPT (2021–2024)                            3 116               OFPPT 2024
+
+                    Centres OFPPT mécanique auto                       42 centres / 37 villes         OFPPT
+
+
+     Insight — Le Maroc n'a pas de base nationale consolidée sur les mécaniciens. Auto+ peut être la
+     première plateforme à créer ce registre digital, ce qui représente en soi une valeur stratégique de données
+     unique.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                                 Page 6
+ 4. Comportement digital des utilisateurs au Maroc
+ 4.1 Infrastructure digitale & mobile (2025–2026)
+                           Indicateur                         Valeur          Année             Source
+
+                        Population totale                  38,1 millions       2025       HCP / DataReportal
+
+                        Internautes actifs               38,1 M (92,2 %)       2025          DataReportal
+
+                  Connexions mobiles actives               54,9 millions       2025          DataReportal
+
+                    Abonnés internet mobile                43,4 millions       2025              ANRT
+
+            Taux pénétration smartphone (>10 ans)           ~93–94 %           2026       ANRT / King4Media
+
+                    Trafic internet via mobile                >95 %            2026            GHM Labs
+
+                Taux pénétration internet mobile             117,9 %           2026              ANRT
+
+                  Temps moyen en ligne / jour                  6h30            2025          DataReportal
+
+                 Temps moyen sur mobile / jour               5 heures          2026           King4Media
+
+                Temps sur réseaux sociaux / jour            >3 heures          2025          DataReportal
+
+             Baisse droits import smartphones 2026       17,5 % → 2,5 %        2026       Loi de Finances 2026
+
+
+
+ 4.2 E-commerce & paiement digital
+                           Indicateur                         Valeur          Année             Source
+
+                  Marché e-commerce (valeur)               1,66 Md USD         2025          ecommerceDB
+
+                 CAGR e-commerce 2025–2030                   15–18 %           2025            Clarodigi
+
+           Part mobile dans commandes e-commerce              ~59 %            2025            Clarodigi
+
+               Paiements par carte (transactions)         192,5 millions       2024         Bank Al-Maghrib
+
+                   Portefeuilles mobiles actifs            10,4 millions       2024            Clarodigi
+
+                   Taux bancarisation adultes                  58 %            2024         Bank Al-Maghrib
+
+            Virements instantanés (croissance YoY)            +67 %            2024            Clarodigi
+
+                Adoption BNPL (achats en ligne)          1/3 des acheteurs     2025          ecommerceDB
+
+
+     Insight — Le Maroc est en phase de mobile-first absolu : 95 % du trafic web vient du mobile. Toute
+     solution pour les automobilistes doit être conçue mobile-only, avec paiement intégré (wallet, carte, BNPL)
+     et UX ultra-simple.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                           Page 7
+ 5. Analyse de la demande en ligne — Google Trends &
+ Search
+ 5.1 Volumes de recherche estimés (Maroc)
+                          Mot-clé                            Volume mensuel estimé                        Type d'intention
+
+            "mécanicien" / "mécanicien auto"                       2 000 – 6 000                            Besoin direct
+
+                   "garage automobile"                             3 000 – 8 000                            Besoin direct
+
+                "garage auto Casablanca"                           1 000 – 3 000                            Local search
+
+                    "réparation voiture"                           1 000 – 4 000                            Besoin direct
+
+           Long tail (pannes, bruits, erreurs…)                   10 000 – 30 000                          Micro-moments
+
+          TOTAL estimé (toutes requêtes auto)                 20 000 – 50 000 / mois                     Marché adressable
+ Source : estimation Keyword Planner / SEO data Maroc — volumes indicatifs non officiels Google.
+
+
+
+ 5.2 Intensité de recherche par région (Google Trends, 2021–2026)
+                  Région                       Score "Mécanicien auto" Score "Vidange voiture" Score "Problème voiture"
+
+            Chaouia-Ouardigha                              100                             80                               94
+
+            Grand Casablanca                                94                             100                              100
+
+              Doukkala-Abda                                 93                             88                               73
+
+                  Oriental                                  89                             59                               73
+
+            Souss-Massa-Draâ                                85                             59                               73
+
+              Fès-Boulemane                                 77                             69                               47
+
+        Rabat-Salé-Zemmour-Zaër                             68                             91                               94
+
+            Marrakech-Tensift                               69                             64                               78
+
+             Tanger-Tétouan                                 66                             59                               73
+ Source : Google Trends Maroc — Score relatif, 100 = popularité maximale sur la période.
+
+
+
+ 5.3 Estimation des besoins réels quotidiens
+ La modélisation suivante part du parc automobile HCP pour estimer la demande atelier réelle :
+
+                             Étape                                 Calcul                                 Résultat
+
+          Parc automobile national (HCP 2024)                         —                            4,5 millions de véhicules
+
+        Fréquence visites garage / an (standard)                 x 1,5 visites               6,75 millions de demandes/an
+
+            Demandes quotidiennes (toutes)                          ÷ 365                          ~18 500 demandes/jour
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                                            Page 8
+           Part passant par internet (20–40 %)              x 30 %                 ~3 500 – 7 000 / jour
+
+               Recherches Google actives                 50k / 30 jours             ~700 – 1 600 / jour
+
+                Marché NON DIGITALISÉ                    100 % – 5 %               ~95 % = 17 500 / jour
+
+
+     Insight — Le marché réel = 18 000 besoins/jour. Seulement ~5 % passent par internet. Auto+ peut
+     capturer les utilisateurs AVANT qu'ils cherchent — via notifications, alertes entretien proactives et
+     diagnostics IA embarqués.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                       Page 9
+ 6. Analyse concurrentielle
+ 6.1 Acteurs de référence mondiale (SimilarWeb Jan–Mar 2026)
+          Site/App           Visites (Q1 2026)      Mensuel moyen               Marché principal                    Tendance
+
+         drivvo.com               216 629                72 210             Brésil (25 %) / International             ↓ -28 %
+
+      simplyauto.app               17 492                 5 831              USA (36 %) + UK (24 %)                   ↓ -37 %
+
+         obdai.app                 22 398                 7 466                     USA (83 %)                      ↑ +0,01 %
+
+         logicat.ma                27 893                 9 298                    Maroc (99 %)                       ↓ -37 %
+
+         speedy.ma                  8 017                 4 008                   Maroc (100 %)                     Déclin fort
+
+       eurorepar.ma                 1 020                  340                    Maroc (100 %)                ↑ +76 % (base mini)
+
+
+
+ 6.2 Analyse des forces & faiblesses des concurrents
+             Acteur                          Ce qu'il fait bien                              Ce qui manque
+
+             Drivvo             Suivi entretien, UX solide, base mondiale    Pas au Maroc, pas de mise en relation garage
+
+          SimplyAuto              Tracking kilométrage, multi-plateforme       Déclin trafic, pas de service Maroc/Afrique
+
+             OBDAI               Diagnostics OBD2 + IA, niché technique        USA-centric, pas de réseau garages local
+
+           Logicat.ma            E-commerce pièces Maroc, mobile-first       Catalogue produits, pas de service mécanique
+
+          Speedy.ma                 Réseau garages connu au Maroc                   Faible digital, trafic en chute libre
+
+         Eurorepar.ma                  Réseau constructeur Maroc             Très faible présence digitale (340 visites/mois)
+
+
+     Insight — Il n'existe pas au Maroc de plateforme dominante combinant : (1) mise en relation
+     mécanicien/automobiliste, (2) diagnostics intelligents, (3) paiement digital et (4) réseau local de confiance.
+     Le terrain est libre.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                                      Page 10
+ 7. La solution Auto+ — Concept & proposition de valeur
+
+   7.1 Le problème résolu
+
+   Un propriétaire de voiture au Maroc qui a une panne ou besoin d'entretien doit : (1) demander à ses
+   connaissances un mécanicien de confiance, (2) aller physiquement tester le garage, (3) payer cash, sans reçu,
+   sans garantie. Le mécanicien, lui, n'a aucune visibilité digitale, pas de gestion de rendez-vous, pas d'outils
+   modernes. Les deux côtés souffrent du même problème : l'absence de confiance et d'infrastructure
+   digitale.
+
+
+
+   7.2 La solution proposée — Plateforme B2C + B2B
+
+   Pour l'automobiliste : App mobile qui permet de trouver le garage le plus proche, comparer les avis,
+   demander un devis, prendre RDV, payer en ligne et obtenir la garantie de service. Un assistant IA intégré
+   analyse les codes pannes OBD2 et explique le problème en darija/français.
+
+
+   Pour le mécanicien / garage : Tableau de bord SaaS pour gérer les demandes, les rendez-vous, la
+   facturation, le stock de pièces et obtenir des clients qualifiés. Certification "Auto+ Partner" pour les garages
+   formés aux nouvelles technologies (EV/hybrides).
+
+
+
+ 7.3 Fonctionnalités clés
+             Mise en relation
+                                         Géolocalisation garages, filtres (spécialité, EV, urgence, note)
+               intelligente
+
+
+           Diagnostic IA OBD2            Lecture codes pannes, explication IA, estimation coût réparation
+
+
+         Paiement & devis digital        Devis en ligne, paiement mobile (CMI, wallets), BNPL
+
+
+             Alertes entretien
+                                         Rappels vidange, contrôle technique, révision selon kilométrage
+                proactives
+
+
+            SaaS mécanicien              CRM garage, agenda, facturation, gestion stock pièces
+
+
+           Communauté & avis             Avis vérifiés, forum entraide, historique véhicule numérique
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                       Page 11
+ 8. Modèle économique
+ 8.1 Sources de revenus
+                Stream                             Mécanisme                             Prix cible        Potentiel
+
+     Abonnement Garage (SaaS)             Mensuel par garage partenaire          299–799 MAD/mois          Récurrent
+
+     Commission mise en relation         % sur chaque intervention payée              5–10 % du ticket      Scalable
+
+            Leads Premium                  Mise en avant / priorité liste         99–299 MAD/mois        Complémentaire
+
+      Diagnostic OBD2 IA (B2C)             Freemium + plans premium               49–99 MAD/mois            Volume
+
+          Marketplace pièces             Commission sur vente de pièces               8–15 % marge         Long terme
+
+         Publicité locale ciblée       CPM/CPC pour concessions, huiles…                  Variable       Complémentaire
+
+
+
+ 8.2 Projections conservatrices (3 ans)
+                    Indicateur                           An 1 (2026)                     An 2 (2027)        An 3 (2028)
+
+               Garages partenaires                           200                             800               2 500
+
+                 Utilisateurs actifs                        15 000                          80 000            250 000
+
+            Revenu SaaS (MAD/mois)                         100 000                         480 000           1 500 000
+
+              Revenu commissions                            50 000                         300 000           1 200 000
+
+               Revenu total annuel                       ~1,8 M MAD                      ~9,6 M MAD         ~32 M MAD
+ Projections indicatives basées sur hypothèses de pénétration marché. Non auditées.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                                    Page 12
+ 9. Taille du marché — TAM / SAM / SOM
+ Le marché de l'entretien et réparation automobile au Maroc est largement informel et sous-estimé. Voici une
+ modélisation bottom-up réaliste :
+
+
+              Niveau                        Définition                      Calcul                Valeur estimée
+
+       TAM — Marché Total
+                       Toutes dépenses entretien auto au4,95
+                                                         Maroc
+                                                             M véhicules × ~3 000 MAD/an/véhicule
+                                                                                        ~14,85 Mrd MAD (~1,48 Md $)
+
+    SAM — Marché Adressable
+                      Utilisateurs smartphones + intention digitale
+                                                            30 % du TAM (mobile-first + bancarisés)
+                                                                                              ~4,5 Mrd MAD (~450 M $)
+
+    SOM — Marché Capturable           Objectif Auto+ à 3 ans 0,7 % du SAM (250k users × 1 200 MAD/an)
+                                                                                                ~32 M MAD (~3,2 M $)
+
+
+     Insight — Même en ne captant que 0,7 % du marché adressable, Auto+ génère ~32 M MAD de revenus
+     annuels. L'enjeu est de créer le standard de référence pour le service auto digital au Maroc avant que les
+     acteurs internationaux n'arrivent avec des moyens.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                             Page 13
+ 10. Roadmap & Go-to-Market
+ 10.1 Phases de lancement
+           Phase                  Période                            Objectifs clés                        Priorité géo
+
+      Phase 0 — MVP              Q3 2026
+                                      App mise en relation garages/users, 50 garages pilotes, tests Casablanca
+                                                                                                         Casablanca
+
+  Phase 1 — Lancement Q4 2026 – Q1 200
+                                   2027garages, 15 000 users, SaaS garage live, diagnostic OBD2 bêta
+                                                                                                Casa + Rabat
+
+  Phase 2 — Croissance             2027
+                                    800 garages, 80 000 users, marketplace pièces, partenariats huiliers/assurances
+                                                                                                           Top 5 villes
+
+   Phase 3 — Expansion             20282 500 garages, 250 000 users, certification EV, données sectorielles
+                                                                                                National + B2B
+                                                                                                            Afrique francophone
+
+
+
+ 10.2 Stratégie d'acquisition
+
+       Google Ads                       Cibler les requêtes haute intention : "mécanicien Casablanca", "panne
+       (Search)                         voiture", "vidange rapide". Budget initial : 5 000–10 000 MAD/mois.
+
+
+       Facebook &                       Vidéos courtes "avant/après", témoignages garages partenaires, ciblage
+       Instagram                        20–45 ans propriétaires de voiture. Maroc mobile-first.
+
+
+       WhatsApp                         Canal principal de communication au Maroc. Notifications RDV,
+       Business                         confirmations, suivi réparation par WhatsApp.
+
+
+       Partenariat OFPPT                Programme de digitalisation des jeunes mécaniciens formés dans les 42
+                                        centres OFPPT. 3 000 mécaniciens/an = vivier qualifié.
+
+
+       B2B Direct                       Démarchage des 4 000 garages structurés pour l'abonnement SaaS. 1
+                                        commercial peut gérer 20 garages/mois.
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                                    Page 14
+ 11. Données macro-digitales & IA au Maroc
+ 11.1 Adoption de l'IA (2025–2026)
+                                 Indicateur                                       Valeur                   Source
+
+             Dirigeants utilisant l'IA générative (ChatGPT, etc.)            52 % régulièrement         IDC/ADD 2025
+
+           Entreprises planifiant un investissement IA (12 mois)                   85 %                 IDC/ADD 2025
+
+                   ETI/PME ayant déployé un chatbot IA                             40 %                 Clarodigi 2025
+
+                Développeurs utilisant l'IA quotidiennement                       78,3 %             Stack Overflow 2024
+
+                Classes d'âge dominantes développeurs IA                     18–34 ans (93 %)        Stack Overflow 2024
+
+                   Objectif national praticiens IA certifiés                  5 000 d'ici 2026            ADD 2025
+
+
+
+ 11.2 Applications mobiles & comportement (2025–2026)
+                             Indicateur                                        Valeur                      Source
+
+              Téléchargements d'apps / utilisateur / an                    35 applications             King4Media 2026
+
+                       Catégories dominantes               Fintech, e-commerce, santé, éducation, livraison
+                                                                                                         King4Media 2026
+
+            Part mobile dans commandes e-commerce                              ~59 %                 ecommerceDB 2025
+
+          Part des réseaux sociaux dans le temps mobile                        >50 %                  DataReportal 2025
+
+              Premières interfaces numériques Maroc                 WhatsApp, Facebook, Instagram       Smartdex 2026
+
+        Abandons paniers liés à absence paiement mobile                         42 %                      CMI 2025
+
+
+     Insight — Le Maroc est l'un des pays africains les plus avancés en adoption IA et mobile. 52 % des
+     dirigeants utilisent déjà l'IA générative. Auto+ peut se positionner dès le lancement comme la première
+     app automobile marocaine intégrant un assistant IA natif.
+
+
+
+ 11.3 Contexte favorable 2026 pour le lancement
+     ■ Année record automobile : +33 % de ventes en 2025, +22 % en T1 2026 — le parc grossit massivement
+     ■ Smartphones moins chers : Droits import 17,5 % → 2,5 % (LF 2026) = baisse de 300–600
+     DH/smartphone
+     ■ 5G en déploiement : Orange, Inwi, Maroc Telecom actifs dans les grandes villes — UX ultra-rapide
+     possible
+     ■■ Coupe du Monde 2030 : Accélération de la digitalisation des transports et services — auto inclus
+     ■ Électrification accélérée : BYD +152 %, Chery +404 % — nouveaux garages EV à certifier et connecter
+     ■ Paiement digital mature : 10,4 M wallets actifs, +67 % virements instantanés — infrastructure prête
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                                     Page 15
+ Conclusion & appel à l'action
+ Le Maroc est à un point d'inflexion unique : un marché automobile en pleine explosion (+33 % de ventes), une
+ population ultra-connectée (93 % smartphone), et un secteur de réparation qui reste à 95 % offline et informel.
+ Cette convergence ne se reproduira pas deux fois.
+
+ Auto+ est conçu pour être la couche digitale de confiance entre les 4,95 millions de propriétaires de voiture et
+ les 40 000+ mécaniciens du Maroc. Pas une simple app de mise en relation — une plateforme qui digitalise,
+ structure et valorise un secteur entier.
+
+
+
+          14,85 Mrd                                       18 000                                         95 %
+                 MAD                                     besoins/jour                                non digitalisée
+       Marché total entretien auto                 Demande réelle quotidienne                     Opportunité immédiate
+
+
+
+   Contact & prochaines étapes
+
+   Ce dossier est confidentiel et destiné aux partenaires et investisseurs potentiels. Pour toute question sur le
+   modèle économique, les données sources ou le plan de développement, veuillez contacter l'équipe fondatrice
+   Auto+ directement.
+
+
+ Sources principales : AIVAM 2026 | HCP 2025 | ANRT 2026 | DataReportal 2026 | AutoActu 2026 | GIPAM | Office des Changes | Bank
+ Al-Maghrib | OFPPT | ecommerceDB | IDC/ADD | SimilarWeb Jan–Mar 2026
+
+
+
+
+Auto+ Maroc — Dossier Investisseur Confidentiel — 2026                                                                        Page 16
+

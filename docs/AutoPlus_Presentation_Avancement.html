@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUTO+ Maroc — Présentation d'avancement</title>
+<style>
+  :root {
+    --navy: #1a2744;
+    --orange: #e8590c;
+    --lightblue: #eaf1fb;
+    --grey-bg: #f7f8fa;
+    --border: #e2e5eb;
+    --text: #222b3d;
+    --muted: #6b7280;
+    --green: #16a34a;
+    --green-bg: #eafaf0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    background: var(--grey-bg);
+    color: var(--text);
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  /* ============ EDIT-ME BANNER ============ */
+  .edit-banner {
+    background: #fff7e6; border: 1.5px dashed #e8a33d; border-radius: 12px;
+    padding: 14px 18px; margin-bottom: 24px; font-size: 13px; color: #6b4a10; line-height: 1.6;
+  }
+  .edit-banner b { color: #8a5a00; }
+
+  /* ============ HEADER / TITRE ============ */
+  .cover {
+    background: linear-gradient(135deg, var(--navy), #26365c);
+    border-radius: 16px; padding: 36px 32px; color: white; margin-bottom: 24px;
+  }
+  .cover .tag {
+    display: inline-block; background: var(--orange); font-size: 11px; font-weight: 700;
+    padding: 4px 12px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 14px;
+  }
+  .cover h1 { margin: 0 0 8px; font-size: 30px; }
+  .cover p.sub { margin: 0 0 18px; font-size: 15px; color: #cfd8ea; }
+  .cover .meta { display: flex; gap: 22px; flex-wrap: wrap; font-size: 12.5px; color: #b9c4dd; }
+  .cover .meta b { color: white; }
+
+  /* ============ SECTIONS ============ */
+  .section {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px 26px; margin-bottom: 18px;
+  }
+  .section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .section-head .num {
+    width: 30px; height: 30px; border-radius: 9px; background: var(--navy); color: white;
+    display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0;
+  }
+  .section-head h2 { margin: 0; font-size: 17px; color: var(--navy); }
+  .section-head .period { margin-left: auto; font-size: 11.5px; color: var(--muted); background: var(--lightblue); padding: 3px 10px; border-radius: 999px; }
+
+  .section p { line-height: 1.65; font-size: 14px; }
+  .section ul { margin: 8px 0; padding-left: 20px; line-height: 1.7; font-size: 14px; }
+  .section ul li { margin-bottom: 4px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .stat-row { display: flex; gap: 18px; flex-wrap: wrap; margin: 10px 0 4px; }
+  .stat { flex: 1; min-width: 130px; background: var(--lightblue); border-radius: 10px; padding: 12px 14px; }
+  .stat .num { font-size: 22px; font-weight: 800; color: var(--orange); }
+  .stat .lbl { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+  code, .code-block {
+    font-family: "SFMono-Regular", Consolas, monospace; font-size: 12.5px;
+  }
+  .code-block {
+    display: block; background: #101a30; color: #d7e0f2; padding: 12px 14px; border-radius: 8px;
+    line-height: 1.6; overflow-x: auto; margin: 10px 0;
+  }
+  .code-block .cmt { color: #7c8bab; }
+  .code-block .kw { color: #ff9d5c; }
+
+  .status-tag {
+    display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 0.02em;
+  }
+  .status-ok { background: var(--green-bg); color: var(--green); }
+  .status-progress { background: #fff2e0; color: #b3560d; }
+  .status-todo { background: #eef0f4; color: var(--muted); }
+
+  /* ============ PLACEHOLDER (à compléter en équipe) ============ */
+  .placeholder {
+    border: 1.5px dashed #b9c4dd; border-radius: 10px; padding: 14px 16px; background: #fafbfd;
+    font-size: 13.5px; color: var(--muted);
+  }
+  .placeholder b { color: var(--navy); }
+
+  .footer-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--
+    ================================================================
+    COMMENT MODIFIER CE FICHIER (pour toi et ton collègue)
+    ================================================================
+    - Ce fichier est un simple HTML : ouvre-le avec n'importe quel éditeur
+      de texte (Bloc-notes, VS Code, etc.) puis double-clique dessus pour
+      voir le rendu dans le navigateur.
+    - Chaque partie du travail est décrite ici en "nous" / "notre équipe" :
+      il n'y a pas de section "partie de Fatima" / "partie de Marouane".
+      Tout le contenu est commun au binôme.
+    - Pour ajouter un résultat : va dans la section concernée et ajoute
+      une ligne "<li>...</li>" dans la liste, ou complète les zones
+      encadrées en pointillés "à compléter".
+    - Pour ajouter une nouvelle section entière : copie un bloc
+      <div class="section">...</div> en entier et modifie son contenu.
+  -->
+
+  <div class="edit-banner">
+    <b>Fichier modifiable —</b> ouvrez-le dans un éditeur de texte pour ajouter du contenu.
+    Les zones encadrées en pointillés (<i>« à compléter »</i>) sont prévues pour les résultats
+    à ajouter par l'équipe. Le contenu reste commun — pas de partie individuelle.
+  </div>
+
+  <!-- ============ COUVERTURE ============ -->
+  <div class="cover">
+    <span class="tag">PFA — Suivi d'avancement</span>
+    <h1>AUTO+ Maroc</h1>
+    <p class="sub">Plateforme intelligente de mise en relation automobilistes ↔ mécaniciens au Maroc — diagnostic assisté par IA, SaaS garage &amp; marketplace pièces.</p>
+    <div class="meta">
+      <span>Filière : <b>Big Data &amp; Intelligence Artificielle</b></span>
+      <span>Niveau : <b>Bac+5</b></span>
+      <span>Année : <b>2025–2026</b></span>
+      <span>Équipe : <b>Fatima Zahra &amp; Marouane</b></span>
+    </div>
+  </div>
+
+  <!-- ============ 1. CONTEXTE & PROBLEMATIQUE ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">1</div>
+      <h2>Contexte &amp; problématique</h2>
+    </div>
+    <p>
+      Le marché de l'entretien automobile au Maroc est fragmenté et informel. Les automobilistes peinent à
+      identifier des mécaniciens fiables, transparents sur les prix et géolocalisés, tandis que les ateliers
+      indépendants souffrent d'une visibilité limitée et de difficultés d'acquisition client. L'absence de
+      données structurées sur ce secteur empêche toute optimisation du service.
+    </p>
+    <p>
+      <b>Problématique :</b> comment concevoir et déployer une plateforme data-driven qui réduit l'asymétrie
+      d'information entre automobilistes et mécaniciens, en exploitant le Big Data et l'IA pour le matching,
+      la recommandation et l'analyse comportementale ?
+    </p>
+    <div class="stat-row">
+      <div class="stat"><div class="num">4,95M</div><div class="lbl">véhicules au Maroc</div></div>
+      <div class="stat"><div class="num">18 000</div><div class="lbl">besoins d'entretien / jour</div></div>
+      <div class="stat"><div class="num">95%</div><div class="lbl">secteur non digitalisé</div></div>
+    </div>
+    <div class="placeholder">À compléter : sources chiffrées, étude de marché complémentaire, veille concurrentielle…</div>
+  </div>
+
+  <!-- ============ 2. CHOIX DE LA NICHE ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">2</div>
+      <h2>Choix de la niche</h2>
+    </div>
+    <p>
+      Parmi plusieurs pistes explorées, nous avons choisi de nous concentrer sur la <b>mise en relation
+      automobilistes ↔ garages/mécaniciens indépendants</b>, un segment à fort volume, peu digitalisé, et
+      pour lequel un pipeline de données (annuaire de garages, avis, prix) permet de construire rapidement
+      de la valeur mesurable (scoring, recommandation).
+    </p>
+    <ul>
+      <li>Marketplace bi-face : automobilistes (B2C) et garages (B2B / SaaS)</li>
+      <li>Différenciation : agent IA de diagnostic en darija/français</li>
+      <li>Monétisation envisagée : commission mise en relation, abonnement SaaS garage, marketplace pièces</li>
+    </ul>
+    <div class="placeholder">À compléter : critères de sélection de la niche, alternatives écartées et pourquoi, retours du prof/mentors…</div>
+  </div>
+
+  <!-- ============ 3. CUSTOMER DISCOVERY ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">3</div>
+      <h2>Customer discovery</h2>
+      <span class="status-tag status-progress">En cours</span>
+    </div>
+    <p>
+      Démarche de validation des hypothèses business par entretiens terrain (objectif : 20+ interviews
+      automobilistes &amp; mécaniciens), avec guides d'entretien dédiés et une matrice d'hypothèses à valider.
+    </p>
+    <ul>
+      <li>Guide d'entretien terrain rédigé (V1 puis V2 affinée)</li>
+      <li>Matrice d'hypothèses (Assumption Matrix) pour prioriser ce qu'il faut valider en premier</li>
+      <li>Analyse de discovery en cours de consolidation</li>
+    </ul>
+    <div class="placeholder"><b>À compléter :</b> nombre d'interviews réalisées à ce jour, principaux insights, hypothèses validées / invalidées, verbatims marquants.</div>
+  </div>
+
+  <!-- ============ 4. BUSINESS MODEL ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">4</div>
+      <h2>Business model (Lean BMC)</h2>
+    </div>
+    <p>
+      Formalisation du modèle économique via un Lean Business Model Canvas : segments clients, proposition
+      de valeur, canaux, sources de revenus, structure de coûts.
+    </p>
+    <div class="placeholder"><b>À compléter :</b> résumé des blocs clés du BMC (proposition de valeur retenue, canaux d'acquisition, pricing envisagé).</div>
+  </div>
+
+  <!-- ============ 5. ARCHITECTURE TECHNIQUE ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">5</div>
+      <h2>Architecture technique choisie</h2>
+    </div>
+    <div class="grid2">
+      <ul>
+        <li><b>Backend</b> : Node.js + Express (API REST)</li>
+        <li><b>Base de données</b> : PostgreSQL + extension PostGIS (géolocalisation)</li>
+        <li><b>Mobile</b> : React Native (Expo)</li>
+      </ul>
+      <ul>
+        <li><b>ML / Data</b> : Python 3.10, notebooks Jupyter</li>
+        <li><b>Data Lake</b> : events applicatifs en Parquet, partitionnés par date</li>
+        <li><b>Infra</b> : Docker + Docker Compose (API + DB)</li>
+      </ul>
+    </div>
+    <div class="placeholder">À compléter : schéma d'architecture (diagramme), choix techniques justifiés, alternatives évaluées.</div>
+  </div>
+
+  <!-- ============ 6. SETUP ENVIRONNEMENT ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">6</div>
+      <h2>Setup de l'environnement (Semaine 1)</h2>
+      <span class="status-tag status-ok">Terminé</span>
+    </div>
+    <ul>
+      <li>Environnement Docker + PostgreSQL/PostGIS configuré via <code>docker-compose.yml</code></li>
+      <li>Squelette API Node.js/Express (<code>/api</code>) avec route <code>/health</code> vérifiant la connexion DB</li>
+      <li>Environnement Python 3.10 (venv) pour le ML, avec premier notebook d'exploration (données fictives via Faker)</li>
+      <li>App mobile scaffoldée avec Expo (<code>/mobile</code>)</li>
+      <li>Repo structuré : <code>/api</code>, <code>/mobile</code>, <code>/ml</code>, <code>/data</code>, <code>/docs</code></li>
+    </ul>
+  </div>
+
+  <!-- ============ 7. BASE DE DONNEES POSTGRESQL ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">7</div>
+      <h2>Création de la base de données PostgreSQL</h2>
+      <span class="status-tag status-ok">Terminé</span>
+    </div>
+    <p>
+      Mise en place de la base <code>autoplus</code> via Docker (image <code>postgis/postgis:16-3.4</code>) et
+      d'une première table <code>garages</code> servant d'annuaire pour la vitrine des mécaniciens/ateliers.
+    </p>
+    <div class="code-block"><span class="cmt">-- api/migrations/001_create_garages.sql</span><br>
+<span class="kw">CREATE EXTENSION IF NOT EXISTS</span> postgis;<br><br>
+<span class="kw">CREATE TABLE IF NOT EXISTS</span> garages (<br>
+&nbsp;&nbsp;id, nom, categorie, adresse, ville, telephone,<br>
+&nbsp;&nbsp;note, nb_avis, lien_fiche <span class="cmt">(clé de dédup)</span>, source,<br>
+&nbsp;&nbsp;a_completer, geom <span class="cmt">GEOGRAPHY(POINT, 4326)</span>,<br>
+&nbsp;&nbsp;scraped_at, created_at, updated_at<br>
+);<br><br>
+<span class="cmt">-- index sur la ville + index spatial GIST sur geom</span></div>
+    <ul>
+      <li>Extension <b>PostGIS</b> activée pour la future géolocalisation des garages</li>
+      <li>Champ <code>lien_fiche</code> unique : sert de clé de déduplication entre imports successifs</li>
+      <li>Index sur <code>ville</code> et index spatial <code>GIST</code> sur <code>geom</code></li>
+      <li>Connexion vérifiée via l'endpoint <code>/health</code> de l'API (<code>{"status":"ok","db_time":"..."}</code>)</li>
+    </ul>
+    <div class="placeholder">À compléter : autres tables créées depuis (utilisateurs, rendez-vous, avis…), schéma complet mis à jour.</div>
+  </div>
+
+  <!-- ============ 8. COLLECTE & IMPORT DES DONNEES ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">8</div>
+      <h2>Collecte et import des données</h2>
+      <span class="status-tag status-ok">Terminé</span>
+    </div>
+    <p>
+      Scraping d'un premier jeu de garages (Casablanca), nettoyage, fusion des sources, puis import dans
+      PostgreSQL avec une logique d'upsert pour éviter les doublons.
+    </p>
+    <div class="stat-row">
+      <div class="stat"><div class="num">101</div><div class="lbl">garages nettoyés &amp; importés</div></div>
+      <div class="stat"><div class="num">3</div><div class="lbl">CSV sources fusionnés</div></div>
+      <div class="stat"><div class="num">UPSERT</div><div class="lbl">sur <code>lien_fiche</code></div></div>
+    </div>
+    <ul>
+      <li>Script de scraping (<code>scraper_garages_telecontact.py</code>) puis fusion/nettoyage
+        (<code>merge_and_clean_garages.py</code>, <code>clean_garages_csv.py</code>)</li>
+      <li>Script d'import Node.js (<code>import_garages_csv.js</code>) : upsert sur <code>lien_fiche</code>,
+        pour rejouer l'import sans dupliquer</li>
+      <li>CSV encodé en UTF-8 (BOM) et délimiteur <code>;</code> pour compatibilité Excel FR/MA</li>
+    </ul>
+    <div class="placeholder">À compléter : nouvelles sources de données ajoutées, volumétrie mise à jour, qualité des données (taux de complétion téléphone/adresse).</div>
+  </div>
+
+  <!-- ============ 9. ETAT ACTUEL ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">9</div>
+      <h2>État actuel du projet</h2>
+      <span class="period">Semaine 1 → aujourd'hui</span>
+    </div>
+    <ul>
+      <li><span class="status-tag status-ok">OK</span> Environnement Docker (API + PostgreSQL/PostGIS) fonctionnel</li>
+      <li><span class="status-tag status-ok">OK</span> Base de données créée, table <code>garages</code> peuplée</li>
+      <li><span class="status-tag status-ok">OK</span> Scraping + nettoyage + import de 101 garages</li>
+      <li><span class="status-tag status-progress">En cours</span> Customer discovery (entretiens terrain)</li>
+      <li><span class="status-tag status-todo">À venir</span> Agent IA de diagnostic (V1)</li>
+      <li><span class="status-tag status-todo">À venir</span> App mobile — fonctionnalités core</li>
+    </ul>
+    <div class="placeholder"><b>À compléter (partie collègue) :</b> avancement sur l'app mobile, les modèles ML, ou toute autre partie déjà avancée de ton côté — ajoute simplement une ligne ci-dessus, dans la même liste.</div>
+  </div>
+
+  <!-- ============ 10. PROCHAINES ETAPES ============ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="num">10</div>
+      <h2>Prochaines étapes</h2>
+    </div>
+    <ul>
+      <li><b>Juillet 2026</b> — Terrain + MVP complet (setup, BDD/API, app mobile, agent IA V1)</li>
+      <li><b>Août 2026</b> — Bêta + 3 modèles ML en production (pricing, recommandation, détection faux avis)</li>
+      <li><b>Sept–Oct 2026</b> — Itération, paiement CMI, candidatures accélérateurs</li>
+      <li><b>Nov–Déc 2026</b> — Lancement public + pitch + rapport final</li>
+    </ul>
+    <div class="placeholder">À compléter en équipe : ajuster les échéances si besoin, ajouter les risques identifiés.</div>
+  </div>
+
+  <div class="footer-note">
+    AUTO+ Maroc — Document de suivi commun de l'équipe (Fatima Zahra &amp; Marouane) — dernière mise à jour à indiquer ci-dessus.
+  </div>
+
+</div>
+</body>
+</html>
