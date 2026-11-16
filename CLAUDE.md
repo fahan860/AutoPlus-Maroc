@@ -87,6 +87,17 @@ cd mobile; npx expo start                                                       
 - `/evaluer-agent-ia` : évaluation chiffrée de l'agent sur ~20 conversations FR/darija.
 - `autoplus-brand-voice` : ton et règles de tout texte destiné aux utilisateurs.
 
+### Skills business
+
+- `/autoplus-cso` : coordonner une question business multi-rôles (découpage, sous-agents, confrontation, journal).
+- `/validation-prix` : valider un prix avant de l'annoncer (ancrages, Van Westendorp, engagement de ≥ 5 garages).
+- `/design-experience` : fiche d'expérience avec seuils fixés avant lancement.
+- `/revue-pitch` : audit d'un pitch (chiffres, honnêteté, 15 questions difficiles).
+- `/revue-business-hebdo` : revue business de la semaine, après `/point-hebdo`.
+- `autoplus-market-intel`, `autoplus-business-model`, `autoplus-gtm-growth` : marché et concurrence ; client, revenus et positionnement ; lancement et growth.
+
+Les skills business embarquent des copies de `docs/business/` dans leur dossier `references/` pour rester autonomes. Après toute modification de `docs/business/` : `python tools/sync_skill_references.py --write`, puis `--check` (échoue si une copie ou une procédure diverge).
+
 ## Suivi du projet
 
 - Cockpit (tâches, planning, risques, journal) : https://claude.ai/artifact/Apdhu5U4y9gKXhhAzHTqXb
