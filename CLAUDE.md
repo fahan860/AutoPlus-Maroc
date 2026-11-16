@@ -91,7 +91,7 @@ cd mobile; npx expo start                                                       
 - `gtm-strategist` : séquence de lancement, cold start, canaux, budget, plans de campagne.
 - `pitch-coach` : pitch business, audit des chiffres, questions difficiles (rapport PFA : `academic-writer`).
 
-Règles business communes : étiquettes `[FAIT]` / `[ESTIMATION]` / `[HYPOTHÈSE]`, aucun chiffre inventé, un rôle ne valide jamais sa propre conclusion (section « À contre-vérifier » en fin de livrable). La coordination (CSO) se fait dans la session principale, pas par un sous-agent.
+Règles business communes : étiquettes `[FAIT]` / `[ESTIMATION]` / `[HYPOTHÈSE]`, aucun chiffre inventé, un rôle ne valide jamais sa propre conclusion (section « À contre-vérifier » en fin de livrable). La coordination (CSO) se fait dans la session principale avec `/autoplus-cso` : sous-agents indépendants en parallèle, contre-vérification par le vérificateur de la matrice (jamais le producteur), contre-examen par un contradicteur. Contrôle : `python tools/check_orchestration.py`. Comptes rendus : `docs/business/journal/`.
 
 ## Skills du projet (`.claude/skills/`, appelables en `/nom`)
 
