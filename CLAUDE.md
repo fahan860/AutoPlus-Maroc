@@ -112,6 +112,10 @@ Règles business communes : étiquettes `[FAIT]` / `[ESTIMATION]` / `[HYPOTHÈSE
 
 Les skills business embarquent des copies de `docs/business/` dans leur dossier `references/` pour rester autonomes. Après toute modification de `docs/business/` : `python tools/sync_skill_references.py --write`, puis `--check` (échoue si une copie ou une procédure diverge).
 
+## Plugin AUTO+ (`plugins/autoplus/`)
+
+Plugin Claude Code **généré** à partir de `.claude/` (10 sous-agents business, 9 skills business) + 3 commandes propres (`/autoplus:cso`, `/autoplus:semaine`, `/autoplus:verifier`). Marketplace : `.claude-plugin/marketplace.json`. Ne pas modifier `plugins/autoplus/agents|skills` à la main : `python tools/build_plugin.py --write`, puis `--check` et `claude plugin validate plugins/autoplus`. Installation : voir `plugins/autoplus/README.md`.
+
 ## Suivi du projet
 
 - Cockpit (tâches, planning, risques, journal) : https://claude.ai/artifact/Apdhu5U4y9gKXhhAzHTqXb
