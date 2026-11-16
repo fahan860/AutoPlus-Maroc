@@ -71,13 +71,27 @@ cd mobile; npx expo start                                                       
 ## Sous-agents disponibles (`.claude/agents/`)
 
 - `marketing-analyst` : funnel et KPI à partir des événements Parquet et de PostgreSQL.
-- `market-researcher` : concurrents, prix, tendances du marché marocain, avec sources.
+- `market-researcher` : marché marocain (parc, digital, paiement), TAM/SAM/SOM, prix des prestations, réglementation, avec sources.
 - `content-creator` : posts, scripts vidéo, messages WhatsApp/Facebook en français et darija.
 - `code-reviewer` : relecture d'une PR (sécurité, migrations, tests, données personnelles).
 - `ml-engineer` : entraîner, évaluer et comparer les modèles A, B, C ; chiffres mesurés uniquement.
 - `deploy-engineer` : mise en ligne (Render/Railway), migrations automatiques, CI/CD, build Android.
 - `terrain-analyst` : guides d'interview FR/darija, disposition à payer, synthèse, garages pilotes.
 - `academic-writer` : rapport PFA, rapport d'avancement, soutenance et questions du jury.
+
+### Sous-agents business (fiches détaillées : `docs/business/11_roles_business.md`)
+
+- `startup-strategist` : thèse, segments, personas, BMC, périmètre du pilote.
+- `competitor-analyst` : fiches concurrents datées, matrice de positionnement, modèles internationaux.
+- `customer-researcher` : hypothèses à tester, échantillon et seuils, synthèse d'entretiens, statut des hypothèses (guides rédigés par `terrain-analyst`).
+- `business-strategist` : modèle de revenus, validation de prix, unit economics, scénarios.
+- `pmm` : positionnement, message par persona, fiche store, briefs pour `content-creator`.
+- `growth-lead` : NSM, fiches d'expérience, ICE, événements manquants (mesures par `marketing-analyst`).
+- `garage-partnerships` : pipeline, visite, onboarding et rétention des garages pilotes.
+- `gtm-strategist` : séquence de lancement, cold start, canaux, budget, plans de campagne.
+- `pitch-coach` : pitch business, audit des chiffres, questions difficiles (rapport PFA : `academic-writer`).
+
+Règles business communes : étiquettes `[FAIT]` / `[ESTIMATION]` / `[HYPOTHÈSE]`, aucun chiffre inventé, un rôle ne valide jamais sa propre conclusion (section « À contre-vérifier » en fin de livrable). La coordination (CSO) se fait dans la session principale, pas par un sous-agent.
 
 ## Skills du projet (`.claude/skills/`, appelables en `/nom`)
 
