@@ -4,6 +4,8 @@ description: Voix de marque AUTO+ — à utiliser pour tout texte destiné aux a
 ---
 # Voix de marque AUTO+
 
+> **Source de vérité unique** : ce fichier (`.claude/skills/autoplus-brand-voice/SKILL.md` du dépôt). Les autres copies (skill du compte claude.ai, procédure `autoplus-brand-voice` du document 03 du Project) en sont dérivées et seront remplacées par le plugin AUTO+. Toute modification se fait ici, par PR.
+
 ## Promesse
 « Le bon garage, près de chez toi, sans mauvaise surprise. » AUTO+ rend la réparation auto simple, transparente et digne de confiance.
 
@@ -26,8 +28,12 @@ description: Voix de marque AUTO+ — à utiliser pour tout texte destiné aux a
 ## Côté garagistes
 Parler de clients en plus, d'agenda rempli pendant les jours creux, de réputation visible au-delà du quartier. Jamais de jargon startup (« SaaS », « marketplace »).
 
+## Format de sortie
+Pour chaque contenu : format et cible, accroche (moins de 10 mots), texte en darija puis en français, un seul appel à l'action. Pour une vidéo : scènes de 3 à 5 secondes, texte à l'écran, voix off.
+
 ## Règles
 - Un seul appel à l'action par contenu (télécharger, prendre RDV, parrainer).
+- Ne mettre en avant que des fonctionnalités déjà disponibles dans l'app (statut « implémenté » de `docs/business/07_strategie_startup.md` §4). Pour les piliers 1 et 3, tant qu'il n'existe ni relevé de prix ni vérification des garages sur place : parler d'avis modérés, de garages notés et de prix indicatifs, jamais de garages « vérifiés » ni de prix garantis.
 - Jamais de prix ou de délai garanti, jamais de concurrent ou de garage dénigré.
 - Aucun chiffre ni témoignage inventé : utiliser des placeholders [à compléter].
 - L'assistant IA donne une première idée de la panne ; il ne remplace pas le mécanicien.
