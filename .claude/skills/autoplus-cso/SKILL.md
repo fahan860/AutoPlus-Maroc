@@ -100,7 +100,7 @@ Le CSO ne valide pas non plus sa propre synthèse. Avant le rendu final, lancer 
 - Étiquettes obligatoires ; aucun chiffre inventé (`[À COMPLÉTER : …]`).
 - Statut réel des fonctionnalités : `07` §4. Données réelles ou simulées : toujours précisé.
 - Aucune donnée personnelle (nom de mécanicien, numéro) dans un livrable versionné.
-- La décision reste « proposée » tant que l'équipe (Fatima Zahrae et Marouane) ne l'a pas confirmée.
+- La décision reste « proposée » tant que la personne responsable du projet (`CLAUDE.md` § Équipe et validation) ne l'a pas confirmée.
 
 ## Rendu
 1. Question et décision.

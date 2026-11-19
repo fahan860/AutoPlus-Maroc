@@ -1,9 +1,16 @@
 # AUTO+ (AutoPlus Maroc) — Guide pour Claude
 
 Marketplace garages ↔ automobilistes au Maroc : app mobile B2C + espace garagiste, 3 modèles ML
-et un agent IA de diagnostic (français / darija). PFA en binôme (Fatima Zahrae & Marouane),
-planning de 26 semaines (juillet → décembre 2026), soutenance fin décembre 2026.
-Pilote limité à Casablanca : les 123 garages en base y sont tous (91 géolocalisés).
+et un agent IA de diagnostic (français / darija). Responsable du projet : Fatima Zahrae Ahannuk
+(voir § Équipe et validation), planning de 26 semaines (juillet → décembre 2026), soutenance fin
+décembre 2026. Pilote limité à Casablanca : les 123 garages en base y sont tous (91 géolocalisés).
+
+## Équipe et validation
+
+- Responsable et seule décideuse depuis le 2026-11-19 : Fatima Zahrae Ahannuk. Les semaines 1 à 14 ont été réalisées en binôme avec Marouane (historique Git et `RAPPORT_AVANCEMENT.md`).
+- Validation en solo : une tâche = une branche = une PR ; sous-agent `code-reviewer` obligatoire (0 point Bloquant) ; diff complet relu sur GitHub avant fusion ; jamais de push direct sur `main`.
+- Décision business : « proposée » jusqu'à la confirmation de la responsable ; 24 h de délai pour une décision difficile à défaire (prix annoncé, dépense, engagement auprès d'un garage).
+- Accueillir un contributeur : accès au dépôt → `git pull` → installer le plugin (`plugins/autoplus/README.md`) → créer son `.env` depuis `.env.example` → partager le Project claude.ai et le cockpit → l'ajouter dans cette section.
 
 ## Architecture
 

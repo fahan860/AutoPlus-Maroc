@@ -22,7 +22,7 @@ Les documents renvoient aux autres par leur numéro (`01`, `08` §5…). Dans le
 | 12 | `12_procedures_business.md` | [`12_procedures_business.md`](12_procedures_business.md) |
 | 13 | `13_index_sources.md` | [`13_index_sources.md`](13_index_sources.md) |
 
-Les rôles (11) et procédures (12) business ne sont pas encore des sous-agents ni des skills Claude Code : ils sont décrits ici comme référence.
+Les rôles (11) et procédures (12) business existent comme sous-agents (`.claude/agents/`) et skills (`.claude/skills/`), regroupés dans le plugin `plugins/autoplus/`.
 
 ## Vérification des références (2026-11-16)
 

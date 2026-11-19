@@ -20,7 +20,9 @@
 - [ ] Nouvelle action utilisateur = événement émis (`api/src/events.js`)
 - [ ] Textes utilisateur en français et en darija
 - [ ] Données réelles / simulées indiquées pour tout chiffre ML
+- [ ] Sous-agent `code-reviewer` lancé : 0 point Bloquant
+- [ ] Diff complet relu sur GitHub (onglet « Files changed »)
 
 ## Migrations à appliquer
 
-<!-- Liste des fichiers api/migrations/NNN_*.sql à appliquer par chaque membre, ou « aucune ». -->
+<!-- Liste des fichiers api/migrations/NNN_*.sql à appliquer sur la base locale (et en production après déploiement), ou « aucune ». -->
