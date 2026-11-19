@@ -137,4 +137,4 @@ Rôle par défaut quand la demande touche plusieurs rôles (« agis comme CSO »
 
 ## Correspondance avec les sous-agents Claude Code
 
-Les 8 rôles de 02 existent comme fichiers `.claude/agents/*.md` dans le dépôt. Les rôles de ce document **n'existent pas encore** comme sous-agents Claude Code : pour les créer, ajouter un fichier par rôle dans `.claude/agents/` via une PR (`docs/roles-business`) avec le contenu de la fiche ci-dessus (frontmatter `name`, `description`, `tools: WebSearch, WebFetch, Read, Glob`). Dans ce Project claude.ai, ils fonctionnent comme des consignes de rôle.
+Les 8 rôles de 02 et les 10 rôles business de ce document existent comme sous-agents dans `.claude/agents/` et dans le plugin `plugins/autoplus/`. La coordination (CSO) se fait dans la session principale avec `/autoplus-cso`. Dans le Project claude.ai, ces fiches servent de consignes de rôle.

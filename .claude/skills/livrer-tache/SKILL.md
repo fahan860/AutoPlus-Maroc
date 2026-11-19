@@ -26,4 +26,5 @@ description: Mener une tâche AUTO+ de bout en bout selon la règle « une tâch
 ## 5. Livrer
 - Commits petits, au présent, préfixés (`feat:`, `fix:`, `docs:`, `chore:`, `ml:`), en français.
 - `git push -u origin <branche>` puis ouvre la PR avec le modèle `.github/pull_request_template.md` (avec `gh pr create` si disponible).
+- Relis le diff complet sur GitHub, puis fusionne toi-même uniquement quand tous les contrôles sont verts. Jamais de push direct sur `main`.
 - Donne à l'utilisatrice : le lien de la PR, ce qui a été testé, et la ligne à ajouter au journal du cockpit AUTO+.
