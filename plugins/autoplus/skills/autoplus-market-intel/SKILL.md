@@ -1,6 +1,6 @@
 ---
 name: autoplus-market-intel
-description: Recherche de marché et analyse concurrentielle AUTO+ (Maroc d'abord) : chiffres vérifiés, TAM/SAM/SOM, fiches concurrents, modèles internationaux, avec sources datées.
+description: "Recherche de marché et analyse concurrentielle AUTO+ (Maroc d'abord) : chiffres vérifiés, TAM/SAM/SOM, fiches concurrents, modèles internationaux, avec sources datées."
 ---
 # AUTO+ — Market & Competitive Intelligence
 

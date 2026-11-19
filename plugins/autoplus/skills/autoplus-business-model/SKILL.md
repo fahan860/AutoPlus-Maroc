@@ -1,6 +1,6 @@
 ---
 name: autoplus-business-model
-description: Customer research, business model, prix et positionnement AUTO+ : entretiens terrain, matrice d'hypothèses H1–H20, revenus B2C/B2B, validation de prix, déclaration de positionnement.
+description: "Customer research, business model, prix et positionnement AUTO+ : entretiens terrain, matrice d'hypothèses H1–H20, revenus B2C/B2B, validation de prix, déclaration de positionnement."
 ---
 # AUTO+ — Customer, Business Model & Positioning
 
