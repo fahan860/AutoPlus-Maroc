@@ -91,7 +91,7 @@ cd mobile; npx expo start                                                       
 - `gtm-strategist` : séquence de lancement, cold start, canaux, budget, plans de campagne.
 - `pitch-coach` : pitch business, audit des chiffres, questions difficiles (rapport PFA : `academic-writer`).
 
-Règles business communes : étiquettes `[FAIT]` / `[ESTIMATION]` / `[HYPOTHÈSE]`, aucun chiffre inventé, un rôle ne valide jamais sa propre conclusion (section « À contre-vérifier » en fin de livrable). La coordination (CSO) se fait dans la session principale, pas par un sous-agent.
+Règles business communes : étiquettes `[FAIT]` / `[ESTIMATION]` / `[HYPOTHÈSE]`, aucun chiffre inventé, un rôle ne valide jamais sa propre conclusion (section « À contre-vérifier » en fin de livrable). La coordination (CSO) se fait dans la session principale avec `/autoplus-cso` : sous-agents indépendants en parallèle, contre-vérification par le vérificateur de la matrice (jamais le producteur), contre-examen par un contradicteur. Contrôle : `python tools/check_orchestration.py`. Comptes rendus : `docs/business/journal/`.
 
 ## Skills du projet (`.claude/skills/`, appelables en `/nom`)
 
@@ -100,6 +100,21 @@ Règles business communes : étiquettes `[FAIT]` / `[ESTIMATION]` / `[HYPOTHÈSE
 - `/point-hebdo` : bilan de la semaine depuis git et les PR, entrées pour le journal du cockpit.
 - `/evaluer-agent-ia` : évaluation chiffrée de l'agent sur ~20 conversations FR/darija.
 - `autoplus-brand-voice` : ton et règles de tout texte destiné aux utilisateurs.
+
+### Skills business
+
+- `/autoplus-cso` : coordonner une question business multi-rôles (découpage, sous-agents, confrontation, journal).
+- `/validation-prix` : valider un prix avant de l'annoncer (ancrages, Van Westendorp, engagement de ≥ 5 garages).
+- `/design-experience` : fiche d'expérience avec seuils fixés avant lancement.
+- `/revue-pitch` : audit d'un pitch (chiffres, honnêteté, 15 questions difficiles).
+- `/revue-business-hebdo` : revue business de la semaine, après `/point-hebdo`.
+- `autoplus-market-intel`, `autoplus-business-model`, `autoplus-gtm-growth` : marché et concurrence ; client, revenus et positionnement ; lancement et growth.
+
+Les skills business embarquent des copies de `docs/business/` dans leur dossier `references/` pour rester autonomes. Après toute modification de `docs/business/` : `python tools/sync_skill_references.py --write`, puis `--check` (échoue si une copie ou une procédure diverge).
+
+## Plugin AUTO+ (`plugins/autoplus/`)
+
+Plugin Claude Code **généré** à partir de `.claude/` (10 sous-agents business, 9 skills business) + 3 commandes propres (`/autoplus:cso`, `/autoplus:semaine`, `/autoplus:verifier`). Marketplace : `.claude-plugin/marketplace.json`. Ne pas modifier `plugins/autoplus/agents|skills` à la main : `python tools/build_plugin.py --write`, puis `--check` et `claude plugin validate plugins/autoplus`. Installation : voir `plugins/autoplus/README.md`.
 
 ## Suivi du projet
 

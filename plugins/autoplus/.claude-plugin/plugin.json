@@ -1,0 +1,12 @@
+{
+  "name": "autoplus",
+  "version": "0.1.0",
+  "description": "Copilote business AUTO+ (marketplace garages ↔ automobilistes, pilote Casablanca) : 10 sous-agents business, orchestration CSO avec contre-vérification croisée, skills marché, modèle économique, GTM, prix, expériences, pitch et voix de marque FR/darija.",
+  "author": {
+    "name": "Fatima Zahrae Ahannuk et Marouane (ENSA Tétouan)",
+    "url": "https://github.com/fahan860/AutoPlus-Maroc"
+  },
+  "homepage": "https://github.com/fahan860/AutoPlus-Maroc/tree/main/plugins/autoplus",
+  "repository": "https://github.com/fahan860/AutoPlus-Maroc",
+  "keywords": ["autoplus", "maroc", "marketplace", "garages", "business", "darija"]
+}
