@@ -1,6 +1,6 @@
 ---
 name: autoplus-gtm-growth
-description: Go-to-market, plan marketing et growth AUTO+ à Casablanca : phases pilote/bêta/lancement, cold start, acquisition garages et automobilistes, campagnes, expériences et KPI.
+description: "Go-to-market, plan marketing et growth AUTO+ à Casablanca : phases pilote/bêta/lancement, cold start, acquisition garages et automobilistes, campagnes, expériences et KPI."
 ---
 # AUTO+ — Go-To-Market, Marketing & Growth
 
